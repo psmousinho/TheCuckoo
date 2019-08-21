@@ -1,9 +1,9 @@
-# Modelo Conceitual TheCuckoo
+# Modelo Conceitual TheCuckoo 
 ## Introdução
 Esta pasta contém o projeto conceitual de uma rede social (TheCuckoo) utilizando a abordagem de modelagem Entidade-Relacionamento.
 
 #### Conteúdo da pasta
-> Diagrama ER (Projeto.brM3)
+> Diagrama ER (Projeto.brM3)<br>
 > brModelo.jar (para abrir o Projeto.brM3, necessário Java 8 ou superior)
 
 ## Entidades
@@ -46,3 +46,9 @@ Esta pasta contém o projeto conceitual de uma rede social (TheCuckoo) utilizand
 
 ### Postagem <-> Perfil
 (TODO)
+
+## Diagrama 
+Por fim, o diagrama ER do banco de dados do projeto:
+ <p align="center">
+ <img src="https://raw.githubusercontent.com/psmousinho/TheCuckoo/master/Conceitual/Diagrama.png">
+ </p>
