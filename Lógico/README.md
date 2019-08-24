@@ -21,8 +21,8 @@ userprofile ( <ins>login</ins>, passw, passhash, visibility, bio, realname )
 Essa tabela representa o auto relacionamento n:n entre usuarios.
 
 userrel ( <ins>srcuser</ins>, <ins>tgtuser</ins>, datestamp, status ) 
-   \n srcuser referencia userprofile 
-   \n tgtuser referencia userprofile
+   <\n> srcuser referencia userprofile 
+   <\n> tgtuser referencia userprofile
 
 ### Post
 Essa tabela representa a entidade postagem e o relacionamento 1:1 entre postagem e perfil(e por consequencia usuario).
