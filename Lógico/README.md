@@ -23,8 +23,7 @@ Essa tabela representa o auto relacionamento n:n entre usuarios.
 
 userrel ( <ins>srcuser</ins>, <ins>tgtuser</ins>, datestamp, status )
 
-   srcuser referencia userprofile
-   
+   srcuser referencia userprofile 
    tgtuser referencia userprofile
 
 ### Post
@@ -47,7 +46,6 @@ Essa tabela representa a entidade topico e o relacionamento de topico com coment
 topic ( <ins>tname</ins>, datestamp, pauthor, pdate, cauthor, cpauthor, cpdate, cdate )
 
    (pauthor, pdate) referencia post
-   
    (cauthor, cpauthor, cpdate, cdate) referencia commnt
 
 ### TagPostUser
@@ -56,7 +54,6 @@ Essa tabela representa o relacionamento de marcação entre postagem e usuario.
 tagpostuser ( <ins>pauthor</ins>, <ins>pdate</ins>, <ins>taguser</ins> )
 
    (pauthor, pdate) referencia post 
-   
    taguser referencia userprofile
 
 ### TagCommntUser
@@ -64,6 +61,5 @@ Essa tabela representa o relacionamneto de marcação entre comentario e usuario
 tagcommntuser ( <ins>cauthor</ins>, <ins>cdate</ins>, <ins>cpauthor</ins>, <ins>cpdate</ins>, <ins>taguser</ins> )
 
    (cauthor, cpauthor, cpdate, cdate) referencia commnt
-   
    taguser referencia userprofile
 
