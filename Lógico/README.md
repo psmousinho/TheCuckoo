@@ -1,0 +1,3 @@
+# Modelo Lógico TheCuckoo
+
+WIP
