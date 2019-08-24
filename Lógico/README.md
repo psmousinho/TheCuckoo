@@ -11,17 +11,11 @@ Esta pasta contém o projeto logico o banco de dados de uma rede social (TheCuck
  </p>
  Mais esclarecimento em https://raw.githubusercontent.com/psmousinho/TheCuckoo/master/Conceitual/
  
-##Tabelas Criadas
+## Tabelas Criadas
 ### UserProfile
 Essa tabela engloba as entidades Usuario e Perfil posi essas entidades estao ralacionados com cardinalidade 1:1.
-'''CREATE TABLE public.userprofile (
-    login character varying(31) NOT NULL,
-    passw character varying(255) NOT NULL,
-    passhash character varying(255) DEFAULT '-1'::character varying,
-    visibility boolean DEFAULT false NOT NULL,
-    bio character varying(4095) DEFAULT 'Hello i am new to /cuckoo!!'::character varying NOT NULL,
-    realname character varying(255) NOT NULL
-);'''
+userprofile (<ins>login</ins>, passw, passhash, visibility, bio, realname)
+
 
 ### UserRel
 Essa tabela representa o auto relacionamento n:n entre usuarios.
