@@ -14,66 +14,40 @@ Esta pasta contém o projeto logico o banco de dados de uma rede social (TheCuck
 ## Tabelas Criadas
 ### UserProfile
 Essa tabela engloba as entidades Usuario e Perfil posi essas entidades estao ralacionados com cardinalidade 1:1.
-userprofile (<ins>login</ins>, passw, passhash, visibility, bio, realname)
+userprofile ( <ins>login</ins>, passw, passhash, visibility, bio, realname )
 
 
 ### UserRel
 Essa tabela representa o auto relacionamento n:n entre usuarios.
-'''CREATE TABLE public.userrel (
-    srcuser character varying(31) NOT NULL,
-    tgtuser character varying(31) NOT NULL,
-    datestamp timestamp without time zone NOT NULL,
-    status smallint NOT NULL
-);'''
+userrel ( <ins>srcuser</ins>, <ins>tgtuser</ins>, datestamp, status )
+   srcuser referencia userprofile
+   tgtuser referencia userprofile
 
 ### Post
 Essa tabela representa a entidade postagem e o relacionamento 1:1 entre postagem e perfil(e por consequencia usuario).
-'''CREATE TABLE public.post (
-    author character varying(31) NOT NULL,
-    datestamp timestamp without time zone NOT NULL,
-    ptext character varying(255) NOT NULL,
-    foto character varying(1023)
-);'''
+post ( <ins>author</ins>, <ins>datestamp</ins>, ptext, foto )
+   author referencia userprofile
 
 ### Commnt
 Essa tabela representa a entidade comentario e o relacionamento 1:1 entre comentario e postagem e o relacionamneto 1:1 entre comentario e usuario.
-'''CREATE TABLE public.commnt (
-    author character varying(31) NOT NULL,
-    pauthor character varying(31) NOT NULL,
-    pdate timestamp without time zone NOT NULL,
-    datestamp timestamp without time zone NOT NULL,
-    ctext character varying(255)
-);'''
-
+commnt ( <ins>author</ins>, <ins>pauthor</ins>, <ins>pdate</ins>, <ins>datestamp</ins>, ctext )
+   (pauthor, pdate) referencia post
+ 
 ### Topic
 Essa tabela representa a entidade topico e o relacionamento de topico com comentario e o relacionamento de topico com postagem.
-'''CREATE TABLE public.topic (
-    tname character varying(31) NOT NULL,
-    datestamp timestamp without time zone,
-    pauthor character varying(31),
-    pdate timestamp without time zone,
-    cauthor character varying(31),
-    cpauthor character varying(31),
-    cpdate timestamp without time zone,
-    cdate timestamp without time zone
-);'''
+topic ( <ins>tname</ins>, datestamp, pauthor, pdate, cauthor, cpauthor, cpdate, cdate )
+   (pauthor, pdate) referencia post
+   (cauthor, cpauthor, cpdate, cdate) referencia commnt
 
 ### TagPostUser
 Essa tabela representa o relacionamento de marcação entre postagem e usuario.
-'''CREATE TABLE public.tagpostuser (
-    pauthor character varying(31) NOT NULL,
-    pdate timestamp without time zone NOT NULL,
-    taguser character varying(31) NOT NULL
-);'''
+tagpostuser ( <ins>pauthor</ins>, <ins>pdate</ins>, <ins>taguser</ins> )
+   (pauthor, pdate) referencia post 
+   taguser referencia userprofile
 
 ### TagCommntUser
 Essa tabela representa o relacionamneto de marcação entre comentario e usuario.
-'''CREATE TABLE public.tagcommntuser (
-    cauthor character varying(31) NOT NULL,
-    cdate timestamp without time zone NOT NULL,
-    cpauthor character varying(31),
-    cpdate timestamp without time zone,
-    taguser character varying(31) NOT NULL
-);'''
-
+tagcommntuser ( <ins>cauthor</ins>, <ins>cdate</ins>, <ins>cpauthor</ins>, <ins>cpdate</ins>, <ins>taguser</ins> )
+   (cauthor, cpauthor, cpdate, cdate) referencia commnt
+   taguser referencia userprofile
 
