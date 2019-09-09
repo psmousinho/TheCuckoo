@@ -3,13 +3,6 @@ package view;
 import entity.User;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 public class Home extends JPanel {
@@ -27,9 +20,11 @@ public class Home extends JPanel {
     public Home(User user) {
         initComponents();
         this.user = user;
-        /*contentPanel.add(new PorfilePanel(), "profile");
+        contentPanel.add(new ProfilePanel(), "profile");
         contentPanel.add(new NotificationsPanel(), "notifications");
-        cotentPanel.add(new TimeLinePanel(), "timeline");*/
+        contentPanel.add(new TimeLinePanel(), "timeline");
+        changeScreen(State.TIME_LINE);
+        
     }
 
     /**
