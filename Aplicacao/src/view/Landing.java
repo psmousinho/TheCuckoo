@@ -142,7 +142,7 @@ public class Landing extends JPanel {
         bottomPanel.add(btSignIn);
 
         bottomMessageLabel.setBackground(Main.TEAL);
-        bottomMessageLabel.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        bottomMessageLabel.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
         bottomMessageLabel.setForeground(Color.WHITE);
         bottomMessageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         bottomMessageLabel.setText("©2019 Cuculidae Developments Incorporated");

@@ -1,6 +1,6 @@
 package view;
 
-import entity.User;
+import entity.UserProfile;
 import java.awt.Color;
 import java.awt.Font;
 import java.sql.Connection;
@@ -174,7 +174,7 @@ public class Register extends JPanel {
 
     private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
         String name = nameTextField.getText(), userName = userNameTextField.getText(), password = new String(passwordField.getPassword());
-        if(User.validateUsername(userName)) {
+        if(UserProfile.validateUsername(userName)) {
             if(!usernameInUse(userName)) {
                 if(!name.trim().equals("") && !userName.trim().equals("") && password.length() > 0) {
                     try {

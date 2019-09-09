@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class UserProfile {
     private String realName;
-    private String login;
+    private final String login;
     private String biography;
     private boolean visibility;
     
@@ -30,5 +30,33 @@ public class UserProfile {
         Pattern pattern = Pattern.compile(username_regex);
         Matcher matcher = pattern.matcher(username);
         return matcher.matches();
+    }
+    
+    public String getName() {
+        return realName;
+    }
+    
+    public void setName(String newName) {
+        realName = newName;
+    }
+    
+    public String getUsername() {
+        return login;
+    }
+    
+    public String getBio() {
+        return biography;
+    }
+    
+    public void setBio(String newBio) {
+        biography = newBio;
+    }
+    
+    public boolean getVisibility() {
+        return visibility;
+    }
+    
+    public void setVisibility(boolean newVisibility) {
+        visibility = newVisibility;
     }
 }

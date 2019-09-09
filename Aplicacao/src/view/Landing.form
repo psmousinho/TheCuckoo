@@ -166,8 +166,8 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
         <Property name="columns" type="int" value="1"/>
-        <Property name="verticalGap" type="int" value="12"/>
         <Property name="rows" type="int" value="0"/>
+        <Property name="verticalGap" type="int" value="12"/>
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JLabel" name="userNameLabel">
@@ -239,7 +239,7 @@
               <Connection code="Main.TEAL" type="code"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Lucida Grande" size="18" style="0"/>
+              <Font name="Lucida Grande" size="14" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="Color.WHITE" type="code"/>

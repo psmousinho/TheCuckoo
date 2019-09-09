@@ -1,6 +1,6 @@
 package view;
 
-import entity.User;
+import entity.UserProfile;
 import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.JPanel;
@@ -14,10 +14,10 @@ public class Home extends JPanel {
         TIME_LINE, PROFILE, NOTIFICATIONS;
     }
 
-    private User user;
+    private UserProfile user;
     private State state;
 
-    public Home(User user) {
+    public Home(UserProfile user) {
         initComponents();
         this.user = user;
         contentPanel.add(new ProfilePanel(), "profile");
