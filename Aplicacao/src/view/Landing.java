@@ -1,6 +1,13 @@
 package view;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 public class Landing extends JPanel {
@@ -32,7 +39,9 @@ public class Landing extends JPanel {
         userNameTextField = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
         passwordField = new javax.swing.JPasswordField();
+        emptyLabel = new javax.swing.JLabel();
         btSignIn = new javax.swing.JButton();
+        bottomMessageLabel = new javax.swing.JLabel();
 
         setBackground(Main.TEAL);
 
@@ -48,7 +57,6 @@ public class Landing extends JPanel {
         logoLabel.setMaximumSize(new java.awt.Dimension(48, 48));
         logoLabel.setMinimumSize(new java.awt.Dimension(48, 48));
         logoLabel.setPreferredSize(new java.awt.Dimension(48, 48));
-        logoLabel.setSize(new java.awt.Dimension(48, 48));
         leftPanel.add(logoLabel);
 
         titleLabel.setBackground(Color.WHITE);
@@ -119,6 +127,7 @@ public class Landing extends JPanel {
 
         passwordField.setForeground(Main.TEAL);
         bottomPanel.add(passwordField);
+        bottomPanel.add(emptyLabel);
 
         btSignIn.setBackground(Color.WHITE);
         btSignIn.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
@@ -130,6 +139,14 @@ public class Landing extends JPanel {
             }
         });
         bottomPanel.add(btSignIn);
+
+        bottomMessageLabel.setBackground(Main.TEAL);
+        bottomMessageLabel.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        bottomMessageLabel.setForeground(Color.WHITE);
+        bottomMessageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        bottomMessageLabel.setText("©2019 Cuculidae Developments Incorporated");
+        bottomMessageLabel.setOpaque(true);
+        bottomPanel.add(bottomMessageLabel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -148,7 +165,27 @@ public class Landing extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btSignInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignInActionPerformed
-        // TODO add your handling code here:
+        String userName = userNameTextField.getText(), password = new String(passwordField.getPassword());
+        try {
+            Connection con = null;
+            Class.forName("org.postgresql.Driver");
+            con = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+            String st = String.format("select * from userprofile where login = '%s' and passw = '%s'", userName, password);
+            System.out.println(st);
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery(st);
+            boolean valid = result.next();
+            if(valid) {
+                showMessage("Login sucessful", Main.TEAL);
+            } else {
+                showMessage("Incorrect username and/or password", Main.ORANGE);
+            }
+            result.close();
+            stmt.close();
+            con.close();
+        } catch (ClassNotFoundException | SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btSignInActionPerformed
 
     private void btSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignUpActionPerformed
@@ -156,11 +193,17 @@ public class Landing extends JPanel {
         getParent().remove(this);
     }//GEN-LAST:event_btSignUpActionPerformed
 
-
+    private void showMessage(String message, Color background) {
+        bottomMessageLabel.setText(message);
+        bottomMessageLabel.setBackground(background);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bottomMessageLabel;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JButton btSignIn;
     private javax.swing.JButton btSignUp;
+    private javax.swing.JLabel emptyLabel;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPasswordField passwordField;

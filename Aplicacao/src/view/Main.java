@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -16,9 +15,12 @@ public class Main extends JFrame {
     public static final Dimension DIMENSION = new Dimension(380, 450);
     public static final Color PURPLE = new Color(175, 82, 222);
     public static final Color TEAL = new Color(100, 210, 255);
+    public static final Color ORANGE = new Color(255, 149, 0);
+    
     public static final String DB_URL = "jdbc:postgresql://localhost:5432/cuckoo";
     public static final String DB_USER = "postgres";
     public static final String DB_PASSWORD = "";
+    
     private JPanel contentPanel;
     
     public Main() {

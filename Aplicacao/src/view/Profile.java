@@ -1,8 +1,6 @@
 package view;
 
-import entity.User;
 import java.awt.Color;
-import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,17 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
-public class Register extends JPanel {
+public class Profile extends JPanel {
 
     /**
      * Creates new form Init
      */
-    public Register() {
+    public Profile() {
         initComponents();
     }
 
@@ -36,20 +31,19 @@ public class Register extends JPanel {
         topPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
-        titleLabel = new javax.swing.JLabel();
+        btSignIn = new javax.swing.JButton();
+        btSignIn1 = new javax.swing.JButton();
         rightPanel = new javax.swing.JPanel();
-        btReturn = new javax.swing.JButton();
+        btSignUp = new javax.swing.JButton();
         bottomPanel = new javax.swing.JPanel();
-        nameLabel = new javax.swing.JLabel();
-        nameTextField = new javax.swing.JTextField();
         userNameLabel = new javax.swing.JLabel();
         userNameTextField = new javax.swing.JTextField();
         passwordLabel = new javax.swing.JLabel();
         passwordField = new javax.swing.JPasswordField();
-        btRegister = new javax.swing.JButton();
+        emptyLabel = new javax.swing.JLabel();
+        bottomMessageLabel = new javax.swing.JLabel();
 
         setBackground(Main.TEAL);
-        setPreferredSize(new java.awt.Dimension(404, 252));
 
         topPanel.setBackground(Main.PURPLE);
         topPanel.setMinimumSize(new java.awt.Dimension(100, 48));
@@ -63,24 +57,39 @@ public class Register extends JPanel {
         logoLabel.setMaximumSize(new java.awt.Dimension(48, 48));
         logoLabel.setMinimumSize(new java.awt.Dimension(48, 48));
         logoLabel.setPreferredSize(new java.awt.Dimension(48, 48));
-        logoLabel.setSize(new java.awt.Dimension(48, 48));
         leftPanel.add(logoLabel);
 
-        titleLabel.setBackground(Color.WHITE);
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setText("Join The Cuckoo");
-        titleLabel.setPreferredSize(new java.awt.Dimension(120, 48));
-        leftPanel.add(titleLabel);
+        btSignIn.setBackground(Color.WHITE);
+        btSignIn.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        btSignIn.setForeground(Main.TEAL);
+        btSignIn.setText("Sign In");
+        btSignIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSignInActionPerformed(evt);
+            }
+        });
+        leftPanel.add(btSignIn);
+
+        btSignIn1.setBackground(Color.WHITE);
+        btSignIn1.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        btSignIn1.setForeground(Main.TEAL);
+        btSignIn1.setText("Sign In");
+        btSignIn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSignIn1ActionPerformed(evt);
+            }
+        });
+        leftPanel.add(btSignIn1);
 
         rightPanel.setBackground(Main.PURPLE);
 
-        btReturn.setBackground(Color.WHITE);
-        btReturn.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        btReturn.setForeground(Main.PURPLE);
-        btReturn.setText("Return");
-        btReturn.addActionListener(new java.awt.event.ActionListener() {
+        btSignUp.setBackground(Color.WHITE);
+        btSignUp.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
+        btSignUp.setForeground(Main.PURPLE);
+        btSignUp.setText("Sign Up");
+        btSignUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btReturnActionPerformed(evt);
+                btSignUpActionPerformed(evt);
             }
         });
 
@@ -88,11 +97,11 @@ public class Register extends JPanel {
         rightPanel.setLayout(rightPanelLayout);
         rightPanelLayout.setHorizontalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btReturn, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+            .addComponent(btSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btReturn, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+            .addComponent(btSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
@@ -115,21 +124,11 @@ public class Register extends JPanel {
         bottomPanel.setBackground(Main.TEAL);
         bottomPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 12));
 
-        nameLabel.setBackground(Color.WHITE);
-        nameLabel.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        nameLabel.setForeground(Color.WHITE);
-        nameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        nameLabel.setText("Insert your name");
-        bottomPanel.add(nameLabel);
-
-        nameTextField.setForeground(Main.TEAL);
-        bottomPanel.add(nameTextField);
-
         userNameLabel.setBackground(Color.WHITE);
         userNameLabel.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
         userNameLabel.setForeground(Color.WHITE);
         userNameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        userNameLabel.setText("Your profile username");
+        userNameLabel.setText("Username");
         bottomPanel.add(userNameLabel);
 
         userNameTextField.setForeground(Main.TEAL);
@@ -139,22 +138,20 @@ public class Register extends JPanel {
         passwordLabel.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
         passwordLabel.setForeground(Color.WHITE);
         passwordLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        passwordLabel.setText("and a password for login");
+        passwordLabel.setText("Password");
         bottomPanel.add(passwordLabel);
 
         passwordField.setForeground(Main.TEAL);
         bottomPanel.add(passwordField);
+        bottomPanel.add(emptyLabel);
 
-        btRegister.setBackground(Color.WHITE);
-        btRegister.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        btRegister.setForeground(Main.TEAL);
-        btRegister.setText("Register");
-        btRegister.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btRegisterActionPerformed(evt);
-            }
-        });
-        bottomPanel.add(btRegister);
+        bottomMessageLabel.setBackground(Main.TEAL);
+        bottomMessageLabel.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        bottomMessageLabel.setForeground(Color.WHITE);
+        bottomMessageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        bottomMessageLabel.setText("©2019 Cuculidae Developments Incorporated");
+        bottomMessageLabel.setOpaque(true);
+        bottomPanel.add(bottomMessageLabel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -168,77 +165,60 @@ public class Register extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRegisterActionPerformed
-        String name = nameTextField.getText(), userName = userNameTextField.getText(), password = new String(passwordField.getPassword());
-        if(User.validateUsername(userName)) {
-            if(!usernameInUse(userName)) {
-                if(!name.trim().equals("") && !userName.trim().equals("") && password.length() > 0) {
-                    try {
-                        Main.executeUpdate("insert into userprofile (login,passw,realname) values (?,?,?)", userName, password, name);
-                        showMessage(String.format("Welcome to The Cuckoo %s!", name));
-                    } catch (Exception ex) {               
-                        JOptionPane.showMessageDialog(this, ex.getMessage() , "ERROR", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            } else {
-                showMessage(String.format("The username %s\nis already in use...", userName));
-            }
-        } else {
-            showMessage(String.format("The username %s\nis cannot be used...", userName));
-        }
-    }//GEN-LAST:event_btRegisterActionPerformed
-
-    private void btReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btReturnActionPerformed
-        getParent().add(new Landing());
+    private void btSignUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignUpActionPerformed
+        getParent().add(new Register());
         getParent().remove(this);
-    }//GEN-LAST:event_btReturnActionPerformed
+    }//GEN-LAST:event_btSignUpActionPerformed
 
-    private boolean usernameInUse(String userName) {
+    private void btSignInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignInActionPerformed
+        String userName = userNameTextField.getText(), password = new String(passwordField.getPassword());
         try {
             Connection con = null;
             Class.forName("org.postgresql.Driver");
             con = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
-            String st = String.format("select * from userprofile where login = '%s'", userName);
+            String st = String.format("select * from userprofile where login = '%s' and passw = '%s'", userName, password);
+            System.out.println(st);
             Statement stmt = con.createStatement();
             ResultSet result = stmt.executeQuery(st);
             boolean valid = result.next();
+            if(valid) {
+                showMessage("Login sucessful", Main.TEAL);
+            } else {
+                showMessage("Incorrect username and/or password", Main.ORANGE);
+            }
             result.close();
             stmt.close();
             con.close();
-            return valid;
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
-    }
-    
-    private void showMessage(String message) {
-        bottomPanel.removeAll();
-        JLabel welcomeLabel = new JLabel();
-        welcomeLabel.setText("<html><div WIDTH="+getWidth()+"><div align = 'center'>" + message + "</html>");
-        welcomeLabel.setFont(new Font("Lucida Grande", 0, 24));
-        welcomeLabel.setForeground(Color.WHITE);
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        bottomPanel.add(welcomeLabel);
-        bottomPanel.revalidate();
+    }//GEN-LAST:event_btSignInActionPerformed
+
+    private void btSignIn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignIn1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btSignIn1ActionPerformed
+
+    private void showMessage(String message, Color background) {
+        bottomMessageLabel.setText(message);
+        bottomMessageLabel.setBackground(background);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bottomMessageLabel;
     private javax.swing.JPanel bottomPanel;
-    private javax.swing.JButton btRegister;
-    private javax.swing.JButton btReturn;
+    private javax.swing.JButton btSignIn;
+    private javax.swing.JButton btSignIn1;
+    private javax.swing.JButton btSignUp;
+    private javax.swing.JLabel emptyLabel;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel logoLabel;
-    private javax.swing.JLabel nameLabel;
-    private javax.swing.JTextField nameTextField;
     private javax.swing.JPasswordField passwordField;
     private javax.swing.JLabel passwordLabel;
     private javax.swing.JPanel rightPanel;
-    private javax.swing.JLabel titleLabel;
     private javax.swing.JPanel topPanel;
     private javax.swing.JLabel userNameLabel;
     private javax.swing.JTextField userNameTextField;
