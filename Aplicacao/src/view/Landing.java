@@ -1,5 +1,6 @@
 package view;
 
+import entity.UserProfile;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -174,9 +175,9 @@ public class Landing extends JPanel {
             System.out.println(st);
             Statement stmt = con.createStatement();
             ResultSet result = stmt.executeQuery(st);
-            boolean valid = result.next();
-            if(valid) {
+            if(result.next()) {
                 showMessage("Login sucessful", Main.TEAL);
+                UserProfile user = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), result.getBoolean("visibility"));
             } else {
                 showMessage("Incorrect username and/or password", Main.ORANGE);
             }
