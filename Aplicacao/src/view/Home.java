@@ -1,5 +1,6 @@
 package view;
 
+import entity.DBConection;
 import entity.UserProfile;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -14,15 +15,27 @@ public class Home extends JPanel {
         TIME_LINE, PROFILE, NOTIFICATIONS;
     }
 
-    private UserProfile user;
+    private final UserProfile user;
+    private final DBConection conection;
     private State state;
-
-    public Home(UserProfile user) {
+    
+    private final ProfilePanel profile;
+    private final NotificationsPanel notifications;
+    private final TimeLinePanel timeline;
+    
+    public Home(UserProfile user, DBConection conection) {
         initComponents();
         this.user = user;
-        contentPanel.add(new ProfilePanel(), "profile");
-        contentPanel.add(new NotificationsPanel(), "notifications");
-        contentPanel.add(new TimeLinePanel(), "timeline");
+        this.conection = conection;
+        
+        this.profile = new ProfilePanel(this.user, this.conection);
+        this.notifications = new NotificationsPanel(this.user, this.conection);
+        this.timeline = new TimeLinePanel(this.user,this.conection);
+                
+        contentPanel.add(profile, "profile");
+        contentPanel.add(notifications, "notifications");
+        contentPanel.add(timeline, "timeline");
+        
         changeScreen(State.TIME_LINE);
         
     }
@@ -93,7 +106,7 @@ public class Home extends JPanel {
         rightPanel.setLayout(rightPanelLayout);
         rightPanelLayout.setHorizontalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btSignOut, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+            .addComponent(btSignOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,7 +118,7 @@ public class Home extends JPanel {
         topPanelLayout.setHorizontalGroup(
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
-                .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -132,13 +145,12 @@ public class Home extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE))
+                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 396, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btSignOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignOutActionPerformed
-        getParent().add(new Register());
-        getParent().remove(this);
+        
     }//GEN-LAST:event_btSignOutActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
@@ -174,16 +186,19 @@ public class Home extends JPanel {
         switch (newState) {
             case TIME_LINE:
                 cl.show(contentPanel, "timeline");
+                timeline.updateCuckoos();
                 btn1.setText("Profile");
                 btn2.setText("Notifications");
                 break;
             case PROFILE:
                 cl.show(contentPanel, "profile");
+                profile.updateCuckoos();
                 btn1.setText("TimeLine");
                 btn2.setText("Notifications");
                 break;
             case NOTIFICATIONS:
                 cl.show(contentPanel, "notifications");
+                notifications.updateNotifications();
                 btn1.setText("Profile");
                 btn2.setText("TimeLine");
                 break;

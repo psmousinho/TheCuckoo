@@ -30,7 +30,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="topPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="contentPanel" pref="390" max="32767" attributes="0"/>
+              <Component id="contentPanel" pref="396" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -50,7 +50,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="leftPanel" pref="289" max="32767" attributes="0"/>
+                  <Component id="leftPanel" pref="267" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="rightPanel" max="-2" attributes="0"/>
               </Group>
@@ -128,7 +128,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btSignOut" alignment="0" pref="109" max="32767" attributes="0"/>
+                  <Component id="btSignOut" alignment="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
