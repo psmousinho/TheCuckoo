@@ -59,7 +59,7 @@
                               <Component id="userName" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="editProfile" min="-2" max="-2" attributes="0"/>
+                          <Component id="btAction" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -82,7 +82,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="userName" min="-2" pref="15" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="editProfile" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btAction" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="85" max="-2" attributes="0"/>
@@ -131,15 +131,18 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="editProfile">
+        <Component class="javax.swing.JButton" name="btAction">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="&quot;Edit&quot;" type="code"/>
+            </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editProfileActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btActionActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="editProfile.setVisible(this.belong);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="}else if(!this.user.isPrivate()) {&#xa; btAction.setText(&quot;Fallow&quot;);&#xa;} else {&#xa;btAction.setText(&quot;Private&quot;);&#xa;btAction.setEnabled(false);&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="if(belong){"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="nFollowers">

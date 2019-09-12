@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
  * @author aluno
  */
 public class UserProfile {
+    public static UserProfile CURRENT_USER;
+    
     private String realName;
     private final String login;
     private String biography;
@@ -56,11 +58,11 @@ public class UserProfile {
         biography = newBio;
     }
     
-    public boolean getVisibility() {
+    public boolean isPrivate() {
         return visibility;
     }
     
-    public void setVisibility(boolean newVisibility) {
+    public void setPrivate(boolean newVisibility) {
         visibility = newVisibility;
     }
 

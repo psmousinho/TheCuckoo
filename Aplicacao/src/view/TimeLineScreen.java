@@ -66,9 +66,9 @@ public class TimeLineScreen extends javax.swing.JPanel {
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while(result.next()) {
-                stmt = con.prepareStatement("SELECT * from userprofile login = " + result.getString("author") + ";");
-                System.out.println(result.getString("author"));
+                stmt = con.prepareStatement("SELECT * from userprofile where login = '" + result.getString("author") + "';");
                 ResultSet result2 = stmt.executeQuery();
+                result2.next();
                 UserProfile author = new UserProfile(result2.getString("realname") ,result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"));
                 Post post = new Post(author, result.getString("datestamp"),result.getString("ptext"),result.getString("foto"));
                 cont.add(new Cuckoo(post));

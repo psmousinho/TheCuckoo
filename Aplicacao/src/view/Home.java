@@ -22,6 +22,7 @@ public class Home extends JPanel {
     private final NotificationsScreen notifications;
     private final TimeLineScreen timeline;
     private final SearchScreen search;
+    private JPanel temporary;
     
     public Home(UserProfile user) {
         initComponents();
@@ -30,8 +31,9 @@ public class Home extends JPanel {
         this.profile = new ProfileScreen(this.user, true);
         this.notifications = new NotificationsScreen(this.user);
         this.timeline = new TimeLineScreen(this.user);
-        this.search = new SearchScreen(this.user);
-                
+        this.search = new SearchScreen(this.user, this);
+        this.temporary = new JPanel();
+        
         contentPanel.add(profile, "profile");
         contentPanel.add(notifications, "notifications");
         contentPanel.add(timeline, "timeline");
@@ -239,6 +241,14 @@ public class Home extends JPanel {
                 btn1.setText("Profile");
                 btn2.setText("Timeline");
         }
+    }
+    
+    public void changeScreenTemporary(JPanel target){
+        contentPanel.remove(temporary);
+        temporary = target;
+        contentPanel.add(temporary,"temporary");
+        CardLayout cl = (CardLayout) contentPanel.getLayout();
+        cl.show(contentPanel, "temporary");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
