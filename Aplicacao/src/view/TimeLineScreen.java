@@ -7,7 +7,16 @@ package view;
 
 import entity.Post;
 import entity.UserProfile;
+import java.awt.Container;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BoxLayout;
+import util.DBConnection;
 
 /**
  *
@@ -16,7 +25,6 @@ import java.util.ArrayList;
 public class TimeLineScreen extends javax.swing.JPanel {
 
     private UserProfile user;
-    private ArrayList<Post> cuckoos;
     
     /**
      * Creates new form TimeLinePanel
@@ -24,7 +32,6 @@ public class TimeLineScreen extends javax.swing.JPanel {
     public TimeLineScreen(UserProfile user) {
         initComponents();
         this.user = user;
-        updateCuckoos();
     }
 
     /**
@@ -36,46 +43,46 @@ public class TimeLineScreen extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        contentPanel = new javax.swing.JPanel();
-
-        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
-        contentPanel.setLayout(contentPanelLayout);
-        contentPanelLayout.setHorizontalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 378, Short.MAX_VALUE)
-        );
-        contentPanelLayout.setVerticalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(contentPanel);
+        cuckoos = new javax.swing.JScrollPane();
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(cuckoos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(cuckoos, javax.swing.GroupLayout.Alignment.TRAILING)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     public void updateCuckoos(){
-        cuckoos = new ArrayList<>();
         
-        //query dos cuckoos dos usuarios que o user segue
-        
-        for(Post post : cuckoos) {
-            contentPanel.add(new Cuckoo(post));
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement("SELECT * from post inner join userrel on post.author = userrel.tgtuser WHERE srcuser = '" + user.getUsername() + "' and status = 1 order by post.datestamp;");
+            ResultSet result = stmt.executeQuery();
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            while(result.next()) {
+                stmt = con.prepareStatement("SELECT * from userprofile login = " + result.getString("author") + ";");
+                System.out.println(result.getString("author"));
+                ResultSet result2 = stmt.executeQuery();
+                UserProfile author = new UserProfile(result2.getString("realname") ,result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"));
+                Post post = new Post(author, result.getString("datestamp"),result.getString("ptext"),result.getString("foto"));
+                cont.add(new Cuckoo(post));
+            }
+            cont.revalidate();
+            cuckoos.getViewport().setView(cont);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel contentPanel;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane cuckoos;
     // End of variables declaration//GEN-END:variables
 }

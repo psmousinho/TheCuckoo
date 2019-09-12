@@ -27,7 +27,7 @@ public class Home extends JPanel {
         initComponents();
         this.user = user;
         
-        this.profile = new ProfileScreen(this.user);
+        this.profile = new ProfileScreen(this.user, true);
         this.notifications = new NotificationsScreen(this.user);
         this.timeline = new TimeLineScreen(this.user);
         this.search = new SearchScreen(this.user);
@@ -141,7 +141,7 @@ public class Home extends JPanel {
         topPanelLayout.setHorizontalGroup(
             topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(topPanelLayout.createSequentialGroup()
-                .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rightPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

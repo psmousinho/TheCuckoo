@@ -1,27 +1,31 @@
 package view;
 
 import entity.*;
+import java.awt.Container;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import util.DBConnection;
 
 public class ProfileScreen extends javax.swing.JPanel {
 
     private UserProfile user;
+    private boolean belong;
     private ArrayList<Post> cuckoos;
 
     /**
      * Creates new form ProfilePanel
      */
-    public ProfileScreen(UserProfile user) {
+    public ProfileScreen(UserProfile user, boolean belong) {
         this.user = user;
+        this.belong = belong;
         initComponents();
 
-        updateCuckoos();
     }
 
     /**
@@ -41,7 +45,7 @@ public class ProfileScreen extends javax.swing.JPanel {
         editProfile = new javax.swing.JButton();
         nFollowers = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        myCuckoos = new javax.swing.JPanel();
+        myCuckoos = new javax.swing.JScrollPane();
 
         setBackground(new java.awt.Color(100, 210, 255));
 
@@ -65,6 +69,7 @@ public class ProfileScreen extends javax.swing.JPanel {
                 editProfileActionPerformed(evt);
             }
         });
+        editProfile.setVisible(this.belong);
 
         nFollowers.setText("Followers: " + this.user.getNumberFollowers());
 
@@ -111,34 +116,19 @@ public class ProfileScreen extends javax.swing.JPanel {
                     .addComponent(jLabel2)))
         );
 
-        javax.swing.GroupLayout myCuckoosLayout = new javax.swing.GroupLayout(myCuckoos);
-        myCuckoos.setLayout(myCuckoosLayout);
-        myCuckoosLayout.setHorizontalGroup(
-            myCuckoosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        myCuckoosLayout.setVerticalGroup(
-            myCuckoosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 285, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(TopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(myCuckoos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(myCuckoos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(TopPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(myCuckoos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(myCuckoos, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -168,11 +158,21 @@ public class ProfileScreen extends javax.swing.JPanel {
     }//GEN-LAST:event_editProfileActionPerformed
 
     public void updateCuckoos() {
-        cuckoos = new ArrayList<>();
-
-        //query dos cuckoos do usuario
-        for (Post post : cuckoos) {
-            myCuckoos.add(new Cuckoo(post));
+       try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement("SELECT * from post WHERE author = '" + user.getUsername() + "'order by datestamp desc;");
+            ResultSet result = stmt.executeQuery();
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            while(result.next()) {
+                Post post = new Post(this.user, result.getString("datestamp"),result.getString("ptext"),result.getString("foto"));
+                cont.add(new Cuckoo(post));
+            }
+            cont.revalidate();
+            myCuckoos.getViewport().setView(cont);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -182,7 +182,7 @@ public class ProfileScreen extends javax.swing.JPanel {
     private javax.swing.JButton editProfile;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPanel myCuckoos;
+    private javax.swing.JScrollPane myCuckoos;
     private javax.swing.JLabel nFollowers;
     private javax.swing.JLabel realName;
     private javax.swing.JLabel userName;
