@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import util.Constants;
 import util.DBConnection;
 
 public class Register extends JPanel {
@@ -41,13 +42,13 @@ public class Register extends JPanel {
         passwordField = new javax.swing.JPasswordField();
         btRegister = new javax.swing.JButton();
 
-        setBackground(Main.TEAL);
+        setBackground(Constants.TEAL);
         setPreferredSize(new java.awt.Dimension(404, 252));
 
-        topPanel.setBackground(Main.PURPLE);
+        topPanel.setBackground(Constants.PURPLE);
         topPanel.setMinimumSize(new java.awt.Dimension(100, 48));
 
-        leftPanel.setBackground(Main.PURPLE);
+        leftPanel.setBackground(Constants.PURPLE);
         leftPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
 
         logoLabel.setBackground(Color.WHITE);
@@ -64,11 +65,11 @@ public class Register extends JPanel {
         titleLabel.setPreferredSize(new java.awt.Dimension(120, 48));
         leftPanel.add(titleLabel);
 
-        rightPanel.setBackground(Main.PURPLE);
+        rightPanel.setBackground(Constants.PURPLE);
 
         btReturn.setBackground(Color.WHITE);
         btReturn.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        btReturn.setForeground(Main.PURPLE);
+        btReturn.setForeground(Constants.PURPLE);
         btReturn.setText("Return");
         btReturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,7 +105,7 @@ public class Register extends JPanel {
             .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        bottomPanel.setBackground(Main.TEAL);
+        bottomPanel.setBackground(Constants.TEAL);
         bottomPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 12));
 
         nameLabel.setBackground(Color.WHITE);
@@ -114,7 +115,7 @@ public class Register extends JPanel {
         nameLabel.setText("Insert your name");
         bottomPanel.add(nameLabel);
 
-        nameTextField.setForeground(Main.TEAL);
+        nameTextField.setForeground(Constants.TEAL);
         bottomPanel.add(nameTextField);
 
         userNameLabel.setBackground(Color.WHITE);
@@ -124,7 +125,7 @@ public class Register extends JPanel {
         userNameLabel.setText("Your profile username");
         bottomPanel.add(userNameLabel);
 
-        userNameTextField.setForeground(Main.TEAL);
+        userNameTextField.setForeground(Constants.TEAL);
         bottomPanel.add(userNameTextField);
 
         passwordLabel.setBackground(Color.WHITE);
@@ -134,12 +135,12 @@ public class Register extends JPanel {
         passwordLabel.setText("and a password for login");
         bottomPanel.add(passwordLabel);
 
-        passwordField.setForeground(Main.TEAL);
+        passwordField.setForeground(Constants.TEAL);
         bottomPanel.add(passwordField);
 
         btRegister.setBackground(Color.WHITE);
         btRegister.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        btRegister.setForeground(Main.TEAL);
+        btRegister.setForeground(Constants.TEAL);
         btRegister.setText("Register");
         btRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import util.Constants;
 
 public class Landing extends JPanel {
 
@@ -36,12 +37,12 @@ public class Landing extends JPanel {
         btSignIn = new javax.swing.JButton();
         bottomMessageLabel = new javax.swing.JLabel();
 
-        setBackground(Main.TEAL);
+        setBackground(Constants.TEAL);
 
-        topPanel.setBackground(Main.PURPLE);
+        topPanel.setBackground(Constants.PURPLE);
         topPanel.setMinimumSize(new java.awt.Dimension(100, 48));
 
-        leftPanel.setBackground(Main.PURPLE);
+        leftPanel.setBackground(Constants.PURPLE);
         leftPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
 
         logoLabel.setBackground(Color.WHITE);
@@ -58,11 +59,11 @@ public class Landing extends JPanel {
         titleLabel.setPreferredSize(new java.awt.Dimension(120, 48));
         leftPanel.add(titleLabel);
 
-        rightPanel.setBackground(Main.PURPLE);
+        rightPanel.setBackground(Constants.PURPLE);
 
         btSignUp.setBackground(Color.WHITE);
         btSignUp.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        btSignUp.setForeground(Main.PURPLE);
+        btSignUp.setForeground(Constants.PURPLE);
         btSignUp.setText("Sign Up");
         btSignUp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -98,7 +99,7 @@ public class Landing extends JPanel {
             .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        bottomPanel.setBackground(Main.TEAL);
+        bottomPanel.setBackground(Constants.TEAL);
         bottomPanel.setLayout(new java.awt.GridLayout(0, 1, 0, 12));
 
         userNameLabel.setBackground(Color.WHITE);
@@ -108,7 +109,7 @@ public class Landing extends JPanel {
         userNameLabel.setText("Username");
         bottomPanel.add(userNameLabel);
 
-        userNameTextField.setForeground(Main.TEAL);
+        userNameTextField.setForeground(Constants.TEAL);
         bottomPanel.add(userNameTextField);
 
         passwordLabel.setBackground(Color.WHITE);
@@ -118,13 +119,13 @@ public class Landing extends JPanel {
         passwordLabel.setText("Password");
         bottomPanel.add(passwordLabel);
 
-        passwordField.setForeground(Main.TEAL);
+        passwordField.setForeground(Constants.TEAL);
         bottomPanel.add(passwordField);
         bottomPanel.add(emptyLabel);
 
         btSignIn.setBackground(Color.WHITE);
         btSignIn.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        btSignIn.setForeground(Main.TEAL);
+        btSignIn.setForeground(Constants.TEAL);
         btSignIn.setText("Sign In");
         btSignIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -133,7 +134,7 @@ public class Landing extends JPanel {
         });
         bottomPanel.add(btSignIn);
 
-        bottomMessageLabel.setBackground(Main.TEAL);
+        bottomMessageLabel.setBackground(Constants.TEAL);
         bottomMessageLabel.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
         bottomMessageLabel.setForeground(Color.WHITE);
         bottomMessageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -171,7 +172,7 @@ public class Landing extends JPanel {
                 this.getParent().add(new Home(user));
                 this.getParent().remove(this);
             } else {
-                showMessage("Incorrect username and/or password", Main.ORANGE);
+                showMessage("Incorrect username and/or password", Constants.ORANGE);
             }
             result.close();
             stmt.close();

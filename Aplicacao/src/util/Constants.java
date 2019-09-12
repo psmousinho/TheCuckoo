@@ -1,35 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package util;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-/**
- *
- * @author aluno
- */
 public class Constants {
-    public enum Relation {
-        BLOCKED(3), FOLLOWING(2), REQUESTED(1), NA(0);
-        
-        private final int code;
-        
-        Relation(int code) {
-            this.code = code;
-        }
-        
-        public int getCode() {
-            return code;
-        }
-    }
-    
+    public static final Dimension DIMENSION = new Dimension(380, 450);
     public static final Font LUCIDA = new Font("Lucida Grande", 0, 14);
     public static final GridLayout GRID_3 = new GridLayout(0, 3);
 
@@ -42,8 +21,13 @@ public class Constants {
     public static final Color PURPLE = new Color(175, 82, 222);
     public static final Color RED = new Color(255, 59, 48);
     public static final Color YELLOW = new Color(255, 204, 0);
+    public static final Color TEAL = new Color(100, 210, 255);
     public static final Color WHITE = new Color(255, 255, 255);
 
+    public static final String DB_URL = "jdbc:postgresql://localhost:5432/cuckoo";
+    public static final String DB_USER = "postgres";
+    public static final String DB_PASSWORD = "";
+    
     public static JLabel createLabel(String text, Color background) {
         JLabel label = new JLabel();
         label.setFont(LUCIDA);

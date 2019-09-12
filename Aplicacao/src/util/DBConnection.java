@@ -38,7 +38,7 @@ public class DBConnection {
         private Connection getConnection() {
             DriverManager.setLoginTimeout(15); // Throw an exception after waiting 15 seconds for a connection.
             try {
-                return DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+                return DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD);
             } catch (SQLException sql) {
                 System.out.println("Could not create a SQL Connection object. Please make sure you've correctly configured db.properties.");
                 return null;

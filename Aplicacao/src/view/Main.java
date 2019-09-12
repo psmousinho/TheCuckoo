@@ -1,22 +1,16 @@
 package view;
 
 import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import util.Constants;
 
 public class Main extends JFrame {
-    public static final Dimension DIMENSION = new Dimension(380, 450);
-    public static final Color PURPLE = new Color(175, 82, 222);
-    public static final Color TEAL = new Color(100, 210, 255);
-    public static final Color ORANGE = new Color(255, 149, 0);
-    
-    public static final String DB_URL = "jdbc:postgresql://localhost:5432/cuckoo";
-    public static final String DB_USER = "postgres";
-    public static final String DB_PASSWORD = "";
-    
     private JPanel contentPanel;
     
     public Main() {
@@ -27,13 +21,23 @@ public class Main extends JFrame {
     }
     
     private void initComponents() {
-        setMinimumSize(DIMENSION);
+        setMinimumSize(Constants.DIMENSION);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         contentPanel.add(new Landing());
         add(contentPanel);
     }
     
     public static void main(String[] args) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
         java.awt.EventQueue.invokeLater(() -> {
             new Main().setVisible(true);
         });

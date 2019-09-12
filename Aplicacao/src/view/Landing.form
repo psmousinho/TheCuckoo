@@ -3,7 +3,7 @@
 <Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-      <Connection code="Main.TEAL" type="code"/>
+      <Connection code="Constants.TEAL" type="code"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -39,7 +39,7 @@
     <Container class="javax.swing.JPanel" name="topPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="Main.PURPLE" type="code"/>
+          <Connection code="Constants.PURPLE" type="code"/>
         </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[100, 48]"/>
@@ -70,7 +70,7 @@
         <Container class="javax.swing.JPanel" name="leftPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Main.PURPLE" type="code"/>
+              <Connection code="Constants.PURPLE" type="code"/>
             </Property>
           </Properties>
 
@@ -119,7 +119,7 @@
         <Container class="javax.swing.JPanel" name="rightPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Main.PURPLE" type="code"/>
+              <Connection code="Constants.PURPLE" type="code"/>
             </Property>
           </Properties>
 
@@ -145,7 +145,7 @@
                   <Font name="Lucida Grande" size="14" style="0"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="Main.PURPLE" type="code"/>
+                  <Connection code="Constants.PURPLE" type="code"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Sign Up"/>
               </Properties>
@@ -160,14 +160,14 @@
     <Container class="javax.swing.JPanel" name="bottomPanel">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="Main.TEAL" type="code"/>
+          <Connection code="Constants.TEAL" type="code"/>
         </Property>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
         <Property name="columns" type="int" value="1"/>
-        <Property name="verticalGap" type="int" value="12"/>
         <Property name="rows" type="int" value="0"/>
+        <Property name="verticalGap" type="int" value="12"/>
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JLabel" name="userNameLabel">
@@ -188,7 +188,7 @@
         <Component class="javax.swing.JTextField" name="userNameTextField">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Main.TEAL" type="code"/>
+              <Connection code="Constants.TEAL" type="code"/>
             </Property>
           </Properties>
         </Component>
@@ -210,7 +210,7 @@
         <Component class="javax.swing.JPasswordField" name="passwordField">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Main.TEAL" type="code"/>
+              <Connection code="Constants.TEAL" type="code"/>
             </Property>
           </Properties>
         </Component>
@@ -225,7 +225,7 @@
               <Font name="Lucida Grande" size="18" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Main.TEAL" type="code"/>
+              <Connection code="Constants.TEAL" type="code"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Sign In"/>
           </Properties>
@@ -236,7 +236,7 @@
         <Component class="javax.swing.JLabel" name="bottomMessageLabel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="Main.TEAL" type="code"/>
+              <Connection code="Constants.TEAL" type="code"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Lucida Grande" size="14" style="0"/>

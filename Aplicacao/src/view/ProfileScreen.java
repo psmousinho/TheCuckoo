@@ -210,7 +210,7 @@ public class ProfileScreen extends javax.swing.JPanel {
                 PreparedStatement stmt = con.prepareStatement("select * from userrel where srcuser = '" + this.user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' ");
                 ResultSet result = stmt.executeQuery();
                 if (result.next()) {
-                    boolean block = (result.getInt("status") == Constants.Relation.BLOCKED.getCode());
+                    boolean block = (result.getInt("status") == Relation.BLOCKED.getCode());
                     if (block) {
                         //TODO: mostra mensagem de bloqueio
                     } else if (user.isPrivate()) {

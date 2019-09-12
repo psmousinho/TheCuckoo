@@ -3,8 +3,10 @@ package view;
 import entity.UserProfile;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
+import java.awt.Component;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import util.Constants;
 
 public class Home extends JPanel {
 
@@ -12,7 +14,7 @@ public class Home extends JPanel {
      * Creates new form Init
      */
     enum State {
-        TIME_LINE, PROFILE, NOTIFICATIONS,SEARCH;
+        TIME_LINE, PROFILE, NOTIFICATIONS, SEARCH, NOTHING;
     }
 
     private final UserProfile user;
@@ -39,8 +41,10 @@ public class Home extends JPanel {
         contentPanel.add(timeline, "timeline");
         contentPanel.add(search, "search");
         
-        changeScreen(State.TIME_LINE);
-        
+        CardLayout cl = (CardLayout) contentPanel.getLayout();
+        cl.show(contentPanel, "timeline");
+        timeline.updateCuckoos();
+        state = State.TIME_LINE;
     }
 
     /**
@@ -52,57 +56,30 @@ public class Home extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        searchField = new javax.swing.JTextField();
         topPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
-        btn1 = new javax.swing.JButton();
-        btn2 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        searchField = new javax.swing.JTextField();
+        btProfile = new javax.swing.JButton();
+        btTimeline = new javax.swing.JButton();
+        btNotifications = new javax.swing.JButton();
+        btSearch = new javax.swing.JButton();
         rightPanel = new javax.swing.JPanel();
         btSignOut = new javax.swing.JButton();
         contentPanel = new javax.swing.JPanel();
 
-        jTextField1.setText("jTextField1");
-
-        setBackground(Main.TEAL);
-
-        topPanel.setBackground(Main.PURPLE);
-        topPanel.setMinimumSize(new java.awt.Dimension(100, 48));
-
-        leftPanel.setBackground(Main.PURPLE);
-        leftPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
-
-        logoLabel.setBackground(Color.WHITE);
-        logoLabel.setForeground(Color.WHITE);
-        logoLabel.setText("LOGO");
-        logoLabel.setMaximumSize(new java.awt.Dimension(48, 48));
-        logoLabel.setMinimumSize(new java.awt.Dimension(48, 48));
-        logoLabel.setPreferredSize(new java.awt.Dimension(48, 48));
-        leftPanel.add(logoLabel);
-
-        btn1.setText("1");
-        btn1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn1ActionPerformed(evt);
-            }
-        });
-        leftPanel.add(btn1);
-
-        btn2.setText("2");
-        btn2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn2ActionPerformed(evt);
-            }
-        });
-        leftPanel.add(btn2);
-
         jLabel1.setText("S");
-        leftPanel.add(jLabel1);
+        jLabel1.setMaximumSize(new java.awt.Dimension(48, 48));
+        jLabel1.setMinimumSize(new java.awt.Dimension(48, 48));
+        jLabel1.setPreferredSize(new java.awt.Dimension(48, 48));
 
-        searchField.setColumns(13);
+        searchField.setColumns(12);
+        searchField.setForeground(Constants.PURPLE);
         searchField.setText("Search");
+        searchField.setMinimumSize(new java.awt.Dimension(11, 48));
+        searchField.setPreferredSize(new java.awt.Dimension(154, 48));
+        searchField.setSize(new java.awt.Dimension(0, 48));
         searchField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchFieldActionPerformed(evt);
@@ -113,13 +90,85 @@ public class Home extends JPanel {
                 searchFieldKeyTyped(evt);
             }
         });
-        leftPanel.add(searchField);
 
-        rightPanel.setBackground(Main.PURPLE);
+        setBackground(Constants.TEAL);
+
+        topPanel.setBackground(Constants.PURPLE);
+        topPanel.setMinimumSize(new java.awt.Dimension(100, 48));
+
+        leftPanel.setBackground(Constants.PURPLE);
+        leftPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+
+        logoLabel.setBackground(Color.WHITE);
+        logoLabel.setForeground(Color.WHITE);
+        logoLabel.setText("LOGO");
+        logoLabel.setMaximumSize(new java.awt.Dimension(48, 48));
+        logoLabel.setMinimumSize(new java.awt.Dimension(48, 48));
+        logoLabel.setPreferredSize(new java.awt.Dimension(48, 48));
+        leftPanel.add(logoLabel);
+
+        btProfile.setBackground(Color.WHITE);
+        btProfile.setForeground(Constants.PURPLE);
+        btProfile.setText("P");
+        btProfile.setToolTipText("Profile");
+        btProfile.setMaximumSize(new java.awt.Dimension(48, 48));
+        btProfile.setMinimumSize(new java.awt.Dimension(48, 48));
+        btProfile.setMixingCutoutShape(null);
+        btProfile.setPreferredSize(new java.awt.Dimension(48, 48));
+        btProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btProfileActionPerformed(evt);
+            }
+        });
+        leftPanel.add(btProfile);
+
+        btTimeline.setBackground(Color.WHITE);
+        btTimeline.setForeground(Constants.PURPLE);
+        btTimeline.setText("T");
+        btTimeline.setToolTipText("Timeline");
+        btTimeline.setMaximumSize(new java.awt.Dimension(48, 48));
+        btTimeline.setMinimumSize(new java.awt.Dimension(48, 48));
+        btTimeline.setPreferredSize(new java.awt.Dimension(48, 48));
+        btTimeline.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btTimelineActionPerformed(evt);
+            }
+        });
+        leftPanel.add(btTimeline);
+
+        btNotifications.setBackground(Color.WHITE);
+        btNotifications.setForeground(Constants.PURPLE);
+        btNotifications.setText("N");
+        btNotifications.setToolTipText("Notifications");
+        btNotifications.setMaximumSize(new java.awt.Dimension(48, 48));
+        btNotifications.setMinimumSize(new java.awt.Dimension(48, 48));
+        btNotifications.setPreferredSize(new java.awt.Dimension(48, 48));
+        btNotifications.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNotificationsActionPerformed(evt);
+            }
+        });
+        leftPanel.add(btNotifications);
+
+        btSearch.setBackground(Color.WHITE);
+        btSearch.setForeground(Constants.PURPLE);
+        btSearch.setText("S");
+        btSearch.setToolTipText("Search");
+        btSearch.setMaximumSize(new java.awt.Dimension(48, 48));
+        btSearch.setMinimumSize(new java.awt.Dimension(48, 48));
+        btSearch.setPreferredSize(new java.awt.Dimension(48, 48));
+        btSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSearchActionPerformed(evt);
+            }
+        });
+        leftPanel.add(btSearch);
+
+        rightPanel.setBackground(Constants.PURPLE);
 
         btSignOut.setBackground(Color.WHITE);
         btSignOut.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        btSignOut.setForeground(Main.PURPLE);
+        btSignOut.setForeground(Constants.PURPLE);
         btSignOut.setText("Sign Out");
         btSignOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,7 +204,7 @@ public class Home extends JPanel {
             .addComponent(leftPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        contentPanel.setBackground(Main.TEAL);
+        contentPanel.setBackground(Constants.TEAL);
         contentPanel.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -177,71 +226,127 @@ public class Home extends JPanel {
     private void btSignOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignOutActionPerformed
         this.getParent().add(new Landing());
         this.getParent().remove(this);
+        UserProfile.CURRENT_USER = null;
     }//GEN-LAST:event_btSignOutActionPerformed
 
-    private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
-        switch (state) {
-            case SEARCH:
-            case NOTIFICATIONS:
-                changeScreen(State.TIME_LINE);
-                break;
-            default:
-                changeScreen(State.NOTIFICATIONS);
-                break;
-                
+    private void btTimelineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimelineActionPerformed
+        if(state != State.TIME_LINE) {
+            state = State.TIME_LINE;
+            CardLayout cl = (CardLayout) contentPanel.getLayout();
+            cl.show(contentPanel, "timeline");
+            timeline.updateCuckoos();
+            updateButtons();
         }
-    }//GEN-LAST:event_btn2ActionPerformed
+    }//GEN-LAST:event_btTimelineActionPerformed
 
-    private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
-        switch (state) {
-            case PROFILE:
-                changeScreen(State.TIME_LINE);
-                break;
-            default:
-                changeScreen(State.PROFILE);
-                break;
+    private void btProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProfileActionPerformed
+        if(state != State.PROFILE) {
+            state = State.PROFILE;
+            CardLayout cl = (CardLayout) contentPanel.getLayout();
+            cl.show(contentPanel, "profile");
+            profile.updateCuckoos();
+            updateButtons();
         }
-    }//GEN-LAST:event_btn1ActionPerformed
+    }//GEN-LAST:event_btProfileActionPerformed
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-        this.changeScreen(State.SEARCH);
+        CardLayout cl = (CardLayout) contentPanel.getLayout();
+        cl.show(contentPanel, "search");
         this.search.doSearch(searchField.getText());
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyTyped
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            
-        }
+
     }//GEN-LAST:event_searchFieldKeyTyped
 
-    private void changeScreen(State newState) {
-        state = newState;
-        CardLayout cl = (CardLayout) contentPanel.getLayout();
-        switch (newState) {
+    private void btSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSearchActionPerformed
+        if(state != State.SEARCH) {
+            state = State.SEARCH;
+            leftPanel.remove(btNotifications);
+            leftPanel.remove(btTimeline);
+            leftPanel.remove(btProfile);
+            leftPanel.add(searchField);
+            btSearch.setText("R");
+            btSearch.setToolTipText("Return");
+            leftPanel.revalidate();
+        } else {
+            state = State.NOTHING;
+            leftPanel.remove(searchField);
+            leftPanel.remove(btSearch);
+            leftPanel.add(btProfile);
+            leftPanel.add(btTimeline);
+            leftPanel.add(btNotifications);
+            leftPanel.add(btSearch);
+            btSearch.setText("S");
+            btSearch.setToolTipText("Search");
+            leftPanel.revalidate();
+        }
+    }//GEN-LAST:event_btSearchActionPerformed
+
+    private void btNotificationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNotificationsActionPerformed
+        if(state != State.NOTIFICATIONS) {
+            state = State.NOTIFICATIONS;
+            CardLayout cl = (CardLayout) contentPanel.getLayout();
+            cl.show(contentPanel, "notifications");
+            notifications.updateNotifications();
+            updateButtons();
+        }    
+    }//GEN-LAST:event_btNotificationsActionPerformed
+
+    private void updateButtons() {
+        for(Component c : leftPanel.getComponents()) {
+            if(c instanceof JButton) {
+                c.setBackground(Color.WHITE);
+                c.setForeground(Constants.PURPLE);
+            }
+        }
+        switch(state) {
             case TIME_LINE:
-                cl.show(contentPanel, "timeline");
-                timeline.updateCuckoos();
-                btn1.setText("Profile");
-                btn2.setText("Notifications");
+                btTimeline.setForeground(Constants.WHITE);
+                btTimeline.setBackground(Constants.ORANGE);
                 break;
             case PROFILE:
-                cl.show(contentPanel, "profile");
-                profile.updateCuckoos();
-                btn1.setText("TimeLine");
-                btn2.setText("Notifications");
+                btProfile.setForeground(Constants.WHITE);
+                btProfile.setBackground(Constants.ORANGE);
                 break;
             case NOTIFICATIONS:
-                cl.show(contentPanel, "notifications");
-                notifications.updateNotifications();
-                btn1.setText("Profile");
-                btn2.setText("TimeLine");
+                btNotifications.setForeground(Constants.WHITE);
+                btNotifications.setBackground(Constants.ORANGE);
+                break;
+        }
+    }
+    
+    /*private void changeScreen(State newState) {
+        state = newState;
+        
+        switch (newState) {
+            case TIME_LINE:
+                
+                
+                btProfile.setText("P");
+                btProfile.setToolTipText("Profile");
+                btTimeline.setText("N");
+                btTimeline.setToolTipText("Notifications");
+                break;
+            case PROFILE:
+                
+                btProfile.setText("T");
+                btProfile.setToolTipText("Timeline");
+                btTimeline.setText("N");
+                btTimeline.setToolTipText("Notifications");
+                break;
+            case NOTIFICATIONS:
+                
+                btProfile.setText("P");
+                btProfile.setToolTipText("Profile");
+                btTimeline.setText("T");
                 break;
             case SEARCH:
                 cl.show(contentPanel, "search");
-                btn1.setText("Profile");
-                btn2.setText("Timeline");
+                btProfile.setText("P");
+                btTimeline.setText("T");
         }
-    }
+    }*/
     
     public void changeScreenTemporary(JPanel target){
         contentPanel.remove(temporary);
@@ -252,12 +357,13 @@ public class Home extends JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btNotifications;
+    private javax.swing.JButton btProfile;
+    private javax.swing.JButton btSearch;
     private javax.swing.JButton btSignOut;
-    private javax.swing.JButton btn1;
-    private javax.swing.JButton btn2;
+    private javax.swing.JButton btTimeline;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPanel rightPanel;
