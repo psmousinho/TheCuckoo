@@ -1,6 +1,7 @@
 package view;
 
 import entity.UserProfile;
+import util.DBConnection;
 import java.awt.Color;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -168,23 +169,21 @@ public class Landing extends JPanel {
     private void btSignInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignInActionPerformed
         String userName = userNameTextField.getText(), password = new String(passwordField.getPassword());
         try {
-            Connection con = null;
-            Class.forName("org.postgresql.Driver");
-            con = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+            Connection con = DBConnection.getConnection();
             String st = String.format("select * from userprofile where login = '%s' and passw = '%s'", userName, password);
-            System.out.println(st);
             Statement stmt = con.createStatement();
             ResultSet result = stmt.executeQuery(st);
             if(result.next()) {
-                showMessage("Login sucessful", Main.TEAL);
-                UserProfile user = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), result.getBoolean("visibility"));
+                UserProfile user = new UserProfile( result.getString("realname"), result.getString("login"), result.getString("bio"), 
+                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"));
+                this.getParent().add(new Home(user));
+                this.getParent().remove(this);
             } else {
                 showMessage("Incorrect username and/or password", Main.ORANGE);
             }
             result.close();
             stmt.close();
-            con.close();
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btSignInActionPerformed

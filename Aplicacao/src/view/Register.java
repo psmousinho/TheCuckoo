@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import util.DBConnection;
 
 public class Register extends JPanel {
 
@@ -63,7 +65,6 @@ public class Register extends JPanel {
         logoLabel.setMaximumSize(new java.awt.Dimension(48, 48));
         logoLabel.setMinimumSize(new java.awt.Dimension(48, 48));
         logoLabel.setPreferredSize(new java.awt.Dimension(48, 48));
-        logoLabel.setSize(new java.awt.Dimension(48, 48));
         leftPanel.add(logoLabel);
 
         titleLabel.setBackground(Color.WHITE);
@@ -168,7 +169,7 @@ public class Register extends JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE))
+                .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -178,7 +179,13 @@ public class Register extends JPanel {
             if(!usernameInUse(userName)) {
                 if(!name.trim().equals("") && !userName.trim().equals("") && password.length() > 0) {
                     try {
-                        Main.executeUpdate("insert into userprofile (login,passw,realname) values (?,?,?)", userName, password, name);
+                        Connection con = DBConnection.getConnection();
+                        PreparedStatement stmt = con.prepareStatement("insert into userprofile (login,passw,realname) values (?,?,?)");
+                        stmt.setString(1, userName);
+                        stmt.setString(2, password);
+                        stmt.setString(3, name);
+                        stmt.executeUpdate();
+                        stmt.close();
                         showMessage(String.format("Welcome to The Cuckoo %s!", name));
                     } catch (Exception ex) {               
                         JOptionPane.showMessageDialog(this, ex.getMessage() , "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -199,18 +206,15 @@ public class Register extends JPanel {
 
     private boolean usernameInUse(String userName) {
         try {
-            Connection con = null;
-            Class.forName("org.postgresql.Driver");
-            con = DriverManager.getConnection(Main.DB_URL, Main.DB_USER, Main.DB_PASSWORD);
+            Connection con = DBConnection.getConnection();
             String st = String.format("select * from userprofile where login = '%s'", userName);
             Statement stmt = con.createStatement();
             ResultSet result = stmt.executeQuery(st);
             boolean valid = result.next();
             result.close();
             stmt.close();
-            con.close();
             return valid;
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;

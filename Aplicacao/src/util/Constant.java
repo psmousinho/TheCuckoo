@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entity;
+package util;
 
 /**
  *
- * @author Pablo Suria
+ * @author aluno
  */
-public class DBConection {
+public class Constant {
     
 }

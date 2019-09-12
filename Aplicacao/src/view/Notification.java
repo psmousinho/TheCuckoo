@@ -11,18 +11,17 @@ import entity.*;
  *
  * @author Pablo Suria
  */
-public class NotificationPanel extends javax.swing.JPanel {
+public class Notification extends javax.swing.JPanel {
 
     private Notification notification;
-    private DBConection conection;
+
     /**
      * Creates new form Notification
      */
-    public NotificationPanel(DBConection conection, Notification notification) {
+    public Notification(Notification notification) {
         initComponents();
         
         this.notification = notification;
-        this.conection = conection;
     }
 
     /**

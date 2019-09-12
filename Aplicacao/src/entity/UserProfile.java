@@ -17,12 +17,16 @@ public class UserProfile {
     private final String login;
     private String biography;
     private boolean visibility;
+    private int numberFollowers;
+    private int numberFollowing;
     
-    public UserProfile(String realName, String login, String biography, boolean visibility) {
+    public UserProfile(String realName, String login, String biography, boolean visibility, int numberFollowers, int numberFollowing) {
         this.realName = realName;
         this.login = login;
         this.biography = biography;
         this.visibility = visibility;
+        this.numberFollowers = numberFollowers;
+        this.numberFollowing = numberFollowing;
     }
     
     public static boolean validateUsername(String username) {
@@ -59,4 +63,22 @@ public class UserProfile {
     public void setVisibility(boolean newVisibility) {
         visibility = newVisibility;
     }
+
+    public int getNumberFollowers() {
+        return numberFollowers;
+    }
+
+    public int getNumberFollowing() {
+        return numberFollowing;
+    }
+
+    public void setNumberFollowers(int numberFollowers) {
+        this.numberFollowers = numberFollowers;
+    }
+
+    public void setNumberFollowing(int numberFollowing) {
+        this.numberFollowing = numberFollowing;
+    }
+    
+    
 }

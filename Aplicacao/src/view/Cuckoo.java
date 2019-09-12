@@ -5,7 +5,6 @@
  */
 package view;
 
-import entity.DBConection;
 import entity.Post;
 
 /**
@@ -15,14 +14,13 @@ import entity.Post;
 public class Cuckoo extends javax.swing.JPanel {
 
     private Post post;
-    private DBConection conection;
+
     /**
      * Creates new form Cuckoo
      */
-    public Cuckoo(DBConection conection, Post post) {
+    public Cuckoo(Post post) {
         initComponents();
         
-        this.conection = conection;
         this.post = post;
     }
     

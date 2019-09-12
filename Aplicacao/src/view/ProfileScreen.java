@@ -1,33 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
-import entity.DBConection;
-import entity.Post;
-import entity.UserProfile;
+import entity.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.DBConnection;
 
-/**
- *
- * @author aluno
- */
-public class ProfilePanel extends javax.swing.JPanel {
+public class ProfileScreen extends javax.swing.JPanel {
 
     private UserProfile user;
-    private DBConection conection;
     private ArrayList<Post> cuckoos;
-    
+
     /**
      * Creates new form ProfilePanel
      */
-    public ProfilePanel(UserProfile user, DBConection conection) {
-        initComponents();
+    public ProfileScreen(UserProfile user) {
         this.user = user;
-        this.conection = conection;
-        
+        initComponents();
+
         updateCuckoos();
     }
 
@@ -54,13 +47,16 @@ public class ProfilePanel extends javax.swing.JPanel {
 
         TopPanel.setBackground(new java.awt.Color(100, 210, 255));
 
-        realName.setText("RealName");
+        realName.setText(this.user.getName());
 
-        userName.setText("@userName");
+        userName.setText("@" + this.user.getUsername());
 
         bio.setBackground(new java.awt.Color(100, 210, 255));
         bio.setColumns(20);
         bio.setRows(3);
+        bio.setText(this.user.getBio());
+
+        bio.setEditable(false);
         jScrollPane1.setViewportView(bio);
 
         editProfile.setText("Edit");
@@ -70,9 +66,9 @@ public class ProfilePanel extends javax.swing.JPanel {
             }
         });
 
-        nFollowers.setText("nSeguidores");
+        nFollowers.setText("Followers: " + this.user.getNumberFollowers());
 
-        jLabel2.setText("nSeguindo");
+        jLabel2.setText("Following: " + this.user.getNumberFollowing());
 
         javax.swing.GroupLayout TopPanelLayout = new javax.swing.GroupLayout(TopPanel);
         TopPanel.setLayout(TopPanelLayout);
@@ -95,7 +91,7 @@ public class ProfilePanel extends javax.swing.JPanel {
                         .addComponent(nFollowers)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
-                        .addGap(0, 255, Short.MAX_VALUE))))
+                        .addGap(0, 158, Short.MAX_VALUE))))
         );
         TopPanelLayout.setVerticalGroup(
             TopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,16 +143,36 @@ public class ProfilePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void editProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editProfileActionPerformed
-        // TODO add your handling code here:
+        if (!bio.isEditable()) {
+            this.bio.setEditable(true);
+            editProfile.setText("Save");
+        } else {
+            editProfile.setText("Edit");
+            this.user.setBio(bio.getText());
+            this.bio.setEditable(false);
+
+            try {
+                Connection con = DBConnection.getConnection();
+                PreparedStatement stmt;
+                stmt = con.prepareStatement("UPDATE userprofile SET bio = ? where login = ?;");
+                stmt.setString(1, bio.getText());
+                stmt.setString(2, user.getUsername());
+                stmt.executeUpdate();
+                stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
     }//GEN-LAST:event_editProfileActionPerformed
 
     public void updateCuckoos() {
         cuckoos = new ArrayList<>();
-        
+
         //query dos cuckoos do usuario
-        
-        for(Post post : cuckoos) {
-            myCuckoos.add(new Cuckoo(conection, post));
+        for (Post post : cuckoos) {
+            myCuckoos.add(new Cuckoo(post));
         }
     }
 

@@ -5,27 +5,33 @@
  */
 package view;
 
-import entity.*;
+import entity.Post;
+import entity.UserProfile;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.DBConnection;
 
 /**
  *
  * @author aluno
  */
-public class NotificationsPanel extends javax.swing.JPanel {
-    
+public class SearchScreen extends javax.swing.JPanel {
+
     private UserProfile user;
-    private DBConection conection;
-    private ArrayList<Notification> notifications;
-    
+    private ArrayList<Post> cuckoos;
+
     /**
-     * Creates new form NotificationsPanel
+     * Creates new form TimeLinePanel
      */
-    public NotificationsPanel(UserProfile user, DBConection conection) {
+    public SearchScreen(UserProfile user) {
         initComponents();
         this.user = user;
-        this.conection = conection;
-        updateNotifications();
     }
 
     /**
@@ -61,20 +67,35 @@ public class NotificationsPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public void updateNotifications() {
-        notifications = new ArrayList<>();
-        
-        //query das notificações dos usuarios
-        
-        for(Notification noti : notifications) {
-            contentPanel.add(new NotificationPanel(conection, noti));
+    public void doSearch(String request) {
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = null;
+            ResultSet result = null;
+            switch (request.charAt(0)) {
+                case '@': //User
+                    stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + request + "%' ORDER BY nfollowers DESC;");
+                    result = stmt.executeQuery();
+                    while(result.next()) {
+                        System.out.println(String.format("User: @%s Followers:%d \n", result.getString("login"), result.getInt("nfollowers")));
+                        //renderiza usuaria
+                    }
+                    break;
+                case '#': //Topic
+                    break;
+                default: //Something else
+                    break;
+            }
+            result.close();
+            stmt.close();
+        }catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
     private javax.swing.JScrollPane jScrollPane1;

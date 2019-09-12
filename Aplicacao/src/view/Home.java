@@ -1,9 +1,9 @@
 package view;
 
-import entity.DBConection;
 import entity.UserProfile;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import javax.swing.JPanel;
 
 public class Home extends JPanel {
@@ -12,29 +12,30 @@ public class Home extends JPanel {
      * Creates new form Init
      */
     enum State {
-        TIME_LINE, PROFILE, NOTIFICATIONS;
+        TIME_LINE, PROFILE, NOTIFICATIONS,SEARCH;
     }
 
     private final UserProfile user;
-    private final DBConection conection;
     private State state;
     
-    private final ProfilePanel profile;
-    private final NotificationsPanel notifications;
-    private final TimeLinePanel timeline;
+    private final ProfileScreen profile;
+    private final NotificationsScreen notifications;
+    private final TimeLineScreen timeline;
+    private final SearchScreen search;
     
-    public Home(UserProfile user, DBConection conection) {
+    public Home(UserProfile user) {
         initComponents();
         this.user = user;
-        this.conection = conection;
         
-        this.profile = new ProfilePanel(this.user, this.conection);
-        this.notifications = new NotificationsPanel(this.user, this.conection);
-        this.timeline = new TimeLinePanel(this.user,this.conection);
+        this.profile = new ProfileScreen(this.user);
+        this.notifications = new NotificationsScreen(this.user);
+        this.timeline = new TimeLineScreen(this.user);
+        this.search = new SearchScreen(this.user);
                 
         contentPanel.add(profile, "profile");
         contentPanel.add(notifications, "notifications");
         contentPanel.add(timeline, "timeline");
+        contentPanel.add(search, "search");
         
         changeScreen(State.TIME_LINE);
         
@@ -49,14 +50,19 @@ public class Home extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
         topPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
         btn1 = new javax.swing.JButton();
         btn2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        searchField = new javax.swing.JTextField();
         rightPanel = new javax.swing.JPanel();
         btSignOut = new javax.swing.JButton();
         contentPanel = new javax.swing.JPanel();
+
+        jTextField1.setText("jTextField1");
 
         setBackground(Main.TEAL);
 
@@ -74,7 +80,7 @@ public class Home extends JPanel {
         logoLabel.setPreferredSize(new java.awt.Dimension(48, 48));
         leftPanel.add(logoLabel);
 
-        btn1.setText("btn1");
+        btn1.setText("1");
         btn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn1ActionPerformed(evt);
@@ -82,13 +88,30 @@ public class Home extends JPanel {
         });
         leftPanel.add(btn1);
 
-        btn2.setText("btn2");
+        btn2.setText("2");
         btn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn2ActionPerformed(evt);
             }
         });
         leftPanel.add(btn2);
+
+        jLabel1.setText("S");
+        leftPanel.add(jLabel1);
+
+        searchField.setColumns(13);
+        searchField.setText("Search");
+        searchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchFieldActionPerformed(evt);
+            }
+        });
+        searchField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                searchFieldKeyTyped(evt);
+            }
+        });
+        leftPanel.add(searchField);
 
         rightPanel.setBackground(Main.PURPLE);
 
@@ -150,38 +173,47 @@ public class Home extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btSignOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSignOutActionPerformed
-        
+        this.getParent().add(new Landing());
+        this.getParent().remove(this);
     }//GEN-LAST:event_btSignOutActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
         switch (state) {
-            case TIME_LINE:
-                changeScreen(State.NOTIFICATIONS);
-                break;
-            case PROFILE:
-                changeScreen(State.NOTIFICATIONS);
-                break;
+            case SEARCH:
             case NOTIFICATIONS:
                 changeScreen(State.TIME_LINE);
                 break;
+            default:
+                changeScreen(State.NOTIFICATIONS);
+                break;
+                
         }
     }//GEN-LAST:event_btn2ActionPerformed
 
     private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
         switch (state) {
-            case TIME_LINE:
-                changeScreen(State.PROFILE);
-                break;
             case PROFILE:
                 changeScreen(State.TIME_LINE);
                 break;
-            case NOTIFICATIONS:
+            default:
                 changeScreen(State.PROFILE);
                 break;
         }
     }//GEN-LAST:event_btn1ActionPerformed
 
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+
+    }//GEN-LAST:event_searchFieldActionPerformed
+
+    private void searchFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyTyped
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.changeScreen(State.SEARCH);
+            this.search.doSearch(searchField.getText());
+        }
+    }//GEN-LAST:event_searchFieldKeyTyped
+
     private void changeScreen(State newState) {
+        state = newState;
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         switch (newState) {
             case TIME_LINE:
@@ -202,6 +234,10 @@ public class Home extends JPanel {
                 btn1.setText("Profile");
                 btn2.setText("TimeLine");
                 break;
+            case SEARCH:
+                cl.show(contentPanel, "search");
+                btn1.setText("Profile");
+                btn2.setText("Timeline");
         }
     }
 
@@ -210,9 +246,12 @@ public class Home extends JPanel {
     private javax.swing.JButton btn1;
     private javax.swing.JButton btn2;
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPanel rightPanel;
+    private javax.swing.JTextField searchField;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,7 +5,6 @@
  */
 package view;
 
-import entity.DBConection;
 import entity.Post;
 import entity.UserProfile;
 import java.util.ArrayList;
@@ -14,19 +13,17 @@ import java.util.ArrayList;
  *
  * @author aluno
  */
-public class TimeLinePanel extends javax.swing.JPanel {
+public class TimeLineScreen extends javax.swing.JPanel {
 
     private UserProfile user;
-    private DBConection conection;
     private ArrayList<Post> cuckoos;
     
     /**
      * Creates new form TimeLinePanel
      */
-    public TimeLinePanel(UserProfile user, DBConection conection) {
+    public TimeLineScreen(UserProfile user) {
         initComponents();
         this.user = user;
-        this.conection = conection;
         updateCuckoos();
     }
 
@@ -73,7 +70,7 @@ public class TimeLinePanel extends javax.swing.JPanel {
         //query dos cuckoos dos usuarios que o user segue
         
         for(Post post : cuckoos) {
-            contentPanel.add(new Cuckoo(conection, post));
+            contentPanel.add(new Cuckoo(post));
         }
     }
 
