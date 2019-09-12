@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import util.DBConnection;
 
 /**
@@ -78,7 +79,7 @@ public class SearchScreen extends javax.swing.JPanel {
             ResultSet result = null;
             switch (request.charAt(0)) {
                 case '@': //User
-                    stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + request + "%' ORDER BY nfollowers DESC;");
+                    stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + request.substring(1) + "%' ORDER BY nfollowers DESC;");
                     result = stmt.executeQuery();
                     while(result.next()) {
                         System.out.println(String.format("User: @%s Followers:%d \n", result.getString("login"), result.getInt("nfollowers")));

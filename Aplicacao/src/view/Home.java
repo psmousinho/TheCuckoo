@@ -202,13 +202,13 @@ public class Home extends JPanel {
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
-
+        this.changeScreen(State.SEARCH);
+        this.search.doSearch(searchField.getText());
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyTyped
         if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            this.changeScreen(State.SEARCH);
-            this.search.doSearch(searchField.getText());
+            
         }
     }//GEN-LAST:event_searchFieldKeyTyped
 
