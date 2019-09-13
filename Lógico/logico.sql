@@ -5,7 +5,7 @@
 -- Dumped from database version 9.6.15
 -- Dumped by pg_dump version 9.6.15
 
--- Started on 2019-08-22 09:51:00
+-- Started on 2019-09-13 09:00:02
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2184 (class 0 OID 0)
+-- TOC entry 2180 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
@@ -40,7 +40,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 188 (class 1259 OID 24667)
+-- TOC entry 185 (class 1259 OID 16385)
 -- Name: commnt; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -56,7 +56,7 @@ CREATE TABLE public.commnt (
 ALTER TABLE public.commnt OWNER TO postgres;
 
 --
--- TOC entry 186 (class 1259 OID 24639)
+-- TOC entry 186 (class 1259 OID 16388)
 -- Name: post; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -71,7 +71,7 @@ CREATE TABLE public.post (
 ALTER TABLE public.post OWNER TO postgres;
 
 --
--- TOC entry 191 (class 1259 OID 24722)
+-- TOC entry 187 (class 1259 OID 16394)
 -- Name: tagcommntuser; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -87,7 +87,7 @@ CREATE TABLE public.tagcommntuser (
 ALTER TABLE public.tagcommntuser OWNER TO postgres;
 
 --
--- TOC entry 190 (class 1259 OID 24707)
+-- TOC entry 188 (class 1259 OID 16397)
 -- Name: tagpostuser; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -101,7 +101,7 @@ CREATE TABLE public.tagpostuser (
 ALTER TABLE public.tagpostuser OWNER TO postgres;
 
 --
--- TOC entry 189 (class 1259 OID 24692)
+-- TOC entry 189 (class 1259 OID 16400)
 -- Name: topic; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -120,7 +120,7 @@ CREATE TABLE public.topic (
 ALTER TABLE public.topic OWNER TO postgres;
 
 --
--- TOC entry 185 (class 1259 OID 24628)
+-- TOC entry 190 (class 1259 OID 16403)
 -- Name: userprofile; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -130,14 +130,17 @@ CREATE TABLE public.userprofile (
     passhash character varying(255) DEFAULT '-1'::character varying,
     visibility boolean DEFAULT false NOT NULL,
     bio character varying(4095) DEFAULT 'Hello i am new to /cuckoo!!'::character varying NOT NULL,
-    realname character varying(255) NOT NULL
+    realname character varying(255) NOT NULL,
+    nfollowers integer DEFAULT 0 NOT NULL,
+    nfollowing integer DEFAULT 0 NOT NULL,
+    lasttime timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
 ALTER TABLE public.userprofile OWNER TO postgres;
 
 --
--- TOC entry 187 (class 1259 OID 24652)
+-- TOC entry 191 (class 1259 OID 16412)
 -- Name: userrel; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -152,77 +155,7 @@ CREATE TABLE public.userrel (
 ALTER TABLE public.userrel OWNER TO postgres;
 
 --
--- TOC entry 2173 (class 0 OID 24667)
--- Dependencies: 188
--- Data for Name: commnt; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.commnt (author, pauthor, pdate, datestamp, ctext) FROM stdin;
-\.
-
-
---
--- TOC entry 2171 (class 0 OID 24639)
--- Dependencies: 186
--- Data for Name: post; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.post (author, datestamp, ptext, foto) FROM stdin;
-\.
-
-
---
--- TOC entry 2176 (class 0 OID 24722)
--- Dependencies: 191
--- Data for Name: tagcommntuser; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.tagcommntuser (cauthor, cdate, cpauthor, cpdate, taguser) FROM stdin;
-\.
-
-
---
--- TOC entry 2175 (class 0 OID 24707)
--- Dependencies: 190
--- Data for Name: tagpostuser; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.tagpostuser (pauthor, pdate, taguser) FROM stdin;
-\.
-
-
---
--- TOC entry 2174 (class 0 OID 24692)
--- Dependencies: 189
--- Data for Name: topic; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.topic (tname, datestamp, pauthor, pdate, cauthor, cpauthor, cpdate, cdate) FROM stdin;
-\.
-
-
---
--- TOC entry 2170 (class 0 OID 24628)
--- Dependencies: 185
--- Data for Name: userprofile; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.userprofile (login, passw, passhash, visibility, bio, realname) FROM stdin;
-\.
-
-
---
--- TOC entry 2172 (class 0 OID 24652)
--- Dependencies: 187
--- Data for Name: userrel; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.userrel (srcuser, tgtuser, datestamp, status) FROM stdin;
-\.
-
-
---
--- TOC entry 2035 (class 2606 OID 24671)
+-- TOC entry 2032 (class 2606 OID 16416)
 -- Name: commnt commnt_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -231,7 +164,7 @@ ALTER TABLE ONLY public.commnt
 
 
 --
--- TOC entry 2031 (class 2606 OID 24646)
+-- TOC entry 2034 (class 2606 OID 16418)
 -- Name: post post_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -240,7 +173,7 @@ ALTER TABLE ONLY public.post
 
 
 --
--- TOC entry 2041 (class 2606 OID 24726)
+-- TOC entry 2036 (class 2606 OID 16420)
 -- Name: tagcommntuser tagcommntuser_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -249,7 +182,7 @@ ALTER TABLE ONLY public.tagcommntuser
 
 
 --
--- TOC entry 2039 (class 2606 OID 24711)
+-- TOC entry 2038 (class 2606 OID 16422)
 -- Name: tagpostuser tagpostuser_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -258,7 +191,7 @@ ALTER TABLE ONLY public.tagpostuser
 
 
 --
--- TOC entry 2037 (class 2606 OID 24696)
+-- TOC entry 2040 (class 2606 OID 16424)
 -- Name: topic topic_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -267,7 +200,7 @@ ALTER TABLE ONLY public.topic
 
 
 --
--- TOC entry 2029 (class 2606 OID 24638)
+-- TOC entry 2042 (class 2606 OID 16426)
 -- Name: userprofile userprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -276,7 +209,7 @@ ALTER TABLE ONLY public.userprofile
 
 
 --
--- TOC entry 2033 (class 2606 OID 24656)
+-- TOC entry 2044 (class 2606 OID 16428)
 -- Name: userrel userrel_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -285,7 +218,7 @@ ALTER TABLE ONLY public.userrel
 
 
 --
--- TOC entry 2045 (class 2606 OID 24672)
+-- TOC entry 2045 (class 2606 OID 16429)
 -- Name: commnt commnt_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -294,7 +227,7 @@ ALTER TABLE ONLY public.commnt
 
 
 --
--- TOC entry 2046 (class 2606 OID 24677)
+-- TOC entry 2046 (class 2606 OID 16434)
 -- Name: commnt commnt_pauthor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -303,7 +236,7 @@ ALTER TABLE ONLY public.commnt
 
 
 --
--- TOC entry 2042 (class 2606 OID 24647)
+-- TOC entry 2047 (class 2606 OID 16439)
 -- Name: post post_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -312,7 +245,7 @@ ALTER TABLE ONLY public.post
 
 
 --
--- TOC entry 2051 (class 2606 OID 24727)
+-- TOC entry 2048 (class 2606 OID 16444)
 -- Name: tagcommntuser tagcommntuser_cauthor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -321,7 +254,7 @@ ALTER TABLE ONLY public.tagcommntuser
 
 
 --
--- TOC entry 2052 (class 2606 OID 24732)
+-- TOC entry 2049 (class 2606 OID 16449)
 -- Name: tagcommntuser tagcommntuser_taguser_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -330,7 +263,7 @@ ALTER TABLE ONLY public.tagcommntuser
 
 
 --
--- TOC entry 2049 (class 2606 OID 24712)
+-- TOC entry 2050 (class 2606 OID 16454)
 -- Name: tagpostuser tagpostuser_pauthor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -339,7 +272,7 @@ ALTER TABLE ONLY public.tagpostuser
 
 
 --
--- TOC entry 2050 (class 2606 OID 24717)
+-- TOC entry 2051 (class 2606 OID 16459)
 -- Name: tagpostuser tagpostuser_taguser_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -348,7 +281,7 @@ ALTER TABLE ONLY public.tagpostuser
 
 
 --
--- TOC entry 2048 (class 2606 OID 24702)
+-- TOC entry 2052 (class 2606 OID 16464)
 -- Name: topic topic_cauthor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -357,7 +290,7 @@ ALTER TABLE ONLY public.topic
 
 
 --
--- TOC entry 2047 (class 2606 OID 24697)
+-- TOC entry 2053 (class 2606 OID 16469)
 -- Name: topic topic_pauthor_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -366,7 +299,7 @@ ALTER TABLE ONLY public.topic
 
 
 --
--- TOC entry 2043 (class 2606 OID 24657)
+-- TOC entry 2054 (class 2606 OID 16474)
 -- Name: userrel userrel_srcuser_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -375,7 +308,7 @@ ALTER TABLE ONLY public.userrel
 
 
 --
--- TOC entry 2044 (class 2606 OID 24662)
+-- TOC entry 2055 (class 2606 OID 16479)
 -- Name: userrel userrel_tgtuser_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -383,8 +316,9 @@ ALTER TABLE ONLY public.userrel
     ADD CONSTRAINT userrel_tgtuser_fkey FOREIGN KEY (tgtuser) REFERENCES public.userprofile(login);
 
 
--- Completed on 2019-08-22 09:51:00
+-- Completed on 2019-09-13 09:00:03
 
 --
 -- PostgreSQL database dump complete
 --
+
