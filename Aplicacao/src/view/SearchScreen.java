@@ -7,14 +7,16 @@ package view;
 
 import entity.UserProfile;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import util.Constants;
 import util.DBConnection;
 

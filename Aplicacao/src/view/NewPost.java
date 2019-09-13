@@ -11,13 +11,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.DBConnection;
+import util.Constants;
 
 /**
  *
@@ -49,12 +49,18 @@ public class NewPost extends javax.swing.JPanel {
         imagePath = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
+        setBackground(Constants.WHITE);
+
         text.setColumns(20);
+        text.setLineWrap(true);
         text.setRows(5);
         jScrollPane2.setViewportView(text);
 
+        newPost.setForeground(Constants.WHITE);
         newPost.setText("New Post");
 
+        addImage.setBackground(Constants.WHITE);
+        addImage.setForeground(Constants.ORANGE);
         addImage.setText("addImage");
         addImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -62,6 +68,8 @@ public class NewPost extends javax.swing.JPanel {
             }
         });
 
+        endPost.setBackground(Constants.WHITE);
+        endPost.setForeground(Constants.ORANGE);
         endPost.setText("Post");
         endPost.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -69,7 +77,7 @@ public class NewPost extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setForeground(new java.awt.Color(255, 0, 51));
+        jLabel1.setForeground(Constants.YELLOW);
         jLabel1.setText("Write something or post a image");
         jLabel1.setVisible(false);
 
@@ -80,24 +88,20 @@ public class NewPost extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(addImage)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(endPost))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(newPost)
-                                        .addGap(84, 84, 84)
-                                        .addComponent(jLabel1)))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(newPost)
+                                .addGap(84, 84, 84)
+                                .addComponent(jLabel1))
+                            .addComponent(imagePath))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(imagePath)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(addImage)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(endPost)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +111,7 @@ public class NewPost extends javax.swing.JPanel {
                     .addComponent(newPost)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addImage)
@@ -139,7 +143,7 @@ public class NewPost extends javax.swing.JPanel {
             }
 
             CardLayout cl = (CardLayout) this.getParent().getLayout();
-            cl.show(this.getParent(), "timeline");
+            cl.show(this.getParent(), "cuckoos");
         } else {
             jLabel1.setVisible(true);
         }
