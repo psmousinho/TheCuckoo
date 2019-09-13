@@ -69,42 +69,44 @@ public class SearchScreen extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     public void doSearch(String request) {
-        try {
-            Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = null;
-            ResultSet result = null;
-            Container cont = new Container();
-            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
-            int i = 0;
-            switch (request.charAt(0)) {
-                case '@': //User
-                    stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '" + request.substring(1) + "%' ORDER BY nfollowers DESC;");
-                    result = stmt.executeQuery();
-                    while(result.next()) {
-                        cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
-                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
-                        i++;
-                    }
-                    break;
-                case '#': //Topic
-                    stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '" + request.substring(1) + "%' ORDER BY datestamp DESC;");
-                    result = stmt.executeQuery();
-                    while(result.next()) {
-                        i++;
-                    }
-                    break;
-                default: //Something else
-                    break;
+        if(request.trim().length() > 0) {
+            try {
+                Connection con = DBConnection.getConnection();
+                PreparedStatement stmt = null;
+                ResultSet result = null;
+                Container cont = new Container();
+                cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+                int i = 0;
+                switch (request.charAt(0)) {
+                    case '@': //User
+                        stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '" + request.substring(1) + "%' ORDER BY nfollowers DESC;");
+                        result = stmt.executeQuery();
+                        while(result.next()) {
+                            cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
+                                                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                            i++;
+                        }
+                        break;
+                    case '#': //Topic
+                        stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '" + request.substring(1) + "%' ORDER BY datestamp DESC;");
+                        result = stmt.executeQuery();
+                        while(result.next()) {
+                            i++;
+                        }
+                        break;
+                    default: //Something else
+                        break;
+                }
+                if(stmt != null && result != null) {
+                    cont.revalidate();
+                    scrollPane.getViewport().setView(cont);
+                    scrollPane.getViewport().setBackground(Constants.ORANGE);
+                    result.close();
+                    stmt.close();
+                }
+            }catch (SQLException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if(stmt != null && result != null) {
-                cont.revalidate();
-                scrollPane.getViewport().setView(cont);
-                scrollPane.getViewport().setBackground(Constants.ORANGE);
-                result.close();
-                stmt.close();
-            }
-        }catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

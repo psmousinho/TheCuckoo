@@ -50,6 +50,6 @@ public class UserResult extends JPanel {
     }
     
     private void actionPerformed(ActionEvent evt) {
-        home.changeScreenTemporary(new ProfileScreen(user, false));
+        home.changeScreenTemporary(new ProfileScreen(user, home, false));
     }
 }

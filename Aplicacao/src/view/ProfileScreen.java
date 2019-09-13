@@ -26,14 +26,16 @@ public class ProfileScreen extends JPanel {
         LIST_POSTS, NEW_POST, FOLLOWERS, FOLLOWING, NOTHING;
     }
     
+    private Home home;
     private UserProfile user;
     private NewPost newPost;
     private boolean belong;
     private int status;
     private ProfileState state;
     
-    public ProfileScreen(UserProfile user, boolean belong) {
+    public ProfileScreen(UserProfile user, Home home, boolean belong) {
         this.user = user;
+        this.home = home;
         this.belong = belong;
         
         initComponents();
@@ -105,7 +107,7 @@ public class ProfileScreen extends JPanel {
         });
 
         middlePanel.setBackground(Constants.ORANGE);
-        middlePanel.setLayout(new java.awt.GridLayout());
+        middlePanel.setLayout(new java.awt.GridLayout(1, 0));
 
         btPost.setBackground(Constants.WHITE);
         btPost.setForeground(Constants.ORANGE);
@@ -274,7 +276,32 @@ public class ProfileScreen extends JPanel {
 
     private void btFollowersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFollowersActionPerformed
         if(state != ProfileState.FOLLOWERS) {
-            //TODO: Show followers
+            try {
+                Connection con = DBConnection.getConnection();
+                PreparedStatement stmt = null;
+                ResultSet result = null;
+                Container cont = new Container();
+                cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+                stmt = con.prepareStatement("SELECT * FROM userprofile INNER JOIN userrel ON userprofile.login = userrel.srcuser WHERE tgtuser = '" + user.getUsername() + "' AND status = 2;");
+                result = stmt.executeQuery();
+                int i = 0;
+                while(result.next()) {
+                        cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
+                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                        i++;
+                }
+                CardLayout cl = (CardLayout) bottomPanel.getLayout();
+                cl.show(bottomPanel, "cuckoos");
+                //if(stmt != null && result != null) {
+                    cont.revalidate();
+                    myCuckoos.getViewport().setView(cont);
+                    myCuckoos.getViewport().setBackground(Constants.ORANGE);
+                    result.close();
+                    stmt.close();
+                //}
+            } catch (SQLException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
             state = ProfileState.FOLLOWERS;
             updateButtons();
         }
@@ -282,7 +309,32 @@ public class ProfileScreen extends JPanel {
 
     private void btFollowingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFollowingActionPerformed
         if(state != ProfileState.FOLLOWING) {
-            //TODO: Show following
+            try {
+                Connection con = DBConnection.getConnection();
+                PreparedStatement stmt = null;
+                ResultSet result = null;
+                Container cont = new Container();
+                cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+                stmt = con.prepareStatement("SELECT * FROM userprofile INNER JOIN userrel ON userprofile.login = userrel.tgtuser WHERE srcuser = '" + user.getUsername() + "' AND status = 2;");
+                result = stmt.executeQuery();
+                int i = 0;
+                while(result.next()) {
+                        cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
+                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                        i++;
+                }
+                CardLayout cl = (CardLayout) bottomPanel.getLayout();
+                cl.show(bottomPanel, "cuckoos");
+                //if(stmt != null && result != null) {
+                    cont.revalidate();
+                    myCuckoos.getViewport().setView(cont);
+                    myCuckoos.getViewport().setBackground(Constants.ORANGE);
+                    result.close();
+                    stmt.close();
+                //}
+            } catch (SQLException ex) {
+                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+            }
             state = ProfileState.FOLLOWING;
             updateButtons();
         }
