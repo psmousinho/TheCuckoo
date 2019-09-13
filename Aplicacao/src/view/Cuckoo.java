@@ -6,6 +6,20 @@
 package view;
 
 import entity.Post;
+import entity.UserProfile;
+import java.nio.file.attribute.UserPrincipal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import util.DBConnection;
 
 /**
  *
@@ -44,10 +58,12 @@ public class Cuckoo extends javax.swing.JPanel {
     private void initComponents() {
 
         author = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        text = new javax.swing.JTextArea();
         image = new javax.swing.JLabel();
         comment = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtCommnt = new javax.swing.JTextArea();
+        jSeparator1 = new javax.swing.JSeparator();
 
         author.setText("@" + this.post.getAuthor().getUsername());
         author.setToolTipText("\"Go to Profile\"");
@@ -56,12 +72,6 @@ public class Cuckoo extends javax.swing.JPanel {
                 authorMouseClicked(evt);
             }
         });
-
-        text.setColumns(20);
-        text.setRows(5);
-        text.setText(this.post.getText());
-        text.setEditable(false);
-        jScrollPane1.setViewportView(text);
 
         image.setText("Image");
 
@@ -72,20 +82,35 @@ public class Cuckoo extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText(this.post.getText());
+
+        jScrollPane1.setVisible(false);
+
+        txtCommnt.setColumns(20);
+        txtCommnt.setRows(5);
+        jScrollPane1.setViewportView(txtCommnt);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(author)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(comment)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                            .addComponent(author))
-                        .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .addComponent(jSeparator1))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,29 +118,91 @@ public class Cuckoo extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(author)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(image)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comment)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed
-        // TODO add your handling code here:
+        if(jScrollPane1.isVisible()){
+            if(!txtCommnt.getText().equals("")) {
+                
+                //lidar com marcaçoes
+                //lidar com topicos
+                
+                Connection con = DBConnection.getConnection();
+                try {
+                    Timestamp now = new Timestamp(new Date().getTime());
+                     String st = String.format("INSERT INTO commnt values('%s','%s','%s','%s','%s');", 
+                                            UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getName(), post.getDate(), now ,txtCommnt.getText());
+                    Statement stmt = con.createStatement();
+                    stmt.executeUpdate(st);
+                    addTags(con, now);
+                    addTopics(con, now);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Cuckoo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+            txtCommnt.setText("");
+            jScrollPane1.setVisible(false);
+        } else {
+            jScrollPane1.setVisible(true);
+        }
+        this.revalidate();
     }//GEN-LAST:event_commentActionPerformed
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), false));
+        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(),home, false));
     }//GEN-LAST:event_authorMouseClicked
 
+    private void addTags(Connection con, Timestamp now) throws SQLException {
+        Pattern regex = Pattern.compile("@\\w{4,32}");
+        Matcher matcher = regex.matcher(txtCommnt.getText());
+
+        while (matcher.find()) {
+            String tagUser = matcher.group().substring(1);
+            String st = String.format("SELECT * FROM userprofile where login = '%s'", tagUser);
+            PreparedStatement stmt = con.prepareStatement(st);
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                st = String.format("INSERT INTO tagcommntuser values( '%s', '%s', '%s', '%s', '%s');",
+                                    UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getName(), post.getDate(), tagUser);
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+
+        }
+
+        //TODO: tratar de quadno o usuario marcado nao existe
+    }
+
+    private void addTopics(Connection con, Timestamp now) throws SQLException {
+        Pattern regex = Pattern.compile("#\\w{4,32}");
+        Matcher matcher = regex.matcher(txtCommnt.getText());
+
+        while (matcher.find()) {
+            String st = String.format("INSERT INTO topic (tname, datestamp, cauthor, cpauthor, cpdate, cdate) values( '%s', '%s', '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), post.getDate(), now);
+            PreparedStatement stmt = con.prepareStatement(st);
+            stmt.executeUpdate();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel author;
     private javax.swing.JButton comment;
     private javax.swing.JLabel image;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea text;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea txtCommnt;
     // End of variables declaration//GEN-END:variables
 }
