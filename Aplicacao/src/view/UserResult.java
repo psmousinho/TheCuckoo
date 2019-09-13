@@ -2,6 +2,7 @@ package view;
 
 import entity.UserProfile;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -26,13 +27,14 @@ public class UserResult extends JPanel {
 
     private void initComponents() {
         setLayout(Constants.GRID_3);
+        setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
         
         usernameLabel = new JLabel();
         usernameLabel.setText("@" + user.getUsername());
         usernameLabel.setFont(Constants.LUCIDA);
         
         nameLabel = new JLabel();
-        nameLabel.setText("Name: " + user.getUsername());
+        nameLabel.setText("(" + user.getUsername() + ")");
         nameLabel.setFont(Constants.LUCIDA);
         
         btVisit = new JButton();
