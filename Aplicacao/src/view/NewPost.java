@@ -9,6 +9,7 @@ import entity.UserProfile;
 import java.awt.CardLayout;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -127,13 +128,13 @@ public class NewPost extends javax.swing.JPanel {
 
                 Connection con = DBConnection.getConnection();
                 Timestamp now = new Timestamp(new Date().getTime());
-                String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);",UserProfile.CURRENT_USER.getUsername(), now, text.getText(), path);
+                String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);", UserProfile.CURRENT_USER.getUsername(), now, text.getText(), path);
                 PreparedStatement stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                
-                addTags(con,now);
-                addTopics(con,now);
-                
+
+                addTags(con, now);
+                addTopics(con, now);
+
             } catch (SQLException ex) {
                 Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -154,27 +155,34 @@ public class NewPost extends javax.swing.JPanel {
         Matcher matcher = regex.matcher(this.text.getText());
 
         while (matcher.find()) {
-            String st = String.format("INSERT INTO tagpostuser values( '%s', '%s', '%s');",UserProfile.CURRENT_USER.getUsername(), now, matcher.group().substring(1) );
+            String tagUser = matcher.group().substring(1);
+            String st = String.format("SELECT * FROM userprofile where login = '%s'", tagUser);
             PreparedStatement stmt = con.prepareStatement(st);
-            stmt.executeUpdate();
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                st = String.format("INSERT INTO tagpostuser values( '%s', '%s', '%s');", UserProfile.CURRENT_USER.getUsername(), now, tagUser);
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+
         }
-        
+
         //TODO: tratar de quadno o usuario marcado nao existe
     }
-    
-     private void addTopics(Connection con, Timestamp now) throws SQLException {
+
+    private void addTopics(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("#\\w{4,32}");
         Matcher matcher = regex.matcher(this.text.getText());
 
         while (matcher.find()) {
-            String st = String.format("INSERT INTO topic values( '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), now );
+            String st = String.format("INSERT INTO topic values( '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), now);
             PreparedStatement stmt = con.prepareStatement(st);
             stmt.executeUpdate();
         }
-        
+
         //TODO: tratar de quadno o usuario marcado nao existe
     }
-     
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addImage;
     private javax.swing.JButton endPost;
