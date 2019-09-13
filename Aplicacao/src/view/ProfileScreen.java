@@ -139,25 +139,35 @@ public class ProfileScreen extends javax.swing.JPanel {
         if (!belong && !user.isPrivate()) {
             Connection con = DBConnection.getConnection();
             Statement stmt;
-            String st;
+            String st = null;
             switch (status) {
                 case 0: //na
                 default:
                     st = String.format("insert into userrel values ('%s', '%s', '%s', '%d');", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername(), new Timestamp(new Date().getTime()), 2);
                     status = 2;
+                    btAction.setText("Unfollow");
                     break;
                 case 1: //requested
-                    st = String.format("update userrel set status = 0 where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
                     status = 0;
+                    btAction.setText("Pending");
                     break;
                 case 2: //following
-                    st = String.format("update userrel set status = 0 where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
                     status = 0;
+                    btAction.setText("Follow");
                     break;
                 case 3: //blocked
                     //TODO: Bloqueio
                     break;
             }
+            try {
+                stmt = con.createStatement();
+                stmt.executeUpdate(st);
+            } catch (SQLException ex) {
+                Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         } else {
             if (!bio.isEditable()) {
                 this.bio.setEditable(true);

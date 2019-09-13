@@ -11,11 +11,11 @@ import entity.*;
  *
  * @author Pablo Suria
  */
-public class Notification extends javax.swing.JPanel {
+public class Notification1 extends javax.swing.JPanel {
 
-    private NotificationTagPost notification;
+    private NotificationTagCommnt notification;
 
-    public Notification(NotificationTagPost notification) {
+    public Notification1(NotificationTagCommnt notification) {
         this.notification = notification;
         initComponents();
     }
@@ -39,9 +39,9 @@ public class Notification extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText(notification.getAuthor().getUsername());
+        jLabel1.setText("@"+ notification.getAuthor().getUsername());
 
-        jLabel2.setText("Marcou você em um Cuckoo");
+        jLabel2.setText("Marcou você em um comentario num Cuckoo de @" + notification.getPostAuthor());
 
         jLabel3.setText(notification.getDate());
 
@@ -54,7 +54,7 @@ public class Notification extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addContainerGap(168, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)

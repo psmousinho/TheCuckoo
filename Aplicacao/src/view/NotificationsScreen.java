@@ -6,24 +6,33 @@
 package view;
 
 import entity.*;
+import java.awt.Container;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BoxLayout;
+import util.DBConnection;
 
 /**
  *
  * @author aluno
  */
 public class NotificationsScreen extends javax.swing.JPanel {
-    
+
     private UserProfile user;
     private ArrayList<Notification> notifications;
-    
+
     /**
      * Creates new form NotificationsPanel
      */
     public NotificationsScreen(UserProfile user) {
         initComponents();
         this.user = user;
-        updateNotifications();
+        updatePostTab();
     }
 
     /**
@@ -35,46 +44,127 @@ public class NotificationsScreen extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        contentPanel = new javax.swing.JPanel();
+        scrollPane = new javax.swing.JScrollPane();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
-        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
-        contentPanel.setLayout(contentPanelLayout);
-        contentPanelLayout.setHorizontalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 378, Short.MAX_VALUE)
-        );
-        contentPanelLayout.setVerticalGroup(
-            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 448, Short.MAX_VALUE)
-        );
+        jButton1.setText("Tag Post");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jScrollPane1.setViewportView(contentPanel);
+        jButton2.setText("Tag Comment");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("New Followers");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public void updateNotifications() {
-        notifications = new ArrayList<>();
-        
-        //query das notificações dos usuarios
-        
-        for(Notification noti : notifications) {
-            contentPanel.add(new Notification(noti));
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       updatePostTab();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        updateCommentTab();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    public void updatePostTab() {
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement("SELECT * from tagpostuser WHERE tagpostuser.taguser = '" + this.user.getName() + "'order by pdate desc;");
+            ResultSet result = stmt.executeQuery();
+
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            while (result.next()) {
+                PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("pauthor") + "';");
+                ResultSet resultAuthor = stmt2.executeQuery();
+                resultAuthor.next();
+                UserProfile author = new UserProfile(resultAuthor.getString("realname"), resultAuthor.getString("login"), resultAuthor.getString("bio"),
+                        resultAuthor.getBoolean("visibility"), resultAuthor.getInt("nfollowers"), resultAuthor.getInt("nfollowing"), resultAuthor.getString("lasttime"));
+                NotificationTagPost not = new NotificationTagPost(author, result.getString("pdate"), result.getString("taguser"));
+
+                cont.add(new Notification(not));
+            }
+            cont.revalidate();
+            scrollPane.getViewport().setView(cont);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateCommentTab() {
+        try {
+            Connection con = DBConnection.getConnection();
+
+            PreparedStatement stmt = con.prepareStatement("SELECT * from tagcommntuser WHERE taguser = '" + this.user.getName() + "'order by cdate desc;");
+            ResultSet result = stmt.executeQuery();
+
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            while (result.next()) {
+
+                PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("cauthor") + "';");
+                ResultSet resultAuthor = stmt2.executeQuery();
+                resultAuthor.next();
+                UserProfile commntAuthor = new UserProfile(resultAuthor.getString("realname"), resultAuthor.getString("login"), resultAuthor.getString("bio"),
+                        resultAuthor.getBoolean("visibility"), resultAuthor.getInt("nfollowers"), resultAuthor.getInt("nfollowing"), resultAuthor.getString("lasttime"));
+
+                resultAuthor.close();
+                stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("pauthor") + "';");
+                resultAuthor = stmt2.executeQuery();
+                UserProfile postAuthor = new UserProfile(resultAuthor.getString("realname"), resultAuthor.getString("login"), resultAuthor.getString("bio"),
+                        resultAuthor.getBoolean("visibility"), resultAuthor.getInt("nfollowers"), resultAuthor.getInt("nfollowing"), resultAuthor.getString("lasttime"));
+
+                NotificationTagCommnt not = new NotificationTagCommnt(postAuthor, result.getString("cpdate"), commntAuthor, result.getString("cdate"), result.getString("taguser"));
+
+                cont.add(new Notification1(not));
+            }
+            cont.revalidate();
+            scrollPane.getViewport().setView(cont);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel contentPanel;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JScrollPane scrollPane;
     // End of variables declaration//GEN-END:variables
 }

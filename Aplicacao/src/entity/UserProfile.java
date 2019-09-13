@@ -21,14 +21,24 @@ public class UserProfile {
     private boolean visibility;
     private int numberFollowers;
     private int numberFollowing;
+    private String lastTime;
     
-    public UserProfile(String realName, String login, String biography, boolean visibility, int numberFollowers, int numberFollowing) {
+    public UserProfile(String realName, String login, String biography, boolean visibility, int numberFollowers, int numberFollowing, String lastTime) {
         this.realName = realName;
         this.login = login;
         this.biography = biography;
         this.visibility = visibility;
         this.numberFollowers = numberFollowers;
         this.numberFollowing = numberFollowing;
+        this.lastTime = lastTime;
+    }
+
+    public String getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(String lastTime) {
+        this.lastTime = lastTime;
     }
     
     public static boolean validateUsername(String username) {

@@ -167,7 +167,7 @@ public class Landing extends JPanel {
             ResultSet result = stmt.executeQuery(st);
             if(result.next()) {
                 UserProfile user = new UserProfile( result.getString("realname"), result.getString("login"), result.getString("bio"), 
-                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"));
+                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
                 UserProfile.CURRENT_USER = user;
                 this.getParent().add(new Home(user));
                 this.getParent().remove(this);

@@ -4,6 +4,7 @@ import entity.UserProfile;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import util.Constants;
@@ -19,28 +20,28 @@ public class Home extends JPanel {
 
     private final UserProfile user;
     private State state;
-    
+
     private final ProfileScreen profile;
     private final NotificationsScreen notifications;
     private final TimeLineScreen timeline;
     private final SearchScreen search;
     private JPanel temporary;
-    
+
     public Home(UserProfile user) {
         initComponents();
         this.user = user;
-        
+
         this.profile = new ProfileScreen(this.user, true);
         this.notifications = new NotificationsScreen(this.user);
         this.timeline = new TimeLineScreen(this.user);
         this.search = new SearchScreen(this.user, this);
         this.temporary = new JPanel();
-        
+
         contentPanel.add(profile, "profile");
         contentPanel.add(notifications, "notifications");
         contentPanel.add(timeline, "timeline");
         contentPanel.add(search, "search");
-        
+
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         cl.show(contentPanel, "timeline");
         timeline.updateCuckoos();
@@ -230,7 +231,7 @@ public class Home extends JPanel {
     }//GEN-LAST:event_btSignOutActionPerformed
 
     private void btTimelineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimelineActionPerformed
-        if(state != State.TIME_LINE) {
+        if (state != State.TIME_LINE) {
             state = State.TIME_LINE;
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             cl.show(contentPanel, "timeline");
@@ -240,7 +241,7 @@ public class Home extends JPanel {
     }//GEN-LAST:event_btTimelineActionPerformed
 
     private void btProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btProfileActionPerformed
-        if(state != State.PROFILE) {
+        if (state != State.PROFILE) {
             state = State.PROFILE;
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             cl.show(contentPanel, "profile");
@@ -256,11 +257,15 @@ public class Home extends JPanel {
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void searchFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyTyped
-
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            CardLayout cl = (CardLayout) contentPanel.getLayout();
+            cl.show(contentPanel, "search");
+            this.search.doSearch(searchField.getText());
+        }
     }//GEN-LAST:event_searchFieldKeyTyped
 
     private void btSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSearchActionPerformed
-        if(state != State.SEARCH) {
+        if (state != State.SEARCH) {
             state = State.SEARCH;
             leftPanel.remove(btNotifications);
             leftPanel.remove(btTimeline);
@@ -284,23 +289,23 @@ public class Home extends JPanel {
     }//GEN-LAST:event_btSearchActionPerformed
 
     private void btNotificationsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNotificationsActionPerformed
-        if(state != State.NOTIFICATIONS) {
+        if (state != State.NOTIFICATIONS) {
             state = State.NOTIFICATIONS;
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             cl.show(contentPanel, "notifications");
             notifications.updateNotifications();
             updateButtons();
-        }    
+        }
     }//GEN-LAST:event_btNotificationsActionPerformed
 
     private void updateButtons() {
-        for(Component c : leftPanel.getComponents()) {
-            if(c instanceof JButton) {
+        for (Component c : leftPanel.getComponents()) {
+            if (c instanceof JButton) {
                 c.setBackground(Color.WHITE);
                 c.setForeground(Constants.PURPLE);
             }
         }
-        switch(state) {
+        switch (state) {
             case TIME_LINE:
                 btTimeline.setForeground(Constants.WHITE);
                 btTimeline.setBackground(Constants.ORANGE);
@@ -315,7 +320,7 @@ public class Home extends JPanel {
                 break;
         }
     }
-    
+
     /*private void changeScreen(State newState) {
         state = newState;
         
@@ -347,11 +352,10 @@ public class Home extends JPanel {
                 btTimeline.setText("T");
         }
     }*/
-    
-    public void changeScreenTemporary(JPanel target){
+    public void changeScreenTemporary(JPanel target) {
         contentPanel.remove(temporary);
         temporary = target;
-        contentPanel.add(temporary,"temporary");
+        contentPanel.add(temporary, "temporary");
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         cl.show(contentPanel, "temporary");
     }

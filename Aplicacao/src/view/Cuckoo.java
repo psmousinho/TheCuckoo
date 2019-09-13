@@ -43,6 +43,11 @@ public class Cuckoo extends javax.swing.JPanel {
         comment = new javax.swing.JButton();
 
         author.setText("@" + this.post.getAuthor().getUsername());
+        author.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                authorMouseClicked(evt);
+            }
+        });
 
         text.setColumns(20);
         text.setRows(5);
@@ -97,6 +102,10 @@ public class Cuckoo extends javax.swing.JPanel {
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_commentActionPerformed
+
+    private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
+        // TODO ir para o perfil do autor
+    }//GEN-LAST:event_authorMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

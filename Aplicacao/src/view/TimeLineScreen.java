@@ -61,7 +61,7 @@ public class TimeLineScreen extends javax.swing.JPanel {
         
         try {
             Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * from post inner join userrel on post.author = userrel.tgtuser WHERE srcuser = '" + user.getUsername() + "' and status = 1 order by post.datestamp;");
+            PreparedStatement stmt = con.prepareStatement("SELECT * from post inner join userrel on post.author = userrel.tgtuser WHERE srcuser = '" + user.getUsername() + "' and status = 2 order by post.datestamp;");
             ResultSet result = stmt.executeQuery();
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
@@ -69,7 +69,7 @@ public class TimeLineScreen extends javax.swing.JPanel {
                 stmt = con.prepareStatement("SELECT * from userprofile where login = '" + result.getString("author") + "';");
                 ResultSet result2 = stmt.executeQuery();
                 result2.next();
-                UserProfile author = new UserProfile(result2.getString("realname") ,result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"));
+                UserProfile author = new UserProfile(result2.getString("realname") ,result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
                 Post post = new Post(author, result.getString("datestamp"),result.getString("ptext"),result.getString("foto"));
                 cont.add(new Cuckoo(post));
             }

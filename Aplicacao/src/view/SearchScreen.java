@@ -80,7 +80,7 @@ public class SearchScreen extends javax.swing.JPanel {
                     result = stmt.executeQuery();
                     while(result.next()) {
                         cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
-                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
                         i++;
                     }
                     break;
