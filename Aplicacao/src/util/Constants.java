@@ -10,8 +10,9 @@ import javax.swing.SwingConstants;
 public class Constants {
     public static final Dimension DIMENSION = new Dimension(380, 450);
     public static final Font LUCIDA = new Font("Lucida Grande", 0, 14);
-    public static final GridLayout GRID_3 = new GridLayout(0, 3);
-
+    public static final GridLayout GRID_2 = new GridLayout(0, 2);
+    public static final GridLayout GRID_1 = new GridLayout(0, 1);
+    
     public static final Color BLUE = new Color(0, 122, 255);
     public static final Color BROWN = new Color(162, 132, 94);
     public static final Color GRAY = new Color(142, 142, 147);

@@ -107,7 +107,7 @@ public class Cuckoo extends javax.swing.JPanel {
     }//GEN-LAST:event_commentActionPerformed
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), false));
+        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), home, false));
     }//GEN-LAST:event_authorMouseClicked
 
 

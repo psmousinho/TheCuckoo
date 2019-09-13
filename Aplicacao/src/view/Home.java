@@ -29,7 +29,7 @@ public class Home extends JPanel {
         initComponents();
         this.user = user;
 
-        this.profile = new ProfileScreen(this.user, true);
+        this.profile = new ProfileScreen(this.user, this, true);
         this.notifications = new NotificationsScreen(this.user);
         this.timeline = new TimeLineScreen(this.user, this);
         this.search = new SearchScreen(this.user, this);
