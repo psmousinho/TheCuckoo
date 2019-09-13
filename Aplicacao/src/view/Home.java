@@ -293,7 +293,7 @@ public class Home extends JPanel {
             state = State.NOTIFICATIONS;
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             cl.show(contentPanel, "notifications");
-            notifications.updateNotifications();
+            notifications.updatePostTab();
             updateButtons();
         }
     }//GEN-LAST:event_btNotificationsActionPerformed
