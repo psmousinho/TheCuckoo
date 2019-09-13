@@ -5,18 +5,18 @@
  */
 package view;
 
-import entity.Post;
 import entity.UserProfile;
 import java.awt.CardLayout;
-import java.awt.Container;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BoxLayout;
-import javax.swing.JTextArea;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import util.DBConnection;
 
 /**
@@ -121,20 +121,26 @@ public class NewPost extends javax.swing.JPanel {
         if (!text.getText().equals("") || !imagePath.getText().equals("")) {
             try {
                 String path = "null";
-                if (imagePath.getText() != "") {
+                if (!imagePath.getText().equals("")) {
                     path = "'" + imagePath.getText() + "'";
                 }
 
                 Connection con = DBConnection.getConnection();
-                PreparedStatement stmt = con.prepareStatement("INSERT INTO post values( '" + UserProfile.CURRENT_USER.getUsername() + "', now(), '" + text.getText() + "', " + path + ");");
+                Timestamp now = new Timestamp(new Date().getTime());
+                String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);",UserProfile.CURRENT_USER.getUsername(), now, text.getText(), path);
+                PreparedStatement stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
+                
+                addTags(con,now);
+                addTopics(con,now);
+                
             } catch (SQLException ex) {
                 Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
 
             CardLayout cl = (CardLayout) this.getParent().getLayout();
             cl.show(this.getParent(), "timeline");
-        }else {
+        } else {
             jLabel1.setVisible(true);
         }
     }//GEN-LAST:event_endPostActionPerformed
@@ -143,7 +149,32 @@ public class NewPost extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_addImageActionPerformed
 
+    private void addTags(Connection con, Timestamp now) throws SQLException {
+        Pattern regex = Pattern.compile("@\\w{4,32}");
+        Matcher matcher = regex.matcher(this.text.getText());
 
+        while (matcher.find()) {
+            String st = String.format("INSERT INTO tagpostuser values( '%s', '%s', '%s');",UserProfile.CURRENT_USER.getUsername(), now, matcher.group().substring(1) );
+            PreparedStatement stmt = con.prepareStatement(st);
+            stmt.executeUpdate();
+        }
+        
+        //TODO: tratar de quadno o usuario marcado nao existe
+    }
+    
+     private void addTopics(Connection con, Timestamp now) throws SQLException {
+        Pattern regex = Pattern.compile("#\\w{4,32}");
+        Matcher matcher = regex.matcher(this.text.getText());
+
+        while (matcher.find()) {
+            String st = String.format("INSERT INTO topic values( '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), now );
+            PreparedStatement stmt = con.prepareStatement(st);
+            stmt.executeUpdate();
+        }
+        
+        //TODO: tratar de quadno o usuario marcado nao existe
+    }
+     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addImage;
     private javax.swing.JButton endPost;

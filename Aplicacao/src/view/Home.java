@@ -382,6 +382,7 @@ public class Home extends JPanel {
         contentPanel.add(temporary, "temporary");
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         cl.show(contentPanel, "temporary");
+        state = State.NOTHING;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
