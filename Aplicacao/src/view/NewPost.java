@@ -7,6 +7,12 @@ package view;
 
 import entity.UserProfile;
 import java.awt.CardLayout;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import util.DBConnection;
 import util.Constants;
 
@@ -25,10 +33,9 @@ import util.Constants;
  * @author Pablo Suria
  */
 public class NewPost extends javax.swing.JPanel {
-
-    /**
-     * Creates new form newPost
-     */
+    
+    private File file;
+    
     public NewPost() {
         initComponents();
     }
@@ -78,6 +85,10 @@ public class NewPost extends javax.swing.JPanel {
             }
         });
 
+        imagePath.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        imagePath.setText("ImagePath");
+        imagePath.setVisible(false);
+
         jLabel1.setForeground(Constants.YELLOW);
         jLabel1.setText("Write something or post a image");
         jLabel1.setVisible(false);
@@ -91,17 +102,17 @@ public class NewPost extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(addImage)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(endPost))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(newPost)
                                 .addGap(84, 84, 84)
                                 .addComponent(jLabel1))
-                            .addComponent(imagePath))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addImage)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(endPost)))
+                            .addComponent(imagePath, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -112,13 +123,14 @@ public class NewPost extends javax.swing.JPanel {
                     .addComponent(newPost)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addImage)
                     .addComponent(endPost))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(imagePath))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(imagePath)
+                .addGap(20, 20, 20))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -127,22 +139,23 @@ public class NewPost extends javax.swing.JPanel {
             try {
                 String path = "null";
                 if (!imagePath.getText().equals("")) {
+                    moveImage();
                     path = "'" + imagePath.getText() + "'";
                 }
-
+                
                 Connection con = DBConnection.getConnection();
                 Timestamp now = new Timestamp(new Date().getTime());
                 String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);", UserProfile.CURRENT_USER.getUsername(), now, text.getText(), path);
                 PreparedStatement stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-
+                
                 addTags(con, now);
                 addTopics(con, now);
-
+                
             } catch (SQLException ex) {
                 Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
             CardLayout cl = (CardLayout) this.getParent().getLayout();
             cl.show(this.getParent(), "cuckoos");
         } else {
@@ -151,13 +164,21 @@ public class NewPost extends javax.swing.JPanel {
     }//GEN-LAST:event_endPostActionPerformed
 
     private void addImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addImageActionPerformed
-        // TODO add your handling code here:
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("png", "PNG", "jpg", "JPEG file", "jpeg");
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(filter);
+        int answer = chooser.showOpenDialog(null);
+        if (answer == JFileChooser.APPROVE_OPTION) {
+            file = new File(chooser.getSelectedFile().getAbsolutePath());
+            imagePath.setText(file.getName());
+            imagePath.setVisible(true);
+        }
     }//GEN-LAST:event_addImageActionPerformed
-
+    
     private void addTags(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("@\\w{4,32}");
         Matcher matcher = regex.matcher(this.text.getText());
-
+        
         while (matcher.find()) {
             String tagUser = matcher.group().substring(1);
             String st = String.format("SELECT * FROM userprofile where login = '%s'", tagUser);
@@ -168,18 +189,43 @@ public class NewPost extends javax.swing.JPanel {
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
-
+            
         }
     }
-
+    
     private void addTopics(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("#\\w{4,32}");
         Matcher matcher = regex.matcher(this.text.getText());
-
+        
         while (matcher.find()) {
             String st = String.format("INSERT INTO topic values( '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), now);
             PreparedStatement stmt = con.prepareStatement(st);
             stmt.executeUpdate();
+        }
+    }
+    
+    private void moveImage() {
+        if (file != null) {
+            FileInputStream origem;
+            FileOutputStream destino;
+            FileChannel fcOrigem;
+            FileChannel fcDestino;
+            try {
+                origem = new FileInputStream(file.getPath());
+                destino = new FileOutputStream("imagens\\" + file.getName());
+                fcOrigem = origem.getChannel();
+                fcDestino = destino.getChannel();
+                fcOrigem.transferTo(0, fcOrigem.size(), fcDestino);
+                origem.close();
+                destino.close();
+                
+                imagePath.setText("imagens\\" + file.getName());
+                
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

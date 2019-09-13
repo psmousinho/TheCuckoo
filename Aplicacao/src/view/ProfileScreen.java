@@ -349,7 +349,7 @@ public class ProfileScreen extends JPanel {
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
                 Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
-                cont.add(new Cuckoo(post, null));
+                cont.add(new Cuckoo(post, home));
             }
             cont.revalidate();
             myCuckoos.setPreferredSize(getParent().getSize());

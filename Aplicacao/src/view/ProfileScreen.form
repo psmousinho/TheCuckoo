@@ -14,9 +14,6 @@
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[338, 396]"/>
     </Property>
-    <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[338, 396]"/>
-    </Property>
   </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -75,7 +72,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btAction" min="-2" pref="148" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="middlePanel" alignment="1" pref="326" max="32767" attributes="0"/>
+                      <Component id="middlePanel" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>

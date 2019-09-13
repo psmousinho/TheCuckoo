@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
-import entity.Post;
-import entity.UserProfile;
+import entity.*;
+import java.awt.Container;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,51 +13,35 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.BoxLayout;
 import util.DBConnection;
 
-/**
- *
- * @author Pablo Suria
- */
-public class Cuckoo extends javax.swing.JPanel {
+public class PostScreen extends javax.swing.JPanel {
 
     private Post post;
     private Home home;
 
-    /**
-     * Creates new form Cuckoo
-     */
-    public Cuckoo(Post post, Home home) {
+    public PostScreen(Post post, Home home) {
         this.post = post;
         this.home = home;
+
         initComponents();
 
-        if (post.getPhoto() == null) {
-            image.setVisible(false);
-        }
-        
-        btDelete.setVisible(post.getAuthor().getUsername() == UserProfile.CURRENT_USER.getUsername());
-
+        updateComments();
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         author = new javax.swing.JLabel();
         image = new javax.swing.JLabel();
         comment = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        txtPost = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtCommnt = new javax.swing.JTextArea();
-        jSeparator1 = new javax.swing.JSeparator();
-        btDelete = new javax.swing.JButton();
-
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                formMouseClicked(evt);
-            }
-        });
+        commnts = new javax.swing.JScrollPane();
 
         author.setText("@" + this.post.getAuthor().getUsername());
         author.setToolTipText("\"Go to Profile\"");
@@ -81,7 +60,7 @@ public class Cuckoo extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText(this.post.getText());
+        txtPost.setText(this.post.getText());
 
         jScrollPane1.setVisible(false);
 
@@ -89,45 +68,35 @@ public class Cuckoo extends javax.swing.JPanel {
         txtCommnt.setRows(5);
         jScrollPane1.setViewportView(txtCommnt);
 
-        btDelete.setText("X");
-        btDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btDeleteActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(author)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(image, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtPost, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(comment))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(author)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btDelete))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(image, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(comment)
+                        .addGap(30, 30, 30))
+                    .addComponent(commnts))
                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(author)
-                    .addComponent(btDelete))
+                .addComponent(author)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
+                .addComponent(txtPost)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(image)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -135,17 +104,32 @@ public class Cuckoo extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comment)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8))
+                .addComponent(commnts, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
+        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), home, false));
+    }//GEN-LAST:event_authorMouseClicked
 
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed
         if (jScrollPane1.isVisible()) {
             if (!txtCommnt.getText().equals("")) {
 
-                //lidar com marcaçoes
-                //lidar com topicos
                 Connection con = DBConnection.getConnection();
                 try {
                     Timestamp now = new Timestamp(new Date().getTime());
@@ -167,34 +151,6 @@ public class Cuckoo extends javax.swing.JPanel {
         }
         this.revalidate();
     }//GEN-LAST:event_commentActionPerformed
-
-    private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), home, false));
-    }//GEN-LAST:event_authorMouseClicked
-
-    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        home.changeScreenTemporary(new PostScreen(this.post, home));
-    }//GEN-LAST:event_formMouseClicked
-
-    private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed
-        try {
-            Connection con = DBConnection.getConnection();
-
-            deleteTags(con);
-            deleteTopics(con);
-
-            String st = String.format("delete from post where author = '%s' and datestamp = '%s'",
-                    post.getAuthor().getUsername(), post.getDate());
-            
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate(st);
-
-            stmt.close();
-            this.getParent().getParent().revalidate();
-        } catch (SQLException ex) {
-            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btDeleteActionPerformed
 
     private void addTags(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("@\\w{4,32}");
@@ -225,33 +181,39 @@ public class Cuckoo extends javax.swing.JPanel {
             stmt.executeUpdate();
         }
     }
-    
-    private void deleteTags(Connection con) throws SQLException {
-        String st = String.format("delete from tagpostuser where pauthor = '%s' and pdate = '%s'",
-                post.getAuthor().getUsername(), post.getDate());
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate(st);
 
-        stmt.close();
+    private void updateComments() {
+        try {
+            Connection con = DBConnection.getConnection();
+            String st = String.format("SELECT * from commnt WHERE pauthor = '%s' and pdate = '%s'", post.getAuthor().getUsername(), post.getDate());
+            PreparedStatement stmt = con.prepareStatement(st);
+            ResultSet result = stmt.executeQuery();
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            while (result.next()) {
+                stmt = con.prepareStatement("SELECT * from userprofile where login = '" + result.getString("author") + "';");
+                ResultSet result2 = stmt.executeQuery();
+                result2.next();
+                UserProfile author = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
+                Comment comment = new Comment(author, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
+                cont.add(new CommentPanel(comment, home));
+            }
+            cont.revalidate();
+            commnts.getViewport().setView(cont);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    private void deleteTopics(Connection con) throws SQLException {
-        String st = String.format("delete from topic where pauthor = '%s' and pdate = '%s'",
-                post.getAuthor().getUsername(), post.getDate());
-        Statement stmt = con.createStatement();
-        stmt.executeUpdate(st);
-
-        stmt.close();
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel author;
-    private javax.swing.JButton btDelete;
     private javax.swing.JButton comment;
+    private javax.swing.JScrollPane commnts;
     private javax.swing.JLabel image;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea txtCommnt;
+    private javax.swing.JLabel txtPost;
     // End of variables declaration//GEN-END:variables
 }
