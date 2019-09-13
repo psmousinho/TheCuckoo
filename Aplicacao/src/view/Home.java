@@ -113,7 +113,7 @@ public class Home extends JPanel {
         btProfile.setToolTipText("Profile");
         btProfile.setMaximumSize(new java.awt.Dimension(48, 48));
         btProfile.setMinimumSize(new java.awt.Dimension(48, 48));
-        btProfile.setMixingCutoutShape(null);
+        //btProfile.setMixingCutoutShape(null);
         btProfile.setPreferredSize(new java.awt.Dimension(48, 48));
         btProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
