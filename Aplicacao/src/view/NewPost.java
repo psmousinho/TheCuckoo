@@ -170,8 +170,6 @@ public class NewPost extends javax.swing.JPanel {
             }
 
         }
-
-        //TODO: tratar de quadno o usuario marcado nao existe
     }
 
     private void addTopics(Connection con, Timestamp now) throws SQLException {
@@ -183,8 +181,6 @@ public class NewPost extends javax.swing.JPanel {
             PreparedStatement stmt = con.prepareStatement(st);
             stmt.executeUpdate();
         }
-
-        //TODO: tratar de quadno o usuario marcado nao existe
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
