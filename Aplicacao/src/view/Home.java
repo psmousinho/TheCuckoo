@@ -31,7 +31,7 @@ public class Home extends JPanel {
 
         this.profile = new ProfileScreen(this.user, true);
         this.notifications = new NotificationsScreen(this.user);
-        this.timeline = new TimeLineScreen(this.user);
+        this.timeline = new TimeLineScreen(this.user, this);
         this.search = new SearchScreen(this.user, this);
         this.newPost = new NewPost();
         this.temporary = new JPanel();

@@ -25,13 +25,15 @@ import util.DBConnection;
 public class TimeLineScreen extends javax.swing.JPanel {
 
     private UserProfile user;
+    private Home home;
     
     /**
      * Creates new form TimeLinePanel
      */
-    public TimeLineScreen(UserProfile user) {
+    public TimeLineScreen(UserProfile user, Home home) {
         initComponents();
         this.user = user;
+        this.home = home;
     }
 
     /**
@@ -71,7 +73,7 @@ public class TimeLineScreen extends javax.swing.JPanel {
                 result2.next();
                 UserProfile author = new UserProfile(result2.getString("realname") ,result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
                 Post post = new Post(author, result.getString("datestamp"),result.getString("ptext"),result.getString("foto"));
-                cont.add(new Cuckoo(post));
+                cont.add(new Cuckoo(post, home));
             }
             cont.revalidate();
             cuckoos.getViewport().setView(cont);

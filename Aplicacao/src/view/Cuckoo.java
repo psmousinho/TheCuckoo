@@ -14,16 +14,21 @@ import entity.Post;
 public class Cuckoo extends javax.swing.JPanel {
 
     private Post post;
-
+    private Home home;
     /**
      * Creates new form Cuckoo
      */
-    public Cuckoo(Post post) {
+    public Cuckoo(Post post, Home home) {
         this.post = post;
+        this.home = home;
         initComponents();
         
         if(post.getPhoto() == null) {
             image.setVisible(false);
+        }
+        
+        if(home == null) {
+            author.setVisible(false);
         }
  
     }
@@ -45,6 +50,7 @@ public class Cuckoo extends javax.swing.JPanel {
         comment = new javax.swing.JButton();
 
         author.setText("@" + this.post.getAuthor().getUsername());
+        author.setToolTipText("\"Go to Profile\"");
         author.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 authorMouseClicked(evt);
@@ -101,7 +107,7 @@ public class Cuckoo extends javax.swing.JPanel {
     }//GEN-LAST:event_commentActionPerformed
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        // TODO ir para o perfil do autor
+        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), false));
     }//GEN-LAST:event_authorMouseClicked
 
 

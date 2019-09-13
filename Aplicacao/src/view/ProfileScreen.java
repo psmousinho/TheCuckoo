@@ -141,9 +141,13 @@ public class ProfileScreen extends javax.swing.JPanel {
             Statement stmt;
             String st = null;
             switch (status) {
-                case 0: //na
-                default:
-                    st = String.format("insert into userrel values ('%s', '%s', '%s', '%d');", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername(), new Timestamp(new Date().getTime()), 2);
+                case 0: // nothing
+                    st = String.format("update userrel set status = 2, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    status = 2;
+                    btAction.setText("Unfollow");
+                    break;
+                case -1:
+                    st = String.format("insert into userrel values ('%s', '%s', '%s', '%d')", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername(), new Timestamp(new Date().getTime()), 2);
                     status = 2;
                     btAction.setText("Unfollow");
                     break;
@@ -167,7 +171,7 @@ public class ProfileScreen extends javax.swing.JPanel {
             } catch (SQLException ex) {
                 Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         } else {
             if (!bio.isEditable()) {
                 this.bio.setEditable(true);
@@ -203,7 +207,7 @@ public class ProfileScreen extends javax.swing.JPanel {
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
                 Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
-                cont.add(new Cuckoo(post));
+                cont.add(new Cuckoo(post, null));
             }
             cont.revalidate();
             myCuckoos.getViewport().setView(cont);
@@ -235,8 +239,8 @@ public class ProfileScreen extends javax.swing.JPanel {
                 result = stmt.executeQuery();
                 if (result.next()) {
                     switch (status = result.getInt("status")) {
-                        case 0: //na
-                        default:
+                        case 0: //nothing
+                        case -1: //no relation
                             btAction.setText("Follow");
                             break;
                         case 1: //requested
@@ -249,6 +253,8 @@ public class ProfileScreen extends javax.swing.JPanel {
                             btAction.setText("Unblock");
                             break;
                     }
+                }else {
+                    status = -1;
                 }
 
             } catch (SQLException ex) {
