@@ -72,7 +72,6 @@ public class SearchScreen extends JPanel {
             switch(split[0].toLowerCase()) {
                 case "user": // Search for user
                     args = request.substring(5);
-                    System.out.println(args);
                     stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + args + "%' OR realname LIKE '%" + args + "%' OR bio LIKE '%" + args + "%'ORDER BY nfollowers DESC;");
                     result = stmt.executeQuery();
                     while(result.next()) {

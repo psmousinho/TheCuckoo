@@ -17,7 +17,7 @@ public class Home extends JPanel {
     private final UserProfile user;
     private HomeState state;
 
-    private final ProfileScreen profile;
+    private final ProfilePanel profile;
     private final NotificationsScreen notifications;
     private final TimeLineScreen timeline;
     private final SearchScreen search;
@@ -31,7 +31,7 @@ public class Home extends JPanel {
         this.emptySearchField = false;
         this.user = user;
 
-        this.profile = new ProfileScreen(this.user, this, true);
+        this.profile = new ProfilePanel(this.user, this, true);
         this.notifications = new NotificationsScreen(this.user);
         this.timeline = new TimeLineScreen(this.user, this);
         this.search = new SearchScreen(this.user, this);

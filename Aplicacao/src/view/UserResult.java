@@ -79,6 +79,6 @@ public class UserResult extends JPanel {
     }
     
     private void actionPerformed(ActionEvent evt) {
-        home.changeScreenTemporary(new ProfileScreen(user, home, user.getUsername().equals(UserProfile.CURRENT_USER.getUsername())));
+        home.changeScreenTemporary(new ProfilePanel(user, home, user.getUsername().equals(UserProfile.CURRENT_USER.getUsername())));
     }
 }
