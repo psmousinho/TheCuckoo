@@ -257,7 +257,7 @@ public class ProfilePanel extends JPanel {
             } catch (SQLException ex) {
                 Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
+        } else if(belong) {
             if (!bio.isEditable()) {
                 bio.setEditable(true);
                 btAction1.setText("Save");

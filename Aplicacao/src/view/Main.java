@@ -1,14 +1,11 @@
 package view;
 
 import java.awt.CardLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import util.Constants;
+import util.SoundEffect;
 
 public class Main extends JFrame {
     private JPanel contentPanel;
@@ -25,6 +22,7 @@ public class Main extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         contentPanel.add(new Landing());
         add(contentPanel);
+        SoundEffect.CUCKOO.play();
     }
     
     public static void main(String[] args) {
