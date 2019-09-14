@@ -101,7 +101,7 @@ public class SearchScreen extends JPanel {
                 result.close();
                 stmt.close();
             }
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

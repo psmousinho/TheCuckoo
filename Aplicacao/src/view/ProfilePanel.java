@@ -245,7 +245,7 @@ public class ProfilePanel extends javax.swing.JPanel {
                 stmt.close();
                 updateFollowers();
                 if(state == ProfileState.FOLLOWERS) {
-                    showFollowers();
+                    myCuckoos.getViewport().setView(showFollowers());
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
@@ -450,19 +450,19 @@ public class ProfilePanel extends javax.swing.JPanel {
         for (Component c : optionsPanel.getComponents()) {
             if (c instanceof JButton) {
                 c.setBackground(Color.WHITE);
-                c.setForeground(Constants.ORANGE);
+                c.setForeground(Constants.PURPLE);
             }
         }
         switch (state) {
             case FOLLOWERS:
                 btCuckoos.setText("Cuckoos");
                 btFollowers.setForeground(Constants.WHITE);
-                btFollowers.setBackground(Constants.ORANGE);
+                btFollowers.setBackground(Constants.PURPLE);
                 break;
             case FOLLOWING:
                 btCuckoos.setText("Cuckoos");
                 btFollowing.setForeground(Constants.WHITE);
-                btFollowing.setBackground(Constants.ORANGE);
+                btFollowing.setBackground(Constants.PURPLE);
                 break;
         }
     }

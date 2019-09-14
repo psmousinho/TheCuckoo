@@ -23,12 +23,14 @@ public class Home extends JPanel {
     private final SearchScreen search;
     private final NewPost newPost;
     private JPanel temporary;
+    private boolean searchFieldVisible;
     private boolean emptySearchField;
     
     public Home(UserProfile user) {
         initComponents();
         
         this.emptySearchField = false;
+        this.searchFieldVisible = false;
         this.user = user;
 
         this.profile = new ProfilePanel(this.user, this, true);
@@ -250,7 +252,8 @@ public class Home extends JPanel {
     }//GEN-LAST:event_searchFieldActionPerformed
 
     private void btSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSearchActionPerformed
-        if (state != HomeState.SEARCH) {
+        if (!searchFieldVisible) {
+            searchFieldVisible = true;
             state = HomeState.SEARCH;
             leftPanel.remove(btNotifications);
             leftPanel.remove(btTimeline);
@@ -265,6 +268,7 @@ public class Home extends JPanel {
             }
             leftPanel.revalidate();
         } else {
+            searchFieldVisible = false;
             state = HomeState.NOTHING;
             leftPanel.remove(searchField);
             leftPanel.remove(btSearch);
