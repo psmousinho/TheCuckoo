@@ -188,6 +188,9 @@ public class NewPost extends javax.swing.JPanel {
                 st = String.format("INSERT INTO tagpostuser values( '%s', '%s', '%s');", UserProfile.CURRENT_USER.getUsername(), now, tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
+                st = String.format("INSERT INTO notifications(target, code, pauthor, pdate) values('%s', 0, '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, now);
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
             }
             
         }

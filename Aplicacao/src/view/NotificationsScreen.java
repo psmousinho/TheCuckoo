@@ -17,7 +17,7 @@ import javax.swing.BoxLayout;
 import util.DBConnection;
 
 public class NotificationsScreen extends javax.swing.JPanel {
-
+    // Status 0 = TagPost; 1 = TagCmmnt; 2 = Follow Request; 3 = Follow Accept
     private UserProfile user;
     private Home home;
 
@@ -105,19 +105,19 @@ public class NotificationsScreen extends javax.swing.JPanel {
     public void updatePostTab() {
         try {
             Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * from tagpostuser WHERE tagpostuser.taguser = '" + this.user.getUsername() + "'order by pdate desc;");
+            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.pauthor where target = '" + user.getUsername() + "' and code = 0 order by pdate desc");
             ResultSet result = stmt.executeQuery();
 
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
-                PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("pauthor") + "';");
-                ResultSet resultAuthor = stmt2.executeQuery();
-                resultAuthor.next();
-                UserProfile author = new UserProfile(resultAuthor.getString("realname"), resultAuthor.getString("login"), resultAuthor.getString("bio"),
-                        resultAuthor.getBoolean("visibility"), resultAuthor.getInt("nfollowers"), resultAuthor.getInt("nfollowing"), resultAuthor.getString("lasttime"));
+               // PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("pauthor") + "';");
+                //ResultSet resultAuthor = stmt2.executeQuery();
+                //resultAuthor.next();
+                UserProfile author = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
+                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
 
-                if (!resultAuthor.getBoolean("visibility") || checkRelation(author.getUsername()) == 2) {
+                if (!result.getBoolean("visibility") || checkRelation(author.getUsername()) == 2) {
                     PreparedStatement stmt3 = con.prepareStatement("Select * from post where author = '" + result.getString("pauthor") + "' and datestamp = '" + result.getString("pdate") + "';");
                     ResultSet resultPost = stmt3.executeQuery();
                     resultPost.next();
@@ -138,20 +138,21 @@ public class NotificationsScreen extends javax.swing.JPanel {
     public void updateCommentTab() {
         try {
             Connection con = DBConnection.getConnection();
+            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.cpauthor where target = '" + user.getUsername() + "' and code = 1 order by cdate desc");
 
-            PreparedStatement stmt = con.prepareStatement("SELECT * from tagcommntuser WHERE taguser = '" + this.user.getUsername() + "'order by cdate desc;");
+            //PreparedStatement stmt = con.prepareStatement("SELECT * from tagcommntuser WHERE taguser = '" + this.user.getUsername() + "'order by cdate desc;");
             ResultSet result = stmt.executeQuery();
 
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
 
-                PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("cpauthor") + "';");
-                ResultSet resultAuthor = stmt2.executeQuery();
-                resultAuthor = stmt2.executeQuery();
-                resultAuthor.next();
-                UserProfile postAuthor = new UserProfile(resultAuthor.getString("realname"), resultAuthor.getString("login"), resultAuthor.getString("bio"),
-                        resultAuthor.getBoolean("visibility"), resultAuthor.getInt("nfollowers"), resultAuthor.getInt("nfollowing"), resultAuthor.getString("lasttime"));
+                //PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("cpauthor") + "';");
+                //ResultSet resultAuthor = stmt2.executeQuery();
+                //resultAuthor = stmt2.executeQuery();
+                //resultAuthor.next();
+                UserProfile postAuthor = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
+                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
 
                 if (!postAuthor.isPrivate() || checkRelation(postAuthor.getUsername()) == 2) {
                     PreparedStatement stmt3 = con.prepareStatement("Select * from post where author = '" + result.getString("cpauthor") + "' and datestamp = '" + result.getString("cpdate") + "';");
@@ -175,17 +176,19 @@ public class NotificationsScreen extends javax.swing.JPanel {
     public void updateFollowersTab() {
         try {
             Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * from userrel WHERE tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "'and (status = 2 or status = 1) order by datestamp desc;");
+            //PreparedStatement stmt = con.prepareStatement("SELECT * from userrel WHERE tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "'and (status = 2 or status = 1) order by datestamp desc;");
+            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.rsource where target = '" + user.getUsername() + "' and (code = 2 or code = 3) order by rdate desc;");
+
             ResultSet result = stmt.executeQuery();
 
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
-                PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("srcuser") + "';");
-                ResultSet resultSrc = stmt2.executeQuery();
-                resultSrc.next();
-                UserProfile src = new UserProfile(resultSrc.getString("realname"), resultSrc.getString("login"), resultSrc.getString("bio"),
-                        resultSrc.getBoolean("visibility"), resultSrc.getInt("nfollowers"), resultSrc.getInt("nfollowing"), resultSrc.getString("lasttime"));
+                //PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("srcuser") + "';");
+                //ResultSet resultSrc = stmt2.executeQuery();
+                //resultSrc.next();
+                UserProfile src = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
+                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
 
                 cont.add(new NotificationFollower(src, result.getString("datestamp"), result.getInt("status"), home));
             }
@@ -207,6 +210,7 @@ public class NotificationsScreen extends javax.swing.JPanel {
             return 0;
         }
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton followers;
     private javax.swing.JScrollPane scrollPane;

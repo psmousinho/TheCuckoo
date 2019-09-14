@@ -109,7 +109,9 @@ public class CommentPanel extends JPanel {
                 comment.getAuthor().getUsername(), comment.getDate(), comment.getPostAuthor(), comment.getPostDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
-
+        st = String.format("delete from notifications where cauthor = '%s' and cdate = '%s' and cpauthor = '%s' and cpdate = '%s'",
+                comment.getAuthor().getUsername(), comment.getDate(), comment.getPostAuthor(), comment.getPostDate());
+        stmt.executeUpdate(st);
         stmt.close();
     }
 
