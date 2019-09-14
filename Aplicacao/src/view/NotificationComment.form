@@ -25,7 +25,7 @@
                   <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="198" max="32767" attributes="0"/>
+              <EmptySpace pref="187" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
@@ -52,21 +52,21 @@
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="&quot;@&quot;+ notification.getAuthor().getUsername()" type="code"/>
+          <Connection code="&quot;@&quot;+ cAuthor" type="code"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="&quot;Marcou voc&#xea; em um comentario num Cuckoo de @&quot; + notification.getPostAuthor()" type="code"/>
+          <Connection code="&quot;Marcou voc&#xea; em um comentario num Cuckoo de @&quot; + post.getAuthor().getUsername()" type="code"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-          <Connection code="notification.getDate()" type="code"/>
+          <Connection code="cDate" type="code"/>
         </Property>
       </Properties>
     </Component>

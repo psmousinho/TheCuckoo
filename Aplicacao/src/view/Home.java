@@ -34,7 +34,7 @@ public class Home extends JPanel {
         this.user = user;
 
         this.profile = new ProfilePanel(this.user, this, true);
-        this.notifications = new NotificationsScreen(this.user);
+        this.notifications = new NotificationsScreen(this.user, this);
         this.timeline = new TimeLineScreen(this.user, this);
         this.search = new SearchScreen(this.user, this);
         this.newPost = new NewPost();
@@ -287,7 +287,6 @@ public class Home extends JPanel {
             state = HomeState.NOTIFICATIONS;
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             cl.show(contentPanel, "notifications");
-            notifications.updatePostTab();
             updateButtons();
         }
     }//GEN-LAST:event_btNotificationsActionPerformed

@@ -11,12 +11,18 @@ import entity.*;
  *
  * @author Pablo Suria
  */
-public class Notification1 extends javax.swing.JPanel {
+public class NotificationComment extends javax.swing.JPanel {
 
-    private NotificationTagCommnt notification;
+    private Post post;
+    private String cAuthor;
+    private String cDate;
+    private Home home;
 
-    public Notification1(NotificationTagCommnt notification) {
-        this.notification = notification;
+    public NotificationComment(Post post, String cAuthor, String cDate, Home home) {
+        this.post = post;
+        this.cAuthor = cAuthor;
+        this.cDate = cDate;
+        this.home = home;
         initComponents();
     }
 
@@ -39,11 +45,11 @@ public class Notification1 extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("@"+ notification.getAuthor().getUsername());
+        jLabel1.setText("@"+ cAuthor);
 
-        jLabel2.setText("Marcou você em um comentario num Cuckoo de @" + notification.getPostAuthor());
+        jLabel2.setText("Marcou você em um comentario num Cuckoo de @" + post.getAuthor().getUsername());
 
-        jLabel3.setText(notification.getDate());
+        jLabel3.setText(cDate);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -54,7 +60,7 @@ public class Notification1 extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addContainerGap(198, Short.MAX_VALUE))
+                .addContainerGap(187, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
@@ -74,7 +80,7 @@ public class Notification1 extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        // TODO ir para o perfil do autor
+       home.changeScreenTemporary(new PostScreen(post, home));
     }//GEN-LAST:event_formMouseClicked
 
 
