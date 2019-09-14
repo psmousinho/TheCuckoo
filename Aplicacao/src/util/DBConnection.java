@@ -3,7 +3,6 @@ package util;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import view.Main;
 
 public class DBConnection {
     private static ThreadLocal<Connection> con = new ThreadLocalConnection();
@@ -11,7 +10,7 @@ public class DBConnection {
 
     public static Connection getConnection() {
         if (!initialized) {
-            throw new IllegalStateException("DatabaseConnection not initialized");
+            throw new IllegalStateException("DBConnection not initialized");
         }
         return con.get();
     }
@@ -40,7 +39,7 @@ public class DBConnection {
             try {
                 return DriverManager.getConnection(Constants.DB_URL, Constants.DB_USER, Constants.DB_PASSWORD);
             } catch (SQLException sql) {
-                System.out.println("Could not create a SQL Connection object. Please make sure you've correctly configured db.properties.");
+                System.out.println("Could not create a SQL Connection object.");
                 return null;
             }
         }
@@ -53,7 +52,6 @@ public class DBConnection {
                     return con;
                 }
             } catch (SQLException sql) {
-                // Munch munch, we'll get a new connection. :)
             }
             con = getConnection();
             super.set(con);

@@ -4,7 +4,6 @@ import entity.UserProfile;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import util.Constants;
@@ -24,9 +23,12 @@ public class Home extends JPanel {
     private final SearchScreen search;
     private final NewPost newPost;
     private JPanel temporary;
-
+    private boolean emptySearchField;
+    
     public Home(UserProfile user) {
         initComponents();
+        
+        this.emptySearchField = false;
         this.user = user;
 
         this.profile = new ProfileScreen(this.user, this, true);
@@ -35,7 +37,7 @@ public class Home extends JPanel {
         this.search = new SearchScreen(this.user, this);
         this.newPost = new NewPost();
         this.temporary = new JPanel();
-
+        
         contentPanel.add(profile, "profile");
         contentPanel.add(notifications, "notifications");
         contentPanel.add(timeline, "timeline");
@@ -50,14 +52,11 @@ public class Home extends JPanel {
         btTimeline.setBackground(Constants.ORANGE);
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
-        btNewPost = new javax.swing.JButton();
         topPanel = new javax.swing.JPanel();
         leftPanel = new javax.swing.JPanel();
         logoLabel = new javax.swing.JLabel();
@@ -69,14 +68,10 @@ public class Home extends JPanel {
         btSignOut = new javax.swing.JButton();
         contentPanel = new javax.swing.JPanel();
 
-        jLabel1.setText("S");
-        jLabel1.setMaximumSize(new java.awt.Dimension(48, 48));
-        jLabel1.setMinimumSize(new java.awt.Dimension(48, 48));
-        jLabel1.setPreferredSize(new java.awt.Dimension(48, 48));
-
         searchField.setColumns(12);
         searchField.setForeground(Constants.PURPLE);
-        searchField.setText("Search");
+        searchField.setText("Search for User/Topic");
+        searchField.setToolTipText("Syntax: User/Topic <target>");
         searchField.setMinimumSize(new java.awt.Dimension(11, 48));
         searchField.setPreferredSize(new java.awt.Dimension(154, 48));
         searchField.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -87,24 +82,6 @@ public class Home extends JPanel {
         searchField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchFieldActionPerformed(evt);
-            }
-        });
-        searchField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                searchFieldKeyTyped(evt);
-            }
-        });
-
-        btNewPost.setBackground(Color.WHITE);
-        btNewPost.setForeground(Constants.PURPLE);
-        btNewPost.setText("NP");
-        btNewPost.setToolTipText("Search");
-        btNewPost.setMaximumSize(new java.awt.Dimension(48, 48));
-        btNewPost.setMinimumSize(new java.awt.Dimension(48, 48));
-        btNewPost.setPreferredSize(new java.awt.Dimension(48, 48));
-        btNewPost.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btNewPostActionPerformed(evt);
             }
         });
 
@@ -261,6 +238,7 @@ public class Home extends JPanel {
             CardLayout cl = (CardLayout) contentPanel.getLayout();
             cl.show(contentPanel, "profile");
             profile.updateCuckoos();
+            profile.updateFollowers();
             updateButtons();
         }
     }//GEN-LAST:event_btProfileActionPerformed
@@ -268,16 +246,8 @@ public class Home extends JPanel {
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
         CardLayout cl = (CardLayout) contentPanel.getLayout();
         cl.show(contentPanel, "search");
-        this.search.doSearch(searchField.getText());
+        search.doSearch(searchField.getText());
     }//GEN-LAST:event_searchFieldActionPerformed
-
-    private void searchFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchFieldKeyTyped
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            CardLayout cl = (CardLayout) contentPanel.getLayout();
-            cl.show(contentPanel, "search");
-            this.search.doSearch(searchField.getText());
-        }
-    }//GEN-LAST:event_searchFieldKeyTyped
 
     private void btSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSearchActionPerformed
         if (state != HomeState.SEARCH) {
@@ -289,7 +259,10 @@ public class Home extends JPanel {
             leftPanel.add(searchField);
             btSearch.setText("R");
             btSearch.setToolTipText("Return");
-            searchField.setText("Search for User/Topic");
+            if(emptySearchField) {
+                searchField.setText("Search for User/Topic");
+                emptySearchField = false;
+            }
             leftPanel.revalidate();
         } else {
             state = HomeState.NOTHING;
@@ -299,7 +272,6 @@ public class Home extends JPanel {
             leftPanel.add(btTimeline);
             leftPanel.add(btNotifications);
             leftPanel.add(btSearch);
-            //leftPanel.add(btNewPost);
             btSearch.setText("S");
             btSearch.setToolTipText("Search");
             leftPanel.revalidate();
@@ -316,18 +288,10 @@ public class Home extends JPanel {
         }
     }//GEN-LAST:event_btNotificationsActionPerformed
 
-    private void btNewPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNewPostActionPerformed
-        /*if (state != HomeState.NEW_POST) {
-            state = HomeState.NEW_POST;
-            CardLayout cl = (CardLayout) contentPanel.getLayout();
-            cl.show(contentPanel, "newpost");
-            updateButtons();
-        }*/
-    }//GEN-LAST:event_btNewPostActionPerformed
-
     private void searchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchFieldMouseClicked
-        if(searchField.getText().equals("Search for User/Topic")) {
+        if(!emptySearchField) {
             searchField.setText("");
+            emptySearchField = true;
         }
     }//GEN-LAST:event_searchFieldMouseClicked
 
@@ -351,45 +315,9 @@ public class Home extends JPanel {
                 btNotifications.setForeground(Constants.WHITE);
                 btNotifications.setBackground(Constants.ORANGE);
                 break;
-            /*case NEW_POST:
-                btNewPost.setForeground(Constants.WHITE);
-                btNewPost.setBackground(Constants.ORANGE);
-                break;
-                */
         }
     }
 
-    /*private void changeScreen(State newState) {
-        state = newState;
-        
-        switch (newState) {
-            case TIME_LINE:
-                
-                
-                btProfile.setText("P");
-                btProfile.setToolTipText("Profile");
-                btTimeline.setText("N");
-                btTimeline.setToolTipText("Notifications");
-                break;
-            case PROFILE:
-                
-                btProfile.setText("T");
-                btProfile.setToolTipText("Timeline");
-                btTimeline.setText("N");
-                btTimeline.setToolTipText("Notifications");
-                break;
-            case NOTIFICATIONS:
-                
-                btProfile.setText("P");
-                btProfile.setToolTipText("Profile");
-                btTimeline.setText("T");
-                break;
-            case SEARCH:
-                cl.show(contentPanel, "search");
-                btProfile.setText("P");
-                btTimeline.setText("T");
-        }
-    }*/
     public void changeScreenTemporary(JPanel target) {
         contentPanel.remove(temporary);
         temporary = target;
@@ -400,14 +328,12 @@ public class Home extends JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btNewPost;
     private javax.swing.JButton btNotifications;
     private javax.swing.JButton btProfile;
     private javax.swing.JButton btSearch;
     private javax.swing.JButton btSignOut;
     private javax.swing.JButton btTimeline;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel logoLabel;
     private javax.swing.JPanel rightPanel;

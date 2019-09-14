@@ -3,6 +3,8 @@ package view;
 import entity.UserProfile;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -216,10 +218,16 @@ public class Register extends JPanel {
     private void showMessage(String message) {
         bottomPanel.removeAll();
         JLabel welcomeLabel = new JLabel();
-        welcomeLabel.setText("<html><div WIDTH="+getWidth()+"><div align = 'center'>" + message + "</html>");
+        welcomeLabel.setText("<html><div WIDTH=" + getWidth() + "><div align = 'center'>" + message + "</html>");
         welcomeLabel.setFont(new Font("Lucida Grande", 0, 24));
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        welcomeLabel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent evt) {
+                welcomeLabel.setText("<html><div WIDTH=" + getWidth() + "><div align = 'center'>" + message + "</html>");
+            }
+        });
         bottomPanel.add(welcomeLabel);
         bottomPanel.revalidate();
     }

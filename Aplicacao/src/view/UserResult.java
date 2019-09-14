@@ -53,12 +53,12 @@ public class UserResult extends JPanel {
         //nameLabel.setFont(Constants.LUCIDA);
         
         bioLabel = new JLabel();
-        bioLabel.setText("<html><div WIDTH="+getWidth()+"><b>Name:</b> " + user.getName() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
+        bioLabel.setText("<html><div WIDTH="+getWidth()+"><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
         bioLabel.setFont(new Font("Lucida Grande", 0, 11));
         bioLabel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evt) {
-                bioLabel.setText("<html><div WIDTH="+getWidth()+"><b>Name:</b> " + user.getName() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
+                bioLabel.setText("<html><div WIDTH=" + getWidth() + "><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
             }
         });
         btVisit = new JButton();
@@ -79,6 +79,6 @@ public class UserResult extends JPanel {
     }
     
     private void actionPerformed(ActionEvent evt) {
-        home.changeScreenTemporary(new ProfileScreen(user, home, false));
+        home.changeScreenTemporary(new ProfileScreen(user, home, user.getUsername().equals(UserProfile.CURRENT_USER.getUsername())));
     }
 }

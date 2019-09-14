@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
+import entity.Post;
 import entity.UserProfile;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,16 +10,12 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import util.Constants;
 import util.DBConnection;
 
-/**
- *
- * @author aluno
- */
-public class SearchScreen extends javax.swing.JPanel {
+public class SearchScreen extends JPanel {
 
     private UserProfile user;
     private Home home;
@@ -69,44 +60,50 @@ public class SearchScreen extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     public void doSearch(String request) {
-        if(request.trim().length() > 0) {
-            try {
-                Connection con = DBConnection.getConnection();
-                PreparedStatement stmt = null;
-                ResultSet result = null;
-                Container cont = new Container();
-                cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
-                int i = 0;
-                switch (request.charAt(0)) {
-                    case '@': //User
-                        stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '" + request.substring(1) + "%' ORDER BY nfollowers DESC;");
-                        result = stmt.executeQuery();
-                        while(result.next()) {
-                            cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
-                                                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
-                            i++;
-                        }
-                        break;
-                    case '#': //Topic
-                        stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '" + request.substring(1) + "%' ORDER BY datestamp DESC;");
-                        result = stmt.executeQuery();
-                        while(result.next()) {
-                            i++;
-                        }
-                        break;
-                    default: //Something else
-                        break;
-                }
-                if(stmt != null && result != null) {
-                    cont.revalidate();
-                    scrollPane.getViewport().setView(cont);
-                    scrollPane.getViewport().setBackground(Constants.ORANGE);
-                    result.close();
-                    stmt.close();
-                }
-            }catch (SQLException ex) {
-                Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+        String split[] = request.trim().split(" ");
+        String args;
+        Connection con = DBConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet result = null;
+        Container cont = new Container();
+        cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+        int i = 0;
+        try {
+            switch(split[0].toLowerCase()) {
+                case "user": // Search for user
+                    args = request.substring(5);
+                    System.out.println(args);
+                    stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + args + "%' OR realname LIKE '%" + args + "%' OR bio LIKE '%" + args + "%'ORDER BY nfollowers DESC;");
+                    result = stmt.executeQuery();
+                    while(result.next()) {
+                        cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
+                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                        i++;
+                    }
+                    break;
+                case "topic": // Search for topic
+                    args = request.substring(6);
+                    stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '%" + request.substring(1) + "%' ORDER BY datestamp DESC;");
+                    result = stmt.executeQuery();
+                    while(result.next()) {
+                        Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
+                        cont.add(new Cuckoo(post, home));
+                        i++;
+                    }
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(getParent(), "Please use syntax: User/Topic <target>", "Error", JOptionPane.ERROR_MESSAGE);
+                    break;
             }
+            if(stmt != null && result != null) {
+                cont.revalidate();
+                scrollPane.getViewport().setView(cont);
+                scrollPane.getViewport().setBackground(Constants.ORANGE);
+                result.close();
+                stmt.close();
+            }
+        }catch (SQLException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

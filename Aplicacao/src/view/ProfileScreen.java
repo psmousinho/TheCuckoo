@@ -30,6 +30,8 @@ public class ProfileScreen extends JPanel {
     private UserProfile user;
     private NewPost newPost;
     private boolean belong;
+    private boolean follows;
+    
     private int status;
     private ProfileState state;
     
@@ -37,6 +39,7 @@ public class ProfileScreen extends JPanel {
         this.user = user;
         this.home = home;
         this.belong = belong;
+        this.follows = false;
         
         initComponents();
         checkRelation();
@@ -56,30 +59,18 @@ public class ProfileScreen extends JPanel {
     private void initComponents() {
 
         myCuckoos = new javax.swing.JScrollPane();
+        bioScrollPane = new javax.swing.JScrollPane();
+        bio = new javax.swing.JTextArea();
         topPanel = new javax.swing.JPanel();
         realName = new javax.swing.JLabel();
         userName = new javax.swing.JLabel();
-        bioScrollPane = new javax.swing.JScrollPane();
-        bio = new javax.swing.JTextArea();
         btAction = new javax.swing.JButton();
+        bioLabel = new javax.swing.JLabel();
         middlePanel = new javax.swing.JPanel();
         btPost = new javax.swing.JButton();
         btFollowers = new javax.swing.JButton();
         btFollowing = new javax.swing.JButton();
         bottomPanel = new javax.swing.JPanel();
-
-        setBackground(new java.awt.Color(100, 210, 255));
-        setPreferredSize(new java.awt.Dimension(338, 396));
-        setSize(new java.awt.Dimension(338, 396));
-
-        topPanel.setBackground(new java.awt.Color(100, 210, 255));
-
-        realName.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        realName.setForeground(new java.awt.Color(255, 255, 255));
-        realName.setText(this.user.getName());
-
-        userName.setForeground(new java.awt.Color(255, 255, 255));
-        userName.setText("@" + this.user.getUsername());
 
         bio.setBackground(new java.awt.Color(100, 210, 255));
         bio.setColumns(20);
@@ -89,6 +80,18 @@ public class ProfileScreen extends JPanel {
 
         bio.setEditable(false);
         bioScrollPane.setViewportView(bio);
+
+        setBackground(new java.awt.Color(100, 210, 255));
+        setPreferredSize(new java.awt.Dimension(338, 396));
+
+        topPanel.setBackground(new java.awt.Color(100, 210, 255));
+
+        realName.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        realName.setForeground(new java.awt.Color(255, 255, 255));
+        realName.setText(this.user.getName());
+
+        userName.setForeground(new java.awt.Color(255, 255, 255));
+        userName.setText("@" + this.user.getUsername());
 
         if(belong){
             btAction.setBackground(new java.awt.Color(255, 255, 255));
@@ -103,6 +106,15 @@ public class ProfileScreen extends JPanel {
         btAction.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btActionActionPerformed(evt);
+            }
+        });
+
+        bioLabel.setForeground(Constants.WHITE);
+        bioLabel.setText(getBioText());
+        bioLabel.setToolTipText("");
+        bioLabel.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                bioLabelComponentResized(evt);
             }
         });
 
@@ -121,7 +133,7 @@ public class ProfileScreen extends JPanel {
 
         btFollowers.setBackground(Constants.WHITE);
         btFollowers.setForeground(Constants.ORANGE);
-        btFollowers.setText("Followers");
+        btFollowers.setText("" + user.getNumberFollowers() + " Followers");
         btFollowers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btFollowersActionPerformed(evt);
@@ -131,13 +143,16 @@ public class ProfileScreen extends JPanel {
 
         btFollowing.setBackground(Constants.WHITE);
         btFollowing.setForeground(Constants.ORANGE);
-        btFollowing.setText("Following");
+        btFollowing.setText("" + user.getNumberFollowing() + " Following");
         btFollowing.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btFollowingActionPerformed(evt);
             }
         });
         middlePanel.add(btFollowing);
+
+        bottomPanel.setBackground(new java.awt.Color(255, 255, 255));
+        bottomPanel.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout topPanelLayout = new javax.swing.GroupLayout(topPanel);
         topPanel.setLayout(topPanelLayout);
@@ -146,14 +161,15 @@ public class ProfileScreen extends JPanel {
             .addGroup(topPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bioScrollPane)
+                    .addComponent(bioLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(topPanelLayout.createSequentialGroup()
                         .addGroup(topPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(realName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(userName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btAction, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(middlePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
+                    .addComponent(middlePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bottomPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         topPanelLayout.setVerticalGroup(
@@ -167,31 +183,24 @@ public class ProfileScreen extends JPanel {
                         .addComponent(userName, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btAction, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bioScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bioLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(middlePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(middlePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-
-        bottomPanel.setBackground(new java.awt.Color(255, 255, 255));
-        bottomPanel.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -199,25 +208,37 @@ public class ProfileScreen extends JPanel {
         if (!belong && !user.isPrivate()) {
             Connection con = DBConnection.getConnection();
             Statement stmt;
-            String st = null;
+            String st = null, st2 = null, st3 = null;
             switch (status) {
                 case 0: // nothing
-                    st = String.format("update userrel set status = 2, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st = String.format("update userrel set status = 2, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+                    st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
+                    user.setNumberFollowers(user.getNumberFollowers() + 1);
+                    st3 = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
+                    UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() + 1);
                     status = 2;
                     btAction.setText("Unfollow");
                     break;
                 case -1:
-                    st = String.format("insert into userrel values ('%s', '%s', '%s', '%d')", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername(), new Timestamp(new Date().getTime()), 2);
+                    st = String.format("insert into userrel values ('%s', '%s', '%s', '%d')", UserProfile.CURRENT_USER.getUsername(), user.getUsername(), new Timestamp(new Date().getTime()), 2);
+                    st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
+                    user.setNumberFollowers(user.getNumberFollowers() + 1);
+                    st3 = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
+                    UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() + 1);
                     status = 2;
                     btAction.setText("Unfollow");
                     break;
                 case 1: //requested
-                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
                     status = 0;
                     btAction.setText("Pending");
                     break;
                 case 2: //following
-                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+                    st2 = String.format("update userprofile set nfollowers = nfollowers - 1 where login = '%s';", user.getUsername());
+                    user.setNumberFollowers(user.getNumberFollowers() - 1);
+                    st3 = String.format("update userprofile set nfollowing = nfollowing - 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
+                    UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() - 1);
                     status = 0;
                     btAction.setText("Follow");
                     break;
@@ -227,11 +248,15 @@ public class ProfileScreen extends JPanel {
             }
             try {
                 stmt = con.createStatement();
-                stmt.executeUpdate(st);
+                stmt.addBatch(st);
+                stmt.addBatch(st2);
+                stmt.addBatch(st3);
+                stmt.executeBatch();
+                stmt.close();
+                updateFollowers();
             } catch (SQLException ex) {
                 Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         } else {
             if (!bio.isEditable()) {
                 this.bio.setEditable(true);
@@ -340,6 +365,10 @@ public class ProfileScreen extends JPanel {
         }
     }//GEN-LAST:event_btFollowingActionPerformed
 
+    private void bioLabelComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_bioLabelComponentResized
+        bioLabel.setText(getBioText());
+    }//GEN-LAST:event_bioLabelComponentResized
+
     public void updateCuckoos() {
         try {
             Connection con = DBConnection.getConnection();
@@ -360,11 +389,20 @@ public class ProfileScreen extends JPanel {
         }
     }
 
+    public void updateFollowers() {
+        btFollowers.setText("" + user.getNumberFollowers() + " Followers");
+        btFollowing.setText("" + user.getNumberFollowing() + " Following");
+    }
+    
+    private String getBioText() {
+        return "<html><div WIDTH="+ bioLabel.getWidth() +">" + user.getBio() + "<br>" + (follows? "(Follows you)": "") + "</html>";
+    }
+        
     private void checkRelation() {
         if (!belong) {
             try {
                 Connection con = DBConnection.getConnection();
-                PreparedStatement stmt = con.prepareStatement("select * from userrel where srcuser = '" + this.user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' ");
+                PreparedStatement stmt = con.prepareStatement("select * from userrel where srcuser = '" + user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' ");
                 ResultSet result = stmt.executeQuery();
                 if (result.next()) {
                     boolean block = (result.getInt("status") == Relation.BLOCKED.getCode());
@@ -378,7 +416,7 @@ public class ProfileScreen extends JPanel {
                 result.close();
                 stmt.close();
 
-                stmt = con.prepareStatement("select * from userrel where srcuser = '" + UserProfile.CURRENT_USER.getUsername() + "' and tgtuser = '" + this.user.getUsername() + "' ");
+                stmt = con.prepareStatement("select * from userrel where srcuser = '" + UserProfile.CURRENT_USER.getUsername() + "' and tgtuser = '" + user.getUsername() + "' ");
                 result = stmt.executeQuery();
                 if (result.next()) {
                     switch (status = result.getInt("status")) {
@@ -399,7 +437,16 @@ public class ProfileScreen extends JPanel {
                 }else {
                     status = -1;
                 }
-
+                
+                result.close();
+                stmt.close();
+                
+                stmt = con.prepareStatement("select * from userrel where srcuser = '" + user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' and status = 2 ");
+                result = stmt.executeQuery();
+                follows = result.next();
+                
+                result.close();
+                stmt.close();
             } catch (SQLException ex) {
                 Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -434,6 +481,7 @@ public class ProfileScreen extends JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea bio;
+    private javax.swing.JLabel bioLabel;
     private javax.swing.JScrollPane bioScrollPane;
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JButton btAction;

@@ -91,6 +91,4 @@ public class UserProfile {
     public void setNumberFollowing(int numberFollowing) {
         this.numberFollowing = numberFollowing;
     }
-    
-    
 }
