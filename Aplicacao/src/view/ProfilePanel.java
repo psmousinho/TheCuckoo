@@ -7,6 +7,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,10 +21,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import util.Constants;
 import util.DBConnection;
 
-public class ProfilePanel extends javax.swing.JPanel {
+public class ProfilePanel extends JPanel {
 
     private enum ProfileState {
         LIST_POSTS, NEW_POST, FOLLOWERS, FOLLOWING, NOTHING;
@@ -248,7 +255,7 @@ public class ProfilePanel extends javax.swing.JPanel {
                     myCuckoos.getViewport().setView(showFollowers());
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             if (!bio.isEditable()) {
@@ -267,7 +274,7 @@ public class ProfilePanel extends javax.swing.JPanel {
                     stmt.executeUpdate();
                     stmt.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -275,7 +282,44 @@ public class ProfilePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btAction1ActionPerformed
 
     private void btAction2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAction2ActionPerformed
-        // TODO add your handling code here:
+        String options[] = { "Private", "Public" };
+        int selection = JOptionPane.showOptionDialog(home, "Choose your profile visibility: ", "Info", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        switch(selection) {
+            case 0: // Private
+                if(!user.isPrivate()) {
+                    user.setPrivate(true);
+                    try {
+                        Connection con = DBConnection.getConnection();
+                        PreparedStatement stmt;
+                        stmt = con.prepareStatement("UPDATE userprofile SET visibility = ? where login = ?;");
+                        stmt.setBoolean(1, user.isPrivate());
+                        stmt.setString(2, user.getUsername());
+                        stmt.executeUpdate();
+                        stmt.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                break;
+            case 1: // Public
+                if(user.isPrivate()) {
+                    user.setPrivate(false);
+                    try {
+                        Connection con = DBConnection.getConnection();
+                        PreparedStatement stmt;
+                        stmt = con.prepareStatement("UPDATE userprofile SET visibility = ? where login = ?;");
+                        stmt.setBoolean(1, user.isPrivate());
+                        stmt.setString(2, user.getUsername());
+                        stmt.executeUpdate();
+                        stmt.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                break;
+            default: // Something else
+                break;
+        }
     }//GEN-LAST:event_btAction2ActionPerformed
 
     private void btCuckoosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCuckoosActionPerformed
@@ -288,7 +332,9 @@ public class ProfilePanel extends javax.swing.JPanel {
         } else {
             cl.show(bottomPanel, "cuckoos");
             updateCuckoos();
-            btCuckoos.setText("New Cuckoo");
+            if(belong) {
+                btCuckoos.setText("New Cuckoo");
+            }
             state = ProfileState.LIST_POSTS;
         }
         updateButtons();
@@ -399,8 +445,6 @@ public class ProfilePanel extends javax.swing.JPanel {
                     boolean block = (result.getInt("status") == Relation.BLOCKED.getCode());
                     if (block) {
                         //TODO: mostra mensagem de bloqueio
-                    } else if (user.isPrivate()) {
-                        //TODO: mostrar mensagem de privado
                     }
                 }
 
@@ -425,13 +469,30 @@ public class ProfilePanel extends javax.swing.JPanel {
                             btAction1.setText("Unblock");
                             break;
                     }
-                }else {
+                } else {
                     status = -1;
                 }
                 
                 result.close();
                 stmt.close();
                 
+                if(user.isPrivate() && status != 2) {
+                    btCuckoos.setEnabled(false);
+                    btFollowers.setEnabled(false);
+                    btFollowing.setEnabled(false);
+                    JLabel privateLabel = new JLabel();
+                    privateLabel.setText("<html><div WIDTH=" + getWidth() + "><div align = 'center'>This profile is private</html>");
+                    privateLabel.setFont(new Font("Lucida Grande", 0, 24));
+                    privateLabel.setForeground(Color.WHITE);
+                    privateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                    privateLabel.addComponentListener(new ComponentAdapter() {
+                        @Override
+                        public void componentResized(ComponentEvent evt) {
+                            privateLabel.setText("<html><div WIDTH=" + getWidth() + "><div align = 'center'>This profile is private</html>");
+                        }
+                    });
+                    myCuckoos.getViewport().setView(privateLabel);
+                }
                 stmt = con.prepareStatement("select * from userrel where srcuser = '" + user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' and status = 2 ");
                 result = stmt.executeQuery();
                 follows = result.next();
@@ -441,7 +502,7 @@ public class ProfilePanel extends javax.swing.JPanel {
                 result.close();
                 stmt.close();
             } catch (SQLException ex) {
-                Logger.getLogger(ProfileScreen.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

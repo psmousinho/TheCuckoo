@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import entity.Post;
@@ -18,20 +13,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JPanel;
 import util.DBConnection;
 
-/**
- *
- * @author Pablo Suria
- */
-public class Cuckoo extends javax.swing.JPanel {
+public class Cuckoo extends JPanel {
 
     private Post post;
     private Home home;
 
-    /**
-     * Creates new form Cuckoo
-     */
     public Cuckoo(Post post, Home home) {
         this.post = post;
         this.home = home;
@@ -169,7 +158,7 @@ public class Cuckoo extends javax.swing.JPanel {
     }//GEN-LAST:event_commentActionPerformed
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), home, false));
+        home.changeScreenTemporary(new ProfilePanel(post.getAuthor(), home, false));
     }//GEN-LAST:event_authorMouseClicked
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked

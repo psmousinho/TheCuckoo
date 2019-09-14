@@ -1,21 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import entity.*;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import util.Constants;
+import javax.swing.JPanel;
 import util.DBConnection;
 
-public class CommentPanel extends javax.swing.JPanel {
+public class CommentPanel extends JPanel {
 
     private Comment comment;
     private Home home;
@@ -88,7 +82,7 @@ public class CommentPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void usernameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameMouseClicked
-        home.changeScreenTemporary(new ProfileScreen(comment.getAuthor(), home, false));
+        home.changeScreenTemporary(new ProfilePanel(comment.getAuthor(), home, false));
     }//GEN-LAST:event_usernameMouseClicked
 
     private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed

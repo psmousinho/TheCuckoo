@@ -14,9 +14,10 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import util.DBConnection;
 
-public class PostScreen extends javax.swing.JPanel {
+public class PostScreen extends JPanel {
 
     private Post post;
     private Home home;
@@ -123,7 +124,7 @@ public class PostScreen extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfileScreen(post.getAuthor(), home, false));
+        home.changeScreenTemporary(new ProfilePanel(post.getAuthor(), home, false));
     }//GEN-LAST:event_authorMouseClicked
 
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed
