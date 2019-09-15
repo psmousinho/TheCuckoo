@@ -202,41 +202,61 @@ public class ProfilePanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btAction1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAction1ActionPerformed
-        if (!belong && !user.isPrivate()) {
+        if (!belong) {
             Connection con = DBConnection.getConnection();
             Statement stmt;
             String st = null, st2 = null, st3 = null;
+            Timestamp now = new Timestamp(new Date().getTime());
+            int notificationCode = -1;
             switch (status) {
                 case 0: // nothing
-                    st = String.format("update userrel set status = 2, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
-                    st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
-                    user.setNumberFollowers(user.getNumberFollowers() + 1);
-                    st3 = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
-                    UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() + 1);
-                    status = 2;
-                    btAction1.setText("Unfollow");
+                    if(!user.isPrivate()) {
+                        st = String.format("update userrel set status = 2, datestamp = '%s' where srcuser = '%s' and tgtuser = '%s';", now, UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+                        st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
+                        user.setNumberFollowers(user.getNumberFollowers() + 1);
+                        st3 = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
+                        UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() + 1);
+                        status = 2;
+                        notificationCode = 4;
+                        btAction1.setText("Unfollow");
+                    } else {
+                        st = String.format("update userrel set status = 1, datestamp = '%s' where srcuser = '%s' and tgtuser = '%s';", now, UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+                        status = 1;
+                        notificationCode = 2;
+                        btAction1.setText("Pending");
+                    }
                     break;
                 case -1:
-                    st = String.format("insert into userrel values ('%s', '%s', '%s', '%d')", UserProfile.CURRENT_USER.getUsername(), user.getUsername(), new Timestamp(new Date().getTime()), 2);
-                    st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
-                    user.setNumberFollowers(user.getNumberFollowers() + 1);
-                    st3 = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
-                    UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() + 1);
-                    status = 2;
-                    btAction1.setText("Unfollow");
+                    if(!user.isPrivate()) {
+                        st = String.format("insert into userrel values ('%s', '%s', '%s', '%d')", UserProfile.CURRENT_USER.getUsername(), user.getUsername(), now, 2);
+                        st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
+                        user.setNumberFollowers(user.getNumberFollowers() + 1);
+                        st3 = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
+                        UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() + 1);
+                        status = 2;
+                        notificationCode = 4;
+                        btAction1.setText("Unfollow");
+                    } else {
+                        st = String.format("insert into userrel values ('%s', '%s', '%s', '%d')", UserProfile.CURRENT_USER.getUsername(), user.getUsername(), now, 1);
+                        status = 1;
+                        notificationCode = 2;
+                        btAction1.setText("Pending");
+                    }
                     break;
                 case 1: //requested
-                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+                    st = String.format("update userrel set status = 0, datestamp = '%s' where srcuser = '%s' and tgtuser = '%s';", now, UserProfile.CURRENT_USER.getUsername(), user.getUsername());
                     status = 0;
-                    btAction1.setText("Pending");
+                    notificationCode = 3;
+                    btAction1.setText("Follow");
                     break;
                 case 2: //following
-                    st = String.format("update userrel set status = 0, datestamp = now() where srcuser = '%s' and tgtuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+                    st = String.format("update userrel set status = 0, datestamp = '%s' where srcuser = '%s' and tgtuser = '%s';", now, UserProfile.CURRENT_USER.getUsername(), user.getUsername());
                     st2 = String.format("update userprofile set nfollowers = nfollowers - 1 where login = '%s';", user.getUsername());
                     user.setNumberFollowers(user.getNumberFollowers() - 1);
                     st3 = String.format("update userprofile set nfollowing = nfollowing - 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
                     UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() - 1);
                     status = 0;
+                    notificationCode = 5; // delete
                     btAction1.setText("Follow");
                     break;
                 case 3: //blocked
@@ -245,11 +265,35 @@ public class ProfilePanel extends JPanel {
             }
             try {
                 stmt = con.createStatement();
-                stmt.addBatch(st);
-                stmt.addBatch(st2);
-                stmt.addBatch(st3);
+                if(st != null) {
+                    stmt.addBatch(st);
+                }
+                if(st2 != null) {
+                    stmt.addBatch(st2);
+                }
+                if(st3 != null) {
+                    stmt.addBatch(st3);
+                }
                 stmt.executeBatch();
                 stmt.close();
+                switch(notificationCode) {
+                    case 2: // Requested
+                    case 4: // New follower
+                        st = String.format("INSERT INTO notifications(target, src, ndate, code) values('%s', '%s', '%s', %d);", user.getUsername(), UserProfile.CURRENT_USER.getUsername(),  now, notificationCode);
+                        stmt = con.createStatement();
+                        stmt.executeUpdate(st);
+                        stmt.close();
+                        break;
+                    case 3: // Unrequested
+                    case 5: // Unfollow
+                        st = String.format("DELETE FROM notifications where code = %d and target = '%s' and src = '%s';", notificationCode-1, user.getUsername(), UserProfile.CURRENT_USER.getUsername());
+                        stmt = con.createStatement();
+                        stmt.executeUpdate(st);
+                        stmt.close();
+                        break;
+                    default: // NOP
+                        break;
+                }
                 updateFollowers();
                 if(state == ProfileState.FOLLOWERS) {
                     myCuckoos.getViewport().setView(showFollowers());
