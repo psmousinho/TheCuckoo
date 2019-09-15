@@ -29,13 +29,12 @@ import util.DBConnection;
 import util.Constants;
 
 public class NewPost extends javax.swing.JPanel {
-    
+
     private File file;
-    
+
     public NewPost() {
         initComponents();
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -134,20 +133,20 @@ public class NewPost extends javax.swing.JPanel {
                     moveImage();
                     path = "'" + imagePath.getText() + "'";
                 }
-                
+
                 Connection con = DBConnection.getConnection();
                 Timestamp now = new Timestamp(new Date().getTime());
                 String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);", UserProfile.CURRENT_USER.getUsername(), now, text.getText(), path);
                 PreparedStatement stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                
+
                 addTags(con, now);
                 addTopics(con, now);
-                
+
             } catch (SQLException ex) {
                 Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             CardLayout cl = (CardLayout) this.getParent().getLayout();
             cl.show(this.getParent(), "cuckoos");
         } else {
@@ -166,11 +165,11 @@ public class NewPost extends javax.swing.JPanel {
             imagePath.setVisible(true);
         }
     }//GEN-LAST:event_addImageActionPerformed
-    
+
     private void addTags(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("@\\w{4,32}");
         Matcher matcher = regex.matcher(this.text.getText());
-        
+
         while (matcher.find()) {
             String tagUser = matcher.group().substring(1);
             String st = String.format("SELECT * FROM userprofile where login = '%s'", tagUser);
@@ -184,21 +183,30 @@ public class NewPost extends javax.swing.JPanel {
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
-            
+
         }
     }
-    
+
     private void addTopics(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("#\\w{4,32}");
         Matcher matcher = regex.matcher(this.text.getText());
-        
+
         while (matcher.find()) {
-            String st = String.format("INSERT INTO topic values( '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), now);
+            String st = String.format("select * from topic where tname = '%s';", matcher.group().substring(1));
             PreparedStatement stmt = con.prepareStatement(st);
+            ResultSet result = stmt.executeQuery();
+            if (!result.next()) {
+                st = String.format("INSERT INTO topic VALUES( '%s');", matcher.group().substring(1));
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+            st = String.format("INSERT INTO topicpost VALUES('%s','%s','%s');",matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), now);
+            stmt = con.prepareStatement(st);
             stmt.executeUpdate();
+            stmt.close();
         }
     }
-    
+
     private void moveImage() {
         if (file != null) {
             FileInputStream origem;
@@ -213,9 +221,9 @@ public class NewPost extends javax.swing.JPanel {
                 fcOrigem.transferTo(0, fcOrigem.size(), fcDestino);
                 origem.close();
                 destino.close();
-                
+
                 imagePath.setText("imagens\\" + file.getName());
-                
+
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (IOException e) {
