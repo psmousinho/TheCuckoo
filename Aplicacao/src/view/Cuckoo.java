@@ -29,7 +29,7 @@ public class Cuckoo extends JPanel {
         if (post.getPhoto() == null) {
             image.setVisible(false);
         }
-        
+
         btDelete.setVisible(post.getAuthor().getUsername() == UserProfile.CURRENT_USER.getUsername());
 
     }
@@ -171,10 +171,11 @@ public class Cuckoo extends JPanel {
 
             deleteTags(con);
             deleteTopics(con);
+            deleteComments(con);
 
             String st = String.format("delete from post where author = '%s' and datestamp = '%s'",
                     post.getAuthor().getUsername(), post.getDate());
-            
+
             Statement stmt = con.createStatement();
             stmt.executeUpdate(st);
 
@@ -199,6 +200,9 @@ public class Cuckoo extends JPanel {
                         UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate(), tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
+                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s','%s','%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
             }
 
         }
@@ -209,30 +213,71 @@ public class Cuckoo extends JPanel {
         Matcher matcher = regex.matcher(txtCommnt.getText());
 
         while (matcher.find()) {
-            String st = String.format("INSERT INTO topic (tname, datestamp, cauthor, cpauthor, cpdate, cdate) values( '%s', '%s', '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), post.getDate(), now);
+            String st = String.format("select * from topic where tname = '%s';", matcher.group().substring(1));
             PreparedStatement stmt = con.prepareStatement(st);
+            ResultSet result = stmt.executeQuery();
+            boolean topicExists = result.next();
+            if (!topicExists) {
+                st = String.format("INSERT INTO topic (tname, tdate) VALUES('%s', '%s');", matcher.group().substring(1), now);
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+            st = String.format("INSERT INTO topiccomment VALUES('%s','%s','%s', '%s', '%s');", matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), now, post.getDate());
+            stmt = con.prepareStatement(st);
             stmt.executeUpdate();
+            if (topicExists) {
+                st = String.format("update topic set tdate = '%s' where tname = '%s';", now, matcher.group().substring(1)); // Assumindo tempo crescente
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+
+            stmt.close();
         }
     }
-    
+
     private void deleteTags(Connection con) throws SQLException {
         String st = String.format("delete from tagpostuser where pauthor = '%s' and pdate = '%s'",
                 post.getAuthor().getUsername(), post.getDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
+        st = String.format("delete from tagcommntuser where cpauthor = '%s' and cpdate = '%s'",
+                post.getAuthor().getUsername(), post.getDate());
+        stmt = con.createStatement();
+        stmt.executeUpdate(st);
+        st = String.format("delete from notifications where pauthor = '%s' and pdate = '%s'",
+                post.getAuthor().getUsername(), post.getDate());
+        stmt.executeUpdate(st);
+        stmt.close();
 
         stmt.close();
     }
 
     private void deleteTopics(Connection con) throws SQLException {
-        String st = String.format("delete from topic where pauthor = '%s' and pdate = '%s'",
+        String st = String.format("delete from topicpost where pauthor = '%s' and pdate = '%s'",
                 post.getAuthor().getUsername(), post.getDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
+        st = String.format("select count(tname) from topiccomment ");
+        ResultSet result = stmt.executeQuery(st);
+        st = String.format("delete from topiccomment where cpauthor = '%s' and cpdate = '%s'", post.getAuthor().getUsername(), post.getDate());
+        stmt = con.createStatement();
+        stmt.executeUpdate(st);
+        stmt.close();
+    }
+
+    private void deleteComments(Connection con) throws SQLException {
+        String st = String.format("delete from commnt where pauthor = '%s' and pdate = '%s'",
+                post.getAuthor().getUsername(), post.getDate());
+        Statement stmt = con.createStatement();
+        stmt.executeUpdate(st);
+        st = String.format("delete from notifications where cpauthor = '%s' and cpdate = '%s'",
+                post.getAuthor().getUsername(), post.getDate());
+        stmt.executeUpdate(st);
+        stmt.close();
 
         stmt.close();
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel author;
     private javax.swing.JButton btDelete;

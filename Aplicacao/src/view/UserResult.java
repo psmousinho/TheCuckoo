@@ -20,7 +20,6 @@ public class UserResult extends JPanel {
     private Color background;
     private JButton btVisit;
     private JLabel usernameLabel;
-    //private JLabel nameLabel;
     private JLabel bioLabel;
     private JPanel topLine;
     private JPanel bottomLine;
@@ -35,22 +34,21 @@ public class UserResult extends JPanel {
 
     private void initComponents() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(background);
         
         topLine = new JPanel();
         topLine.setLayout(Constants.GRID_2);
         topLine.setMaximumSize(new Dimension(Short.MAX_VALUE, 40));
+        topLine.setBackground(background);
         
         bottomLine = new JPanel();
         bottomLine.setLayout(Constants.GRID_1);
         bottomLine.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
+        bottomLine.setBackground(background);
         
         usernameLabel = new JLabel();
         usernameLabel.setText("@" + user.getUsername());
         usernameLabel.setFont(Constants.LUCIDA);
-        
-        //nameLabel = new JLabel();
-        //nameLabel.setText("(" + user.getName() + ")");
-        //nameLabel.setFont(Constants.LUCIDA);
         
         bioLabel = new JLabel();
         bioLabel.setText("<html><div WIDTH="+getWidth()+"><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
@@ -61,6 +59,11 @@ public class UserResult extends JPanel {
                 bioLabel.setText("<html><div WIDTH=" + getWidth() + "><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
             }
         });
+        if(background == Constants.GRAY) {
+            usernameLabel.setForeground(Constants.WHITE);
+            bioLabel.setForeground(Constants.WHITE);
+        }
+        
         btVisit = new JButton();
         btVisit.setText("Visit");
         btVisit.setFont(Constants.LUCIDA);
@@ -69,9 +72,8 @@ public class UserResult extends JPanel {
         btVisit.addActionListener(this::actionPerformed);
         
         topLine.add(usernameLabel);
-        //topLine.add(nameLabel);
         topLine.add(btVisit);
-        
+               
         bottomLine.add(bioLabel);
         
         add(topLine);

@@ -13,21 +13,22 @@ public class NotificationFollower extends javax.swing.JPanel {
     private UserProfile user;
     private Home home;
     private String date;
-    private boolean type;
+    private int type;
 
-    public NotificationFollower(UserProfile user, String date, int status, Home home) {
+    public NotificationFollower(UserProfile user, String date, int type, Home home) {
         this.home = home;
         this.user = user;
         this.date = date;
-        this.type = (status == 1);
+        this.type = type;
+        
         initComponents();
 
-        btAccept.setVisible(type);
-        btReject.setVisible(type);
-        if (type) {
-            message.setText("Ask to follow you");
+        btAccept.setVisible(type == 2);
+        btReject.setVisible(type == 2);       
+        
+        if (type == 2) {
+            message.setText("Asked to follow you");
         }
-
     }
 
     @SuppressWarnings("unchecked")
@@ -111,14 +112,25 @@ public class NotificationFollower extends javax.swing.JPanel {
 
     private void btAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcceptActionPerformed
         try {
+            String st[] = new String[5];
             Connection con = DBConnection.getConnection();
-            String st = String.format("update userrel set status = 2 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
             Statement stmt = con.createStatement();
-            stmt.executeUpdate(st);
+            st[0] = String.format("update userrel set status = 2 WHERE tgtuser = '%s' and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+            st[1] = String.format("delete from notifications where code = 2 and target = '%s' and src = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+            st[2] = String.format("INSERT INTO notifications(target, src, ndate, code) values('%s', '%s', now(), %d);", user.getUsername(), UserProfile.CURRENT_USER.getUsername(), 3);
+            st[3] = String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", user.getUsername());    
+            st[4] = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername());
+            user.setNumberFollowing(user.getNumberFollowing() + 1);
+            UserProfile.CURRENT_USER.setNumberFollowers(UserProfile.CURRENT_USER.getNumberFollowers() + 1);
+            
+            for(String s : st) {
+                stmt.addBatch(s);
+            }
+            stmt.executeBatch();
+            stmt.close();
             
             btAccept.setVisible(false);
             btReject.setVisible(false);
-
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -126,14 +138,19 @@ public class NotificationFollower extends javax.swing.JPanel {
 
     private void btRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRejectActionPerformed
         try {
+            String st1, st2;
             Connection con = DBConnection.getConnection();
-            String st = String.format("update userrel set status = 0 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
             Statement stmt = con.createStatement();
-            stmt.executeUpdate(st);
+            st1 = String.format("update userrel set status = 0 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+            st2 = String.format("delete from notifications where code = 2 and target = '%s' and src = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+            
+            stmt.addBatch(st1);
+            stmt.addBatch(st2);
+            stmt.executeBatch();
+            stmt.close();
             
             btAccept.setVisible(false);
             btReject.setVisible(false);
-
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }

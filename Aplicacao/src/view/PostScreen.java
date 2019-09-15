@@ -167,6 +167,9 @@ public class PostScreen extends JPanel {
                         UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate(), tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
+                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s', '%s', '%s', 1, '%s', '%s', '%s', '%s');", tagUser,UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
             }
 
         }
@@ -177,9 +180,18 @@ public class PostScreen extends JPanel {
         Matcher matcher = regex.matcher(txtCommnt.getText());
 
         while (matcher.find()) {
-            String st = String.format("INSERT INTO topic (tname, datestamp, cauthor, cpauthor, cpdate, cdate) values( '%s', '%s', '%s', '%s', '%s', '%s');", matcher.group().substring(1), now, UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), post.getDate(), now);
+            String st = String.format("select * from topic where tname = '%s';", matcher.group().substring(1));
             PreparedStatement stmt = con.prepareStatement(st);
+            ResultSet result = stmt.executeQuery();
+            if (!result.next()) {
+                st = String.format("INSERT INTO topic (tname, tdate) VALUES('%s', '%s');", matcher.group().substring(1), now);
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+            st = String.format("INSERT INTO topiccomment VALUES('%s','%s','%s', '%s', '%s');",matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(),post.getAuthor().getUsername(), now, post.getDate());
+            stmt = con.prepareStatement(st);
             stmt.executeUpdate();
+            stmt.close();
         }
     }
 

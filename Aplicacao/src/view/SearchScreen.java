@@ -1,6 +1,6 @@
 package view;
 
-import entity.Post;
+import entity.Topic;
 import entity.UserProfile;
 import java.awt.Container;
 import java.sql.Connection;
@@ -71,23 +71,32 @@ public class SearchScreen extends JPanel {
         try {
             switch(split[0].toLowerCase()) {
                 case "user": // Search for user
-                    args = request.substring(5);
-                    stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + args + "%' OR realname LIKE '%" + args + "%' OR bio LIKE '%" + args + "%'ORDER BY nfollowers DESC;");
-                    result = stmt.executeQuery();
-                    while(result.next()) {
-                        cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
-                                                    result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
-                        i++;
+                    if(request.length() > 5) {
+                        args = request.substring(5);
+                        stmt = con.prepareStatement("SELECT * from userprofile WHERE login LIKE '%" + args + "%' OR realname LIKE '%" + args + "%' OR bio LIKE '%" + args + "%'ORDER BY nfollowers DESC;");
+                        result = stmt.executeQuery();
+                        while(result.next()) {
+                            cont.add(new UserResult(new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), 
+                                                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                            i++;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(getParent(), "Please use syntax: User/Topic <target>", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     break;
                 case "topic": // Search for topic
-                    args = request.substring(6);
-                    stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '%" + request.substring(1) + "%' ORDER BY datestamp DESC;");
-                    result = stmt.executeQuery();
-                    while(result.next()) {
-                        Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
-                        cont.add(new Cuckoo(post, home));
-                        i++;
+                    if(request.length() > 6) {
+                        args = request.substring(6);
+                        stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '%" + args + "%' ORDER BY tdate DESC;");
+                        result = stmt.executeQuery();
+                        while(result.next()) {
+                            cont.add(new TopicResult(new Topic(result.getString("tname"), result.getString("tdate")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                           // Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
+                           // cont.add(new Cuckoo(post, home));
+                            i++;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(getParent(), "Please use syntax: User/Topic <target>", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                     break;
                 default:

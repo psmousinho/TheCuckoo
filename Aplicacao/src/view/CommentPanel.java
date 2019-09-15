@@ -109,15 +109,17 @@ public class CommentPanel extends JPanel {
                 comment.getAuthor().getUsername(), comment.getDate(), comment.getPostAuthor(), comment.getPostDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
-
+        st = String.format("delete from notifications where cauthor = '%s' and cdate = '%s' and cpauthor = '%s' and cpdate = '%s'",
+                comment.getAuthor().getUsername(), comment.getDate(), comment.getPostAuthor(), comment.getPostDate());
+        stmt.executeUpdate(st);
         stmt.close();
     }
 
     private void deleteTopics(Connection con) throws SQLException {
-        String st = String.format("delete from topic where cauthor = '%s' and cdate = '%s' and cpauthor = '%s' and cpdate = '%s'",
-                comment.getAuthor().getUsername(), comment.getDate(), comment.getPostAuthor(), comment.getPostDate());
+        String st = String.format("delete from topiccomment where cauthor = '%s' and cdate = '%s'", comment.getAuthor().getUsername(), comment.getDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
+        stmt.close();
 
         stmt.close();
     }
