@@ -197,18 +197,18 @@ public class NewPost extends javax.swing.JPanel {
             ResultSet result = stmt.executeQuery();
             boolean topicExists = result.next();
             if (!topicExists) {
-                st = String.format("INSERT INTO topic (tname, tdate, npost) VALUES('%s', '%s', 1);", matcher.group().substring(1), now);
+                st = String.format("INSERT INTO topic (tname, tdate) VALUES('%s', '%s');", matcher.group().substring(1), now);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
-            st = String.format("INSERT INTO topicpost VALUES('%s','%s','%s');",matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), now);
+            st = String.format("INSERT INTO topicpost VALUES('%s','%s','%s');", matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), now);
             stmt = con.prepareStatement(st);
             stmt.executeUpdate();
-            if(topicExists) {
-                st = String.format("update topic set npost = npost + 1, tdate = '%s' where tname = '%s';", now, matcher.group().substring(1)); // Assumindo tempo crescente
+            if (topicExists) {
+                st = String.format("update topic set tdate = '%s' where tname = '%s';", now, matcher.group().substring(1)); // Assumindo tempo crescente
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
             }
-            stmt = con.prepareStatement(st);
-            stmt.executeUpdate();
             stmt.close();
         }
     }

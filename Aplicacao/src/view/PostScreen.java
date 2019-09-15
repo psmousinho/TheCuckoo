@@ -184,7 +184,7 @@ public class PostScreen extends JPanel {
             PreparedStatement stmt = con.prepareStatement(st);
             ResultSet result = stmt.executeQuery();
             if (!result.next()) {
-                st = String.format("INSERT INTO topic VALUES( '%s');", matcher.group().substring(1));
+                st = String.format("INSERT INTO topic (tname, tdate) VALUES('%s', '%s');", matcher.group().substring(1), now);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
