@@ -1,6 +1,6 @@
 package view;
 
-import entity.UserProfile;
+import entity.Topic;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,19 +13,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import util.Constants;
 
-public class UserResult extends JPanel {
-    private UserProfile user;
+public class TopicResult extends JPanel {
     private Home home;
+    private Topic topic;
     
     private Color background;
     private JButton btVisit;
-    private JLabel usernameLabel;
-    private JLabel bioLabel;
+    private JLabel topicNameLabel;
+    private JLabel topicInfoLabel;
     private JPanel topLine;
     private JPanel bottomLine;
     
-    UserResult(UserProfile user, Color background, Home home) {
-        this.user = user;
+    TopicResult(Topic topic, Color background, Home home) {
+        this.topic = topic;
         this.background = background;
         this.home = home;
         
@@ -46,37 +46,37 @@ public class UserResult extends JPanel {
         bottomLine.setMaximumSize(new Dimension(Short.MAX_VALUE, 60));
         bottomLine.setBackground(background);
         
-        usernameLabel = new JLabel();
-        usernameLabel.setText("@" + user.getUsername());
-        usernameLabel.setFont(Constants.LUCIDA);
+        topicNameLabel = new JLabel();
+        topicNameLabel.setText("#" + topic.getName());
+        topicNameLabel.setFont(Constants.LUCIDA);
         
-        bioLabel = new JLabel();
-        bioLabel.setText("<html><div WIDTH="+getWidth()+"><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
-        bioLabel.setFont(new Font("Lucida Grande", 0, 11));
-        bioLabel.addComponentListener(new ComponentAdapter() {
+        topicInfoLabel = new JLabel();
+        topicInfoLabel.setText("<html><div WIDTH="+getWidth()+"><b>Last update:</b> " + topic.getDate()+ "<br><b>Number of Posts:</b> " + topic.getNumberPosts()+ "<br><b>Number of Comments:</b> " + topic.getNumberComments() + "</html>");
+        topicInfoLabel.setFont(new Font("Lucida Grande", 0, 11));
+        topicInfoLabel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent evt) {
-                bioLabel.setText("<html><div WIDTH=" + getWidth() + "><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
+                topicInfoLabel.setText("<html><div WIDTH="+getWidth()+"><b>Last update:</b> " + topic.getDate()+ "<br><b>Number of Posts:</b> " + topic.getNumberPosts()+ "<br><b>Number of Comments:</b> " + topic.getNumberComments() + "</html>");            
             }
         });
         
         btVisit = new JButton();
-        btVisit.setText("Visit");
+        btVisit.setText("Show posts/comments");
         btVisit.setFont(Constants.LUCIDA);
         btVisit.setForeground(Constants.PURPLE);
         btVisit.setBackground(Constants.WHITE);
         btVisit.addActionListener(this::actionPerformed);
         
-        topLine.add(usernameLabel);
+        topLine.add(topicNameLabel);
         topLine.add(btVisit);
                
-        bottomLine.add(bioLabel);
+        bottomLine.add(topicInfoLabel);
         
         add(topLine);
         add(bottomLine);
     }
     
     private void actionPerformed(ActionEvent evt) {
-        home.changeScreenTemporary(new ProfilePanel(user, home, user.getUsername().equals(UserProfile.CURRENT_USER.getUsername())));
+        //TODO show posts/comments
     }
 }

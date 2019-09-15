@@ -177,7 +177,7 @@ public class NotificationsScreen extends javax.swing.JPanel {
         try {
             Connection con = DBConnection.getConnection();
             //PreparedStatement stmt = con.prepareStatement("SELECT * from userrel WHERE tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "'and (status = 2 or status = 1) order by datestamp desc;");
-            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.rsource where target = '" + user.getUsername() + "' and (code = 2 or code = 3) order by rdate desc;");
+            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.src where target = '" + user.getUsername() + "' and (code = 2 or code = 3) order by ndate desc;");
 
             ResultSet result = stmt.executeQuery();
 

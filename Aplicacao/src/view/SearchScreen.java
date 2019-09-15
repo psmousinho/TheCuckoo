@@ -1,6 +1,7 @@
 package view;
 
 import entity.Post;
+import entity.Topic;
 import entity.UserProfile;
 import java.awt.Container;
 import java.sql.Connection;
@@ -82,11 +83,12 @@ public class SearchScreen extends JPanel {
                     break;
                 case "topic": // Search for topic
                     args = request.substring(6);
-                    stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '%" + request.substring(1) + "%' ORDER BY datestamp DESC;");
+                    stmt = con.prepareStatement("SELECT * from topic WHERE tname LIKE '%" + args + "%' ORDER BY tdate DESC;");
                     result = stmt.executeQuery();
                     while(result.next()) {
-                        Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
-                        cont.add(new Cuckoo(post, home));
+                        cont.add(new TopicResult(new Topic(result.getString("tname"), result.getString("tdate"), result.getInt("npost"), result.getInt("ncommnts")), i % 2 == 0 ? Constants.WHITE : Constants.GRAY, home));
+                       // Post post = new Post(this.user, result.getString("datestamp"), result.getString("ptext"), result.getString("foto"));
+                       // cont.add(new Cuckoo(post, home));
                         i++;
                     }
                     break;

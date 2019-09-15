@@ -246,11 +246,13 @@ public class Cuckoo extends JPanel {
     }
 
     private void deleteTopics(Connection con) throws SQLException {
-        String st = String.format("delete from topic where pauthor = '%s' and pdate = '%s'",
+        String st = String.format("delete from topicpost where pauthor = '%s' and pdate = '%s'",
                 post.getAuthor().getUsername(), post.getDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
-
+        st = String.format("delete from topiccommnt where cpauthor = '%s' and cpdate = '%s'", post.getAuthor().getUsername(), post.getDate());
+        stmt = con.createStatement();
+        stmt.executeUpdate(st);
         stmt.close();
     }
 
