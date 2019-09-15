@@ -167,7 +167,7 @@ public class PostScreen extends JPanel {
                         UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate(), tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                st = String.format("INSERT INTO notifications(target, code, cauthor, cdate, cpauthor, cpdate) values('%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
+                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s', '%s', '%s', 1, '%s', '%s', '%s', '%s');", tagUser,UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
