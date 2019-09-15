@@ -59,6 +59,10 @@ public class UserResult extends JPanel {
                 bioLabel.setText("<html><div WIDTH=" + getWidth() + "><b>Name:</b> " + user.getName() + "<br><b>Followers:</b> " + user.getNumberFollowers() + "<br><b>Bio:</b> " + user.getBio() + "</html>");
             }
         });
+        if(background == Constants.GRAY) {
+            usernameLabel.setForeground(Constants.WHITE);
+            bioLabel.setForeground(Constants.WHITE);
+        }
         
         btVisit = new JButton();
         btVisit.setText("Visit");
