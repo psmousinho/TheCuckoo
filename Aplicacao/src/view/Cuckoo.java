@@ -216,14 +216,21 @@ public class Cuckoo extends JPanel {
             String st = String.format("select * from topic where tname = '%s';", matcher.group().substring(1));
             PreparedStatement stmt = con.prepareStatement(st);
             ResultSet result = stmt.executeQuery();
-            if (!result.next()) {
-                st = String.format("INSERT INTO topic VALUES( '%s');", matcher.group().substring(1));
+            boolean topicExists = result.next();
+            if (!topicExists) {
+                st = String.format("INSERT INTO topic (tname, tdate) VALUES('%s', '%s');", matcher.group().substring(1), now);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
             st = String.format("INSERT INTO topiccomment VALUES('%s','%s','%s', '%s', '%s');", matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), now, post.getDate());
             stmt = con.prepareStatement(st);
             stmt.executeUpdate();
+            if (topicExists) {
+                st = String.format("update topic set tdate = '%s' where tname = '%s';", now, matcher.group().substring(1)); // Assumindo tempo crescente
+                stmt = con.prepareStatement(st);
+                stmt.executeUpdate();
+            }
+
             stmt.close();
         }
     }
@@ -250,7 +257,9 @@ public class Cuckoo extends JPanel {
                 post.getAuthor().getUsername(), post.getDate());
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
-        st = String.format("delete from topiccommnt where cpauthor = '%s' and cpdate = '%s'", post.getAuthor().getUsername(), post.getDate());
+        st = String.format("select count(tname) from topiccomment ");
+        ResultSet result = stmt.executeQuery(st);
+        st = String.format("delete from topiccomment where cpauthor = '%s' and cpdate = '%s'", post.getAuthor().getUsername(), post.getDate());
         stmt = con.createStatement();
         stmt.executeUpdate(st);
         stmt.close();
