@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import entity.*;
@@ -48,8 +43,6 @@ public class NotificationsScreen extends JPanel {
         initComponents();
         
         getNotifications();
-        //updatePostTab();
-
         if (UserProfile.CURRENT_USER.isPrivate()) {
             btFollowers.setText("Follow Requests");
         }
@@ -66,11 +59,11 @@ public class NotificationsScreen extends JPanel {
         btFollowers = new javax.swing.JButton();
 
         optionsPanel.setBackground(Constants.TEAL);
-        optionsPanel.setLayout(new java.awt.GridLayout());
+        optionsPanel.setLayout(new java.awt.GridLayout(1, 0));
 
         btTagPost.setBackground(Constants.WHITE);
         btTagPost.setForeground(Constants.TEAL);
-        btTagPost.setText("Tag Post");
+        btTagPost.setText("Tag Cuckoos");
         btTagPost.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btTagPostActionPerformed(evt);

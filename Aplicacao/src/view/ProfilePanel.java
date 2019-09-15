@@ -55,13 +55,14 @@ public class ProfilePanel extends JPanel {
         if(belong) {
             newPost = new NewPost();
             bottomPanel.add(newPost,"newpost");
-        } else {
-            checkRelation();
         }
         
         CardLayout cl = (CardLayout) bottomPanel.getLayout();
-        cl.show(bottomPanel, "cuckoos");
+        cl.show(bottomPanel, "cuckoos");        
         state = ProfileState.LIST_POSTS;
+        if(!belong) {
+            checkRelation();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -466,7 +467,7 @@ public class ProfilePanel extends JPanel {
                 cont.add(new Cuckoo(post, home));
             }
             cont.revalidate();
-            myCuckoos.setPreferredSize(getParent().getSize());
+            myCuckoos.setPreferredSize(bottomPanel.getSize());
             myCuckoos.getViewport().setView(cont);
 
         } catch (SQLException ex) {
@@ -536,12 +537,14 @@ public class ProfilePanel extends JPanel {
                         }
                     });
                     myCuckoos.getViewport().setView(privateLabel);
+                } else {
+                    updateCuckoos();
                 }
                 stmt = con.prepareStatement("select * from userrel where srcuser = '" + user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' and status = 2 ");
                 result = stmt.executeQuery();
                 follows = result.next();
                 if(follows) {
-                    usernameLabel.setText("@" + user.getUsername() + "<Follows you>");
+                    usernameLabel.setText("@" + user.getUsername() + " <Follows you>");
                 }
                 result.close();
                 stmt.close();
