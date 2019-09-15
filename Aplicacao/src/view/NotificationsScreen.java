@@ -32,9 +32,9 @@ public class NotificationsScreen extends JPanel {
     private UserProfile user;
     private Home home;
     private NotificationState state;
-    private List<Post> posts;
-    private List<Post> comments;
-    private List<UserProfile> followers;
+    private List<NotificationPost> posts;
+    private List<NotificationComment> comments;
+    private List<NotificationFollower> followers;
     
     public NotificationsScreen(UserProfile user, Home home) {
         this.user = user;
@@ -47,8 +47,8 @@ public class NotificationsScreen extends JPanel {
         
         initComponents();
         
-        //getNotifications();
-        updatePostTab();
+        getNotifications();
+        //updatePostTab();
 
         if (UserProfile.CURRENT_USER.isPrivate()) {
             btFollowers.setText("Follow Requests");
@@ -117,7 +117,13 @@ public class NotificationsScreen extends JPanel {
     private void btTagPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTagPostActionPerformed
         if(state != NotificationState.TAGPOSTS) {
             state = NotificationState.TAGPOSTS;
-            updatePostTab();
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            posts.forEach((np) -> {
+                cont.add(np);
+            });
+            cont.revalidate();
+            scrollPane.getViewport().setView(cont);
             updateButtons();
         }
     }//GEN-LAST:event_btTagPostActionPerformed
@@ -125,7 +131,13 @@ public class NotificationsScreen extends JPanel {
     private void btTagCommentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTagCommentActionPerformed
         if(state != NotificationState.TAGCOMMENTS) {
             state = NotificationState.TAGCOMMENTS;
-            updateCommentTab();
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            comments.forEach((nc) -> {
+                cont.add(nc);
+            });
+            cont.revalidate();
+            scrollPane.getViewport().setView(cont);
             updateButtons();
         }
     }//GEN-LAST:event_btTagCommentActionPerformed
@@ -133,112 +145,20 @@ public class NotificationsScreen extends JPanel {
     private void btFollowersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFollowersActionPerformed
         if(state != NotificationState.FOLLOWERS) {
             state = NotificationState.FOLLOWERS;
-            updateFollowersTab();
+            Container cont = new Container();
+            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            followers.forEach((nf) -> {
+                cont.add(nf);
+            });
+            cont.revalidate();
+            scrollPane.getViewport().setView(cont);
             updateButtons();
         }
     }//GEN-LAST:event_btFollowersActionPerformed
 
-    public void updatePostTab() {
-        try {
-            Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.pauthor where target = '" + user.getUsername() + "' and code = 0 order by pdate desc");
-            ResultSet result = stmt.executeQuery();
-
-            Container cont = new Container();
-            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
-            while (result.next()) {
-               // PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("pauthor") + "';");
-                //ResultSet resultAuthor = stmt2.executeQuery();
-                //resultAuthor.next();
-                UserProfile author = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
-                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
-
-                if (!result.getBoolean("visibility") || checkRelation(author.getUsername()) == 2) {
-                    PreparedStatement stmt3 = con.prepareStatement("Select * from post where author = '" + result.getString("pauthor") + "' and datestamp = '" + result.getString("pdate") + "';");
-                    ResultSet resultPost = stmt3.executeQuery();
-                    resultPost.next();
-                    Post post = new Post(author, resultPost.getString("datestamp"), resultPost.getString("ptext"));
-
-                    cont.add(new NotificationPost(post, home));
-                }
-
-            }
-            cont.revalidate();
-            scrollPane.getViewport().setView(cont);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void updateCommentTab() {
-        try {
-            Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.cpauthor where target = '" + user.getUsername() + "' and code = 1 order by cdate desc");
-
-            //PreparedStatement stmt = con.prepareStatement("SELECT * from tagcommntuser WHERE taguser = '" + this.user.getUsername() + "'order by cdate desc;");
-            ResultSet result = stmt.executeQuery();
-
-            Container cont = new Container();
-            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
-            while (result.next()) {
-
-                //PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("cpauthor") + "';");
-                //ResultSet resultAuthor = stmt2.executeQuery();
-                //resultAuthor = stmt2.executeQuery();
-                //resultAuthor.next();
-                UserProfile postAuthor = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
-                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
-
-                if (!postAuthor.isPrivate() || checkRelation(postAuthor.getUsername()) == 2) {
-                    PreparedStatement stmt3 = con.prepareStatement("Select * from post where author = '" + result.getString("cpauthor") + "' and datestamp = '" + result.getString("cpdate") + "';");
-                    ResultSet resultPost = stmt3.executeQuery();
-                    resultPost.next();
-
-                    Post post = new Post(postAuthor, result.getString("cpdate"), resultPost.getString("ptext"));
-
-                    cont.add(new NotificationComment(post, result.getString("cauthor"), result.getString("cdate"), home));
-                }
-
-            }
-            cont.revalidate();
-            scrollPane.getViewport().setView(cont);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void updateFollowersTab() {
-        try {
-            Connection con = DBConnection.getConnection();
-            //PreparedStatement stmt = con.prepareStatement("SELECT * from userrel WHERE tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "'and (status = 2 or status = 1) order by datestamp desc;");
-            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.src where target = '" + user.getUsername() + "' and (code = 2 or code = 3 or code = 4) order by ndate desc;");
-
-            ResultSet result = stmt.executeQuery();
-
-            Container cont = new Container();
-            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
-            while (result.next()) {
-                //PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("srcuser") + "';");
-                //ResultSet resultSrc = stmt2.executeQuery();
-                //resultSrc.next();
-                UserProfile src = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
-                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
-
-                cont.add(new NotificationFollower(src, result.getString("ndate"), result.getInt("code"), home));
-            }
-            cont.revalidate();
-            scrollPane.getViewport().setView(cont);
-
-        } catch (SQLException ex) {
-            Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private int checkRelation(String otherUser) throws SQLException {
+    private int checkRelation(String source, String target) throws SQLException {
         Connection con = DBConnection.getConnection();
-        PreparedStatement stmt = con.prepareStatement("select * from userrel where srcuser = '" + otherUser + "' and tgtuser = '" + user.getUsername() + "' ");
+        PreparedStatement stmt = con.prepareStatement("select * from userrel where srcuser = '" + source + "' and tgtuser = '" + target + "' ");
         ResultSet result = stmt.executeQuery();
         if (result.next()) {
             return result.getInt("status");
@@ -250,25 +170,55 @@ public class NotificationsScreen extends JPanel {
     private void getNotifications() {
         try {
             Connection con = DBConnection.getConnection();
-            //PreparedStatement stmt = con.prepareStatement("SELECT * from userrel WHERE tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "'and (status = 2 or status = 1) order by datestamp desc;");
-            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.src where target = '" + user.getUsername() + "' and (code = 2 or code = 3) order by ndate desc;");
-
+            PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.pauthor where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and code = 0 union select * from notifications inner join userprofile on userprofile.login = notifications.cpauthor where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and code = 1 union select * from notifications inner join userprofile on userprofile.login = notifications.src where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and (code = 2 or code = 3 or code = 4) order by ndate desc;");
             ResultSet result = stmt.executeQuery();
-
+            
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
-                //PreparedStatement stmt2 = con.prepareStatement("Select * from userprofile where login = '" + result.getString("srcuser") + "';");
-                //ResultSet resultSrc = stmt2.executeQuery();
-                //resultSrc.next();
-                UserProfile src = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"),
-                        result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
+                UserProfile src = new UserProfile(result.getString("realname"), result.getString("login"), result.getString("bio"), result.getBoolean("visibility"), result.getInt("nfollowers"), result.getInt("nfollowing"), result.getString("lasttime"));
+                switch(result.getInt("code")) {
+                    case 0: // Tag post
+                        NotificationPost np;
+                        if (!src.isPrivate() || checkRelation(UserProfile.CURRENT_USER.getUsername(), src.getUsername()) == 2) {
+                            PreparedStatement stmt2 = con.prepareStatement("Select * from post where author = '" + result.getString("pauthor") + "' and datestamp = '" + result.getString("pdate") + "';");
+                            ResultSet resultPost = stmt2.executeQuery();
+                            resultPost.next();
+                            Post post = new Post(src, resultPost.getString("datestamp"), resultPost.getString("ptext"));
+                            np = new NotificationPost(post, home);
+                            posts.add(np);
+                            cont.add(np);
+                        }
+                        break;
+                    case 1: // Tag comment
+                        NotificationComment nc;
+                        if (!src.isPrivate() || checkRelation(UserProfile.CURRENT_USER.getUsername(), src.getUsername()) == 2) {
+                            PreparedStatement stmt2 = con.prepareStatement("Select * from post where author = '" + result.getString("cpauthor") + "' and datestamp = '" + result.getString("cpdate") + "';");
+                            ResultSet resultPost = stmt2.executeQuery();
+                            resultPost.next();
 
-                cont.add(new NotificationFollower(src, result.getString("datestamp"), result.getInt("status"), home));
+                            Post post = new Post(src, result.getString("cpdate"), resultPost.getString("ptext"));
+                            nc = new NotificationComment(post, result.getString("cauthor"), result.getString("cdate"), home);
+                            
+                            comments.add(nc);
+                            cont.add(nc);
+                        }
+                        break;
+                    case 2: // Follower operation
+                    case 3:
+                    case 4:
+                        NotificationFollower nf;
+                        nf = new NotificationFollower(src, result.getString("ndate"), result.getInt("code"), home);
+                        followers.add(nf);
+                        cont.add(nf);
+                        break;
+                    default: // NOP
+                        break;
+                }
             }
             cont.revalidate();
             scrollPane.getViewport().setView(cont);
-
+            stmt.close();
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
