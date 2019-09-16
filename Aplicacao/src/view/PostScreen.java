@@ -167,7 +167,7 @@ public class PostScreen extends JPanel {
                         UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate(), tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s', '%s', '%s', 1, '%s', '%s', '%s', '%s');", tagUser,UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
+                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s', '%s', '%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
@@ -188,7 +188,7 @@ public class PostScreen extends JPanel {
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
             }
-            st = String.format("INSERT INTO topiccomment VALUES('%s','%s','%s', '%s', '%s');",matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(),post.getAuthor().getUsername(), now, post.getDate());
+            st = String.format("INSERT INTO topiccomment VALUES('%s','%s','%s', '%s', '%s');", matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), now, post.getDate());
             stmt = con.prepareStatement(st);
             stmt.executeUpdate();
             stmt.close();
@@ -204,12 +204,18 @@ public class PostScreen extends JPanel {
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
-                stmt = con.prepareStatement("SELECT * from userprofile where login = '" + result.getString("author") + "';");
+                st = String.format("SELECT * from userprofile left join userrel on userprofile.login = userrel.tgtuser and srcuser = '%s' where userprofile.login = '%s'", UserProfile.CURRENT_USER.getUsername(), result.getString("author"));
+                stmt = con.prepareStatement(st);
                 ResultSet result2 = stmt.executeQuery();
                 result2.next();
-                UserProfile author = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
-                Comment comment = new Comment(author, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
-                cont.add(new CommentPanel(comment, home));
+                if (result2.getInt("status") != 3) {
+                    UserProfile author = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
+                    Comment comment = new Comment(author, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
+                    cont.add(new CommentPanel(comment, home));
+                }
+                else {
+                    continue;
+                }
             }
             cont.revalidate();
             commnts.getViewport().setView(cont);
