@@ -16,7 +16,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -213,7 +215,7 @@ public class ProfilePanel extends JPanel {
             int notificationCode = -1;
             switch (status) {
                 case 0:// nothing
-                case 3://bloqueado
+                //case 3://bloqueado
                     if (!user.isPrivate()) {
                         st = String.format("update userrel set status = 2, datestamp = '%s' where srcuser = '%s' and tgtuser = '%s';", now, UserProfile.CURRENT_USER.getUsername(), user.getUsername());
                         st2 = String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", user.getUsername());
@@ -368,27 +370,59 @@ public class ProfilePanel extends JPanel {
                     break;
             }
         } else {
-            String st = null;
+            List<String> st = new ArrayList<>();
             switch (status) {
                 case -1:
-                    st = String.format("INSERT INTO userrel VALUES ('%s', '%s', now(), 3)", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st.add(String.format("INSERT INTO userrel VALUES ('%s', '%s', now(), 3)", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername()));
+                    status = 3;
+                    break;
+                case 3: // unblock
+                    st.add(String.format("UPDATE userrel SET datestamp = now(), status = 0 WHERE srcuser = '%s' and tgtuser = '%s'", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername()));
+                    btAction2.setText("Block");
+                    btAction1.setEnabled(true);
+                    btAction1.setText("Follow");
+                    status = 0;
                     break;
                 default:
-                    st = String.format("UPDATE userrel SET datestamp = now(), status = 3 WHERE srcuser = '%s' and tgtuser = '%s'",
-                            UserProfile.CURRENT_USER.getUsername(), this.user.getUsername());
+                    st.add(String.format("UPDATE userrel SET datestamp = now(), status = 3 WHERE srcuser = '%s' and tgtuser = '%s'", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername()));
+                    boolean delete = false;
+                    if(follows) {
+                        st.add(String.format("DELETE FROM userrel WHERE tgtuser = '%s' and srcuser = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+                        st.add(String.format("update userprofile set nfollowing = nfollowing - 1 where login = '%s';", user.getUsername()));
+                        user.setNumberFollowing(user.getNumberFollowing() - 1);
+                        st.add(String.format("update userprofile set nfollowers = nfollowers - 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername()));
+                        UserProfile.CURRENT_USER.setNumberFollowers(UserProfile.CURRENT_USER.getNumberFollowers() - 1);
+                        delete = true;
+                    }
+                    if(status == 2) { // is following
+                        st.add(String.format("update userprofile set nfollowing = nfollowing - 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername()));
+                        UserProfile.CURRENT_USER.setNumberFollowing(UserProfile.CURRENT_USER.getNumberFollowing() - 1);
+                        st.add(String.format("update userprofile set nfollowers = nfollowers - 1 where login = '%s';", user.getUsername()));
+                        user.setNumberFollowers(user.getNumberFollowers() - 1);
+                        delete = true;
+                    }
+                    if(delete) {
+                        st.add(String.format("DELETE FROM notifications where code = 2 or code = 3 or code = 4 and target = '%s' and src = '%s';", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+                        st.add(String.format("DELETE FROM notifications where code = 2 or code = 3 or code = 4 and src = '%s' and target = '%s';", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+                    }
+                    updateFollowers();
+                    status = 3;
                     break;
             }
             try {
                 Connection con = DBConnection.getConnection();
                 Statement stmt = con.createStatement();
-                stmt.executeUpdate(st);
-                handleBlock(con);
+                for(String s : st) {
+                    stmt.addBatch(s);
+                }
+                stmt.executeBatch();
+                if(status == 3) {
+                    handleBlock(con);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(ProfilePanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-
             checkRelation();
-
         }
     }//GEN-LAST:event_btAction2ActionPerformed
 
@@ -517,6 +551,7 @@ public class ProfilePanel extends JPanel {
                         btCuckoos.setEnabled(false);
                         btFollowers.setEnabled(false);
                         btFollowing.setEnabled(false);
+                        btAction1.setEnabled(false);
                         JLabel blockLabel = new JLabel();
                         blockLabel.setText("<html><div WIDTH=" + getWidth() + "><div align = 'center'>This user has blocked you. <b>SAD!</b></html>");
                         blockLabel.setFont(new Font("Lucida Grande", 0, 24));
@@ -553,7 +588,8 @@ public class ProfilePanel extends JPanel {
                             btAction1.setText("Unfollow");
                             break;
                         case 3: //blocked
-                            btAction1.setText("Follow");
+                            btAction1.setEnabled(false);
+                            btAction2.setText("Unblock");
                             break;
                     }
                 } else {
@@ -624,6 +660,10 @@ public class ProfilePanel extends JPanel {
         st = String.format("DELETE FROM commnt where author = '%s' and pauthor = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
         stmt.executeUpdate(st);
         stmt.close();
+        
+        btAction2.setText("Unblock");
+        btAction1.setText("Follow");
+        btAction1.setEnabled(false);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
