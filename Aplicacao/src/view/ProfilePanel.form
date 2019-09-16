@@ -89,7 +89,7 @@
             <Property name="rows" type="int" value="3"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="bio.setText(user.getBio());"/>
+            <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="bio.setText(user.getBio());&#xa;bio.setEditable(false);"/>
           </AuxValues>
         </Component>
       </SubComponents>

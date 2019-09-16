@@ -5,7 +5,6 @@ import entity.Topic;
 import entity.UserProfile;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -133,7 +132,7 @@ public class TopicResult extends JPanel {
                 result2.next();
                 UserProfile author = new UserProfile(result2.getString("realname") ,result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
                 Post post = new Post(author, result.getString("datestamp"),result.getString("ptext"),result.getString("foto"));
-                pcPanel.add(new PostScreen(post, home));
+                pcPanel.add(new PostScreen(post, home, post.getAuthor().getUsername().equals(UserProfile.CURRENT_USER.getUsername())));
             }
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);

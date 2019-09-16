@@ -13,14 +13,15 @@ public class CommentPanel extends JPanel {
 
     private Comment comment;
     private Home home;
-
+    private boolean self;
+    
     public CommentPanel(Comment comment, Home home) {
         this.comment = comment;
         this.home = home;
-
+        this.self = UserProfile.CURRENT_USER.getUsername().equals(comment.getAuthor().getUsername());
         initComponents();
 
-        if (UserProfile.CURRENT_USER.getUsername().equals(comment.getAuthor().getUsername())) {
+        if (self) {
             btDelete.setVisible(true);
         }
     }
@@ -82,7 +83,7 @@ public class CommentPanel extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void usernameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usernameMouseClicked
-        home.changeScreenTemporary(new ProfilePanel(comment.getAuthor(), home, false));
+        home.changeScreenTemporary(new ProfilePanel(comment.getAuthor(), home, self));
     }//GEN-LAST:event_usernameMouseClicked
 
     private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed

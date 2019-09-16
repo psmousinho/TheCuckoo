@@ -1,17 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import entity.*;
+import javax.swing.JPanel;
 
-/**
- *
- * @author Pablo Suria
- */
-public class NotificationPost extends javax.swing.JPanel {
+public class NotificationPost extends JPanel {
 
     private Post post;
     private Home home;
@@ -71,7 +63,7 @@ public class NotificationPost extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        home.changeScreenTemporary(new PostScreen(post, home));
+        home.changeScreenTemporary(new PostScreen(post, home, post.getAuthor().getUsername().equals(UserProfile.CURRENT_USER.getUsername())));
     }//GEN-LAST:event_formMouseClicked
 
 

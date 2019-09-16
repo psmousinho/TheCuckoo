@@ -39,7 +39,7 @@ public class ProfilePanel extends JPanel {
     private Home home;
     private UserProfile user;
     private NewPost newPost;
-    private boolean belong;
+    private final boolean belong;
     private boolean follows;
 
     private int status;
@@ -64,6 +64,8 @@ public class ProfilePanel extends JPanel {
         state = ProfileState.LIST_POSTS;
         if (!belong) {
             checkRelation();
+        } else {
+            updateCuckoos();
         }
     }
 
@@ -94,6 +96,7 @@ public class ProfilePanel extends JPanel {
         bio.setRows(3);
         scrollPane.setViewportView(bio);
         bio.setText(user.getBio());
+        bio.setEditable(false);
 
         actionsPanel.setBackground(Constants.TEAL);
         actionsPanel.setLayout(new java.awt.GridLayout(0, 1));
@@ -654,11 +657,22 @@ public class ProfilePanel extends JPanel {
     }
 
     private void handleBlock(Connection con) throws SQLException {
+        List<String> st = new ArrayList<>();
         Statement stmt = con.createStatement();
-        String st = String.format("DELETE FROM commnt where author = '%s' and pauthor = '%s'", user.getUsername(), UserProfile.CURRENT_USER.getUsername());
-        stmt.executeUpdate(st);
-        st = String.format("DELETE FROM commnt where author = '%s' and pauthor = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
-        stmt.executeUpdate(st);
+        //Clear notifications (if any)
+        st.add(String.format("DELETE FROM notifications where cauthor = '%s' and cpauthor = '%s' and code = 1", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+        st.add(String.format("DELETE FROM notifications where cauthor = '%s' and cpauthor = '%s' and code = 1", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+        //Clear tags
+        st.add(String.format("DELETE FROM tagcommntuser where cauthor = '%s' and cpauthor = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+        st.add(String.format("DELETE FROM tagcommntuser where cauthor = '%s' and cpauthor = '%s'", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+        //Clear comments
+        st.add(String.format("DELETE FROM commnt where author = '%s' and pauthor = '%s'", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+        st.add(String.format("DELETE FROM commnt where author = '%s' and pauthor = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+        for(String s : st) {
+            stmt.addBatch(s);
+        }
+        
+        stmt.executeBatch();
         stmt.close();
         
         btAction2.setText("Unblock");

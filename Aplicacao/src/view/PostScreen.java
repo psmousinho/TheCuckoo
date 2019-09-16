@@ -21,11 +21,13 @@ public class PostScreen extends JPanel {
 
     private Post post;
     private Home home;
-
-    public PostScreen(Post post, Home home) {
+    private boolean self;
+    
+    public PostScreen(Post post, Home home, boolean self) {
         this.post = post;
         this.home = home;
-
+        this.self = self;
+        
         initComponents();
 
         updateComments();
@@ -124,7 +126,7 @@ public class PostScreen extends JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfilePanel(post.getAuthor(), home, false));
+        home.changeScreenTemporary(new ProfilePanel(post.getAuthor(), home, self));
     }//GEN-LAST:event_authorMouseClicked
 
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed

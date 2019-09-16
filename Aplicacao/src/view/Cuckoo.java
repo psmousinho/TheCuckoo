@@ -20,18 +20,19 @@ public class Cuckoo extends JPanel {
 
     private Post post;
     private Home home;
-
+    private boolean self;
+    
     public Cuckoo(Post post, Home home) {
         this.post = post;
         this.home = home;
+        this.self = post.getAuthor().getUsername().equals(UserProfile.CURRENT_USER.getUsername());
         initComponents();
 
         if (post.getPhoto() == null) {
             image.setVisible(false);
         }
 
-        btDelete.setVisible(post.getAuthor().getUsername() == UserProfile.CURRENT_USER.getUsername());
-
+        btDelete.setVisible(self);
     }
 
     @SuppressWarnings("unchecked")
@@ -158,11 +159,11 @@ public class Cuckoo extends JPanel {
     }//GEN-LAST:event_commentActionPerformed
 
     private void authorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_authorMouseClicked
-        home.changeScreenTemporary(new ProfilePanel(post.getAuthor(), home, false));
+        home.changeScreenTemporary(new ProfilePanel(post.getAuthor(), home, self));
     }//GEN-LAST:event_authorMouseClicked
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        home.changeScreenTemporary(new PostScreen(this.post, home));
+        home.changeScreenTemporary(new PostScreen(post, home, self));
     }//GEN-LAST:event_formMouseClicked
 
     private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed
