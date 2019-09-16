@@ -131,15 +131,15 @@ public class Cuckoo extends JPanel {
 
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed
         if (jScrollPane1.isVisible()) {
-            if (!txtCommnt.getText().equals("")) {
-
-                //lidar com marcaçoes
-                //lidar com topicos
+            String comment = txtCommnt.getText();
+            if (!comment.equals("")) {
+                comment = comment.replaceAll("'", "''");
+                
                 Connection con = DBConnection.getConnection();
                 try {
                     Timestamp now = new Timestamp(new Date().getTime());
                     String st = String.format("INSERT INTO commnt values('%s','%s','%s','%s','%s');",
-                            UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), post.getDate(), now, txtCommnt.getText());
+                            UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), post.getDate(), now, comment);
                     Statement stmt = con.createStatement();
                     stmt.executeUpdate(st);
                     addTags(con, now);

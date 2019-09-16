@@ -126,9 +126,11 @@ public class NewPost extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void endPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endPostActionPerformed
-        if (!text.getText().equals("") || !imagePath.getText().equals("")) {
+        String cuckooText = text.getText();
+        if (!cuckooText.equals("") || !imagePath.getText().equals("")) {
             try {
                 String path = "null";
+                cuckooText = cuckooText.replaceAll("'", "''");
                 if (!imagePath.getText().equals("")) {
                     moveImage();
                     path = "'" + imagePath.getText() + "'";
@@ -136,7 +138,7 @@ public class NewPost extends javax.swing.JPanel {
 
                 Connection con = DBConnection.getConnection();
                 Timestamp now = new Timestamp(new Date().getTime());
-                String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);", UserProfile.CURRENT_USER.getUsername(), now, text.getText(), path);
+                String st = String.format("INSERT INTO post values( '%s','%s','%s',%s);", UserProfile.CURRENT_USER.getUsername(), now, cuckooText, path);
                 PreparedStatement stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
 
