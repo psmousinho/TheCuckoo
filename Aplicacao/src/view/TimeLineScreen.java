@@ -63,7 +63,7 @@ public class TimeLineScreen extends javax.swing.JPanel {
         
         try {
             Connection con = DBConnection.getConnection();
-            PreparedStatement stmt = con.prepareStatement("SELECT * from post inner join userrel on post.author = userrel.tgtuser WHERE srcuser = '" + user.getUsername() + "' and status = 2 order by post.datestamp;");
+            PreparedStatement stmt = con.prepareStatement("SELECT * from post inner join userrel on post.author = userrel.tgtuser WHERE srcuser = '" + user.getUsername() + "' and status = 2 order by post.datestamp desc;");
             ResultSet result = stmt.executeQuery();
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));

@@ -131,7 +131,7 @@ public class NewPost extends javax.swing.JPanel {
             try {
                 String path = "null";
                 cuckooText = cuckooText.replaceAll("'", "''");
-                if (!imagePath.getText().equals("")) {
+                if (!imagePath.getText().equals("ImagePath")) {
                     moveImage();
                     path = "'" + imagePath.getText() + "'";
                 }
@@ -165,7 +165,7 @@ public class NewPost extends javax.swing.JPanel {
             file = new File(chooser.getSelectedFile().getAbsolutePath());
             imagePath.setText(file.getName());
             imagePath.setVisible(true);
-        }
+        }        
     }//GEN-LAST:event_addImageActionPerformed
 
     private void addTags(Connection con, Timestamp now) throws SQLException {

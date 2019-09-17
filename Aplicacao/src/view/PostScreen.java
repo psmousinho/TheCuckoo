@@ -14,6 +14,9 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import util.DBConnection;
 
@@ -31,6 +34,9 @@ public class PostScreen extends JPanel {
         initComponents();
 
         updateComments();
+        if(post.getPhoto() == null) {
+            btImage.setEnabled(false);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -39,12 +45,12 @@ public class PostScreen extends JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         author = new javax.swing.JLabel();
-        image = new javax.swing.JLabel();
         comment = new javax.swing.JButton();
         txtPost = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtCommnt = new javax.swing.JTextArea();
         commnts = new javax.swing.JScrollPane();
+        btImage = new javax.swing.JButton();
 
         author.setText("@" + this.post.getAuthor().getUsername());
         author.setToolTipText("\"Go to Profile\"");
@@ -53,8 +59,6 @@ public class PostScreen extends JPanel {
                 authorMouseClicked(evt);
             }
         });
-
-        image.setText("Image");
 
         comment.setText("comment");
         comment.addActionListener(new java.awt.event.ActionListener() {
@@ -71,6 +75,13 @@ public class PostScreen extends JPanel {
         txtCommnt.setRows(5);
         jScrollPane1.setViewportView(txtCommnt);
 
+        btImage.setText("View Image");
+        btImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btImageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -79,18 +90,17 @@ public class PostScreen extends JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(author)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(image, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtPost, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(comment)
                         .addGap(30, 30, 30))
-                    .addComponent(commnts))
+                    .addComponent(commnts)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(author)
+                            .addComponent(txtPost)
+                            .addComponent(btImage))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -100,9 +110,9 @@ public class PostScreen extends JPanel {
                 .addComponent(author)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPost)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(image)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btImage)
+                .addGap(7, 7, 7)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comment)
@@ -154,6 +164,12 @@ public class PostScreen extends JPanel {
         }
         this.revalidate();
     }//GEN-LAST:event_commentActionPerformed
+
+    private void btImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImageActionPerformed
+        JLabel image = new JLabel();
+        image.setIcon(new ImageIcon(post.getPhoto()));
+        JOptionPane.showMessageDialog(this, image, "Image", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_btImageActionPerformed
 
     private void addTags(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("@\\w{4,32}");
@@ -214,8 +230,7 @@ public class PostScreen extends JPanel {
                     UserProfile author = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
                     Comment comment = new Comment(author, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
                     cont.add(new CommentPanel(comment, home));
-                }
-                else {
+                } else {
                     continue;
                 }
             }
@@ -229,9 +244,9 @@ public class PostScreen extends JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel author;
+    private javax.swing.JButton btImage;
     private javax.swing.JButton comment;
     private javax.swing.JScrollPane commnts;
-    private javax.swing.JLabel image;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea txtCommnt;

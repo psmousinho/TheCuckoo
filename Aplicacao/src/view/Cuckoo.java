@@ -226,10 +226,12 @@ public class Cuckoo extends JPanel {
             st = String.format("INSERT INTO topiccomment VALUES('%s','%s','%s', '%s', '%s');", matcher.group().substring(1), UserProfile.CURRENT_USER.getUsername(), post.getAuthor().getUsername(), now, post.getDate());
             stmt = con.prepareStatement(st);
             stmt.executeUpdate();
+            System.out.println("" + topicExists);
             if (topicExists) {
                 st = String.format("update topic set tdate = '%s' where tname = '%s';", now, matcher.group().substring(1)); // Assumindo tempo crescente
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
+                System.out.println("updated topic!");
             }
 
             stmt.close();

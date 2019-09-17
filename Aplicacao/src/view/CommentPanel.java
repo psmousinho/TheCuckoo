@@ -121,8 +121,6 @@ public class CommentPanel extends JPanel {
         Statement stmt = con.createStatement();
         stmt.executeUpdate(st);
         stmt.close();
-
-        stmt.close();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

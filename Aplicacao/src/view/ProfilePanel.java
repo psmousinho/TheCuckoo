@@ -374,10 +374,23 @@ public class ProfilePanel extends JPanel {
             }
         } else {
             List<String> st = new ArrayList<>();
+            boolean delete = false;
             switch (status) {
                 case -1:
                     st.add(String.format("INSERT INTO userrel VALUES ('%s', '%s', now(), 3)", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername()));
                     status = 3;
+                    if(follows) {
+                        st.add(String.format("DELETE FROM userrel WHERE tgtuser = '%s' and srcuser = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+                        st.add(String.format("update userprofile set nfollowing = nfollowing - 1 where login = '%s';", user.getUsername()));
+                        user.setNumberFollowing(user.getNumberFollowing() - 1);
+                        st.add(String.format("update userprofile set nfollowers = nfollowers - 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername()));
+                        UserProfile.CURRENT_USER.setNumberFollowers(UserProfile.CURRENT_USER.getNumberFollowers() - 1);
+                        delete = true;
+                    }
+                    if(delete) {
+                        st.add(String.format("DELETE FROM notifications where code = 2 or code = 3 or code = 4 and target = '%s' and src = '%s';", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+                        st.add(String.format("DELETE FROM notifications where code = 2 or code = 3 or code = 4 and src = '%s' and target = '%s';", user.getUsername(), UserProfile.CURRENT_USER.getUsername()));
+                    }
                     break;
                 case 3: // unblock
                     st.add(String.format("UPDATE userrel SET datestamp = now(), status = 0 WHERE srcuser = '%s' and tgtuser = '%s'", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername()));
@@ -388,7 +401,6 @@ public class ProfilePanel extends JPanel {
                     break;
                 default:
                     st.add(String.format("UPDATE userrel SET datestamp = now(), status = 3 WHERE srcuser = '%s' and tgtuser = '%s'", UserProfile.CURRENT_USER.getUsername(), this.user.getUsername()));
-                    boolean delete = false;
                     if(follows) {
                         st.add(String.format("DELETE FROM userrel WHERE tgtuser = '%s' and srcuser = '%s'", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
                         st.add(String.format("update userprofile set nfollowing = nfollowing - 1 where login = '%s';", user.getUsername()));
