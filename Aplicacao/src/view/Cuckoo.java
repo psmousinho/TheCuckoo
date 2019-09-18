@@ -226,9 +226,20 @@ public class Cuckoo extends JPanel {
                         UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate(), tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s','%s','%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
-                stmt = con.prepareStatement(st);
-                stmt.executeUpdate();
+                boolean notify = false;
+                if(!post.getAuthor().isPrivate()) { // Public profile, no further action needed
+                    notify = true;
+                } else { // Private profile, must check is tagged user follows author
+                    st = String.format("SELECT * FROM userrel where tgtuser = '%s' and srcuser = '%s' and status = 2;", post.getAuthor().getUsername(), tagUser);
+                    stmt = con.prepareStatement(st);
+                    ResultSet rs2 = stmt.executeQuery();
+                    notify = rs2.next();
+                }
+                if(notify) {
+                    st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s','%s','%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
+                    stmt = con.prepareStatement(st);
+                    stmt.executeUpdate();
+                }
             }
 
         }

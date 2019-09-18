@@ -4,6 +4,10 @@ import entity.UserProfile;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import util.DBConnection;
@@ -115,14 +119,25 @@ public class NotificationFollower extends javax.swing.JPanel {
 
     private void btAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAcceptActionPerformed
         try {
+            List<String> st = new ArrayList<>();
+            Timestamp now = new Timestamp(new Date().getTime());
             Connection con = DBConnection.getConnection();
-            String st = String.format("update userrel set status = 2 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+            st.add(String.format("update userrel set status = 2 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+            st.add(String.format("update userprofile set nfollowers = nfollowers + 1 where login = '%s';", UserProfile.CURRENT_USER.getUsername()));
+            st.add(String.format("update userprofile set nfollowing = nfollowing + 1 where login = '%s';", user.getUsername()));
+            st.add(String.format("insert into notifications(target, src, ndate, code) values('%s', '%s', '%s', 3);", user.getUsername(), UserProfile.CURRENT_USER.getUsername(), now));
+            st.add(String.format("delete from notifications where target = '%s' and src = '%s' and code = 2;", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+            
             Statement stmt = con.createStatement();
-            stmt.executeUpdate(st);
+            for(String s : st) {
+                stmt.addBatch(s);
+            }
+            stmt.executeBatch();
+            stmt.close();
             
             btAccept.setVisible(false);
             btReject.setVisible(false);
-
+            home.updateNotifications();
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -130,14 +145,21 @@ public class NotificationFollower extends javax.swing.JPanel {
 
     private void btRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRejectActionPerformed
         try {
+            List<String> st = new ArrayList<>();
             Connection con = DBConnection.getConnection();
-            String st = String.format("update userrel set status = 0 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername());
+            st.add(String.format("update userrel set status = 0 WHERE tgtuser = '%s'and  srcuser = '%s';", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+            st.add(String.format("delete from notifications where target = '%s' and src = '%s' and code = 2;", UserProfile.CURRENT_USER.getUsername(), user.getUsername()));
+            
             Statement stmt = con.createStatement();
-            stmt.executeUpdate(st);
+            for(String s : st) {
+                stmt.addBatch(s);
+            }
+            stmt.executeBatch();
+            stmt.close();
             
             btAccept.setVisible(false);
             btReject.setVisible(false);
-
+            home.updateNotifications();
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }

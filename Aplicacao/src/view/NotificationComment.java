@@ -33,7 +33,7 @@ public class NotificationComment extends javax.swing.JPanel {
 
         jLabel1.setText("@"+ cAuthor);
 
-        jLabel2.setText("Marcou você em um comentario num Cuckoo de @" + post.getAuthor().getUsername());
+        jLabel2.setText("Tagged you in a comment in a cuckoo of @" + post.getAuthor().getUsername());
 
         jLabel3.setText(cDate);
 

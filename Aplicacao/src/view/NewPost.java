@@ -181,11 +181,21 @@ public class NewPost extends JPanel {
                 st = String.format("INSERT INTO tagpostuser values( '%s', '%s', '%s');", UserProfile.CURRENT_USER.getUsername(), now, tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                st = String.format("INSERT INTO notifications(target, src, ndate, code, pauthor, pdate) values('%s', '%s', '%s', 0, '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now);
-                stmt = con.prepareStatement(st);
-                stmt.executeUpdate();
+                boolean notify = false;
+                if(!UserProfile.CURRENT_USER.isPrivate()) { // Public profile, no further action needed
+                    notify = true;
+                } else { // Private profile, must check is tagged user follows author
+                    st = String.format("SELECT * FROM userrel where tgtuser = '%s' and srcuser = '%s' and status = 2;", UserProfile.CURRENT_USER.getUsername(), tagUser);
+                    stmt = con.prepareStatement(st);
+                    ResultSet rs2 = stmt.executeQuery();
+                    notify = rs2.next();
+                }
+                if(notify) {
+                    st = String.format("INSERT INTO notifications(target, src, ndate, code, pauthor, pdate) values('%s', '%s', '%s', 0, '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now);
+                    stmt = con.prepareStatement(st);
+                    stmt.executeUpdate();
+                }
             }
-
         }
     }
 

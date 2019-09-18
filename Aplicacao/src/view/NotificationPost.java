@@ -28,9 +28,10 @@ public class NotificationPost extends JPanel {
             }
         });
 
-        jLabel1.setText(post.getAuthor().getUsername());
+        jLabel1.setText("@" + post.getAuthor().getUsername());
 
-        jLabel2.setText("Marcou você em um Cuckoo");
+        jLabel2.setText("Tagged you in a Cuckoo");
+        jLabel2.setToolTipText("");
 
         jLabel3.setText(post.getDate());
 
@@ -43,7 +44,7 @@ public class NotificationPost extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addContainerGap(157, Short.MAX_VALUE))
+                .addContainerGap(175, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)

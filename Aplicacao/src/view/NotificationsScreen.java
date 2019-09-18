@@ -165,7 +165,6 @@ public class NotificationsScreen extends JPanel {
             Connection con = DBConnection.getConnection();
             PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.pauthor where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and code = 0 union select * from notifications inner join userprofile on userprofile.login = notifications.cpauthor where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and code = 1 union select * from notifications inner join userprofile on userprofile.login = notifications.src where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and (code = 2 or code = 3 or code = 4) order by ndate desc;");
             ResultSet result = stmt.executeQuery();
-            
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
