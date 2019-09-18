@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import util.Constants;
 import util.DBConnection;
 
 public class CommentPanel extends JPanel {
@@ -35,15 +36,29 @@ public class CommentPanel extends JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         btDelete = new javax.swing.JButton();
 
-        commentTxt.setText(comment.getText());
+        setBackground(Constants.PURPLE);
+        setMaximumSize(new java.awt.Dimension(32767, 81));
 
-        username.setText("@" + comment.getAuthor().getUsername());
+        commentTxt.setBackground(Constants.PURPLE);
+        commentTxt.setForeground(new java.awt.Color(255, 255, 255));
+        commentTxt.setText("<html><div WIDTH=" + commentTxt.getWidth() + ">" + comment.getText() + "</html>");
+        commentTxt.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                commentTxtComponentResized(evt);
+            }
+        });
+
+        username.setBackground(Constants.PURPLE);
+        username.setForeground(new java.awt.Color(255, 255, 255));
+        username.setText("@" + comment.getAuthor().getUsername() + " at " + comment.getDate());
         username.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 usernameMouseClicked(evt);
             }
         });
 
+        btDelete.setBackground(new java.awt.Color(255, 255, 255));
+        btDelete.setForeground(Constants.PURPLE);
         btDelete.setText("X");
         btDelete.setVisible(self);
         btDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -57,16 +72,13 @@ public class CommentPanel extends JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(commentTxt)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(username)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                        .addComponent(btDelete))))
+                .addComponent(username, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btDelete))
             .addComponent(jSeparator1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(commentTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,8 +88,8 @@ public class CommentPanel extends JPanel {
                     .addComponent(username)
                     .addComponent(btDelete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(commentTxt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(commentTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -105,6 +117,10 @@ public class CommentPanel extends JPanel {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btDeleteActionPerformed
+
+    private void commentTxtComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_commentTxtComponentResized
+        commentTxt.setText("<html><div WIDTH=" + commentTxt.getWidth() + ">" + comment.getText() + "</html>");
+    }//GEN-LAST:event_commentTxtComponentResized
 
     private void deleteTags(Connection con) throws SQLException {
         String st = String.format("delete from tagcommntuser where cauthor = '%s' and cdate = '%s' and cpauthor = '%s' and cpdate = '%s'",

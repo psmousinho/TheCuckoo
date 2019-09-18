@@ -544,7 +544,9 @@ public class ProfilePanel extends JPanel {
             cont.revalidate();
             myCuckoos.setPreferredSize(bottomPanel.getSize());
             myCuckoos.getViewport().setView(cont);
-
+            if(belong) {
+                btCuckoos.setText("New Cuckoo");
+            }
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -556,13 +558,14 @@ public class ProfilePanel extends JPanel {
     }
 
     private void checkRelation() {
+        boolean block = false;
         if (!belong) {
             try {
                 Connection con = DBConnection.getConnection();
                 PreparedStatement stmt = con.prepareStatement("select * from userrel where srcuser = '" + user.getUsername() + "' and tgtuser = '" + UserProfile.CURRENT_USER.getUsername() + "' ");
                 ResultSet result = stmt.executeQuery();
                 if (result.next()) {
-                    boolean block = (result.getInt("status") == Relation.BLOCKED.getCode());
+                    block = (result.getInt("status") == Relation.BLOCKED.getCode());
                     if (block) {
                         btCuckoos.setEnabled(false);
                         btFollowers.setEnabled(false);
@@ -582,7 +585,6 @@ public class ProfilePanel extends JPanel {
                         myCuckoos.getViewport().setView(blockLabel);
                         result.close();
                         stmt.close();
-                        return;
                     }
                 }
 
@@ -615,6 +617,10 @@ public class ProfilePanel extends JPanel {
                 result.close();
                 stmt.close();
 
+                if(block) {
+                    return;
+                }
+                
                 if (user.isPrivate() && status != 2) {
                     btCuckoos.setEnabled(false);
                     btFollowers.setEnabled(false);

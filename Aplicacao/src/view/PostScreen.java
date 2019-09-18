@@ -26,11 +26,14 @@ public class PostScreen extends JPanel {
     private Post post;
     private Home home;
     private boolean self;
+    private boolean commenting;
+    private Container comments;
     
     public PostScreen(Post post, Home home, boolean self) {
         this.post = post;
         this.home = home;
         this.self = self;
+        this.commenting = false;
         
         initComponents();
 
@@ -44,16 +47,19 @@ public class PostScreen extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        author = new javax.swing.JLabel();
-        comment = new javax.swing.JButton();
-        txtPost = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
         txtCommnt = new javax.swing.JTextArea();
-        commnts = new javax.swing.JScrollPane();
+        contentPanel = new javax.swing.JPanel();
+        author = new javax.swing.JLabel();
+        txtPost = new javax.swing.JLabel();
+        scrollPane = new javax.swing.JScrollPane();
+        optionsPanel = new javax.swing.JPanel();
         btImage = new javax.swing.JButton();
+        comment = new javax.swing.JButton();
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        txtCommnt.setColumns(20);
+        txtCommnt.setRows(5);
+
+        contentPanel.setBackground(new java.awt.Color(255, 255, 255));
 
         author.setForeground(Constants.ORANGE);
         author.setText("@" + post.getAuthor().getUsername() + " at " + post.getDate());
@@ -64,23 +70,16 @@ public class PostScreen extends JPanel {
             }
         });
 
-        comment.setBackground(new java.awt.Color(255, 255, 255));
-        comment.setForeground(Constants.ORANGE);
-        comment.setText("comment");
-        comment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                commentActionPerformed(evt);
+        txtPost.setForeground(Constants.ORANGE);
+        txtPost.setText("<html><div WIDTH=" + txtPost.getWidth() + ">" + post.getText() + "</html>");
+        txtPost.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                txtPostComponentResized(evt);
             }
         });
 
-        txtPost.setForeground(Constants.ORANGE);
-        txtPost.setText(this.post.getText());
-
-        jScrollPane1.setVisible(false);
-
-        txtCommnt.setColumns(20);
-        txtCommnt.setRows(5);
-        jScrollPane1.setViewportView(txtCommnt);
+        optionsPanel.setBackground(Constants.WHITE);
+        optionsPanel.setLayout(new java.awt.GridLayout());
 
         btImage.setBackground(new java.awt.Color(255, 255, 255));
         btImage.setForeground(Constants.ORANGE);
@@ -90,43 +89,42 @@ public class PostScreen extends JPanel {
                 btImageActionPerformed(evt);
             }
         });
+        optionsPanel.add(btImage);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        comment.setBackground(new java.awt.Color(255, 255, 255));
+        comment.setForeground(Constants.ORANGE);
+        comment.setText("New Comment");
+        comment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commentActionPerformed(evt);
+            }
+        });
+        optionsPanel.add(comment);
+
+        javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
+        contentPanel.setLayout(contentPanelLayout);
+        contentPanelLayout.setHorizontalGroup(
+            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(comment)
-                        .addGap(30, 30, 30))
-                    .addComponent(commnts)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(author)
-                            .addComponent(txtPost)
-                            .addComponent(btImage))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrollPane)
+                    .addComponent(author, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtPost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(optionsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        contentPanelLayout.setVerticalGroup(
+            contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(contentPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(author)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPost)
+                .addComponent(txtPost, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btImage)
-                .addGap(7, 7, 7)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(optionsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(comment)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(commnts, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -134,13 +132,11 @@ public class PostScreen extends JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -149,9 +145,11 @@ public class PostScreen extends JPanel {
     }//GEN-LAST:event_authorMouseClicked
 
     private void commentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentActionPerformed
-        if (jScrollPane1.isVisible()) {
-            if (!txtCommnt.getText().equals("")) {
-
+        if (commenting) {
+            commenting = false;
+            comment.setText("New Comment");
+            String commnt = txtCommnt.getText();
+            if (!commnt.equals("")) {
                 Connection con = DBConnection.getConnection();
                 try {
                     Timestamp now = new Timestamp(new Date().getTime());
@@ -161,15 +159,17 @@ public class PostScreen extends JPanel {
                     stmt.executeUpdate(st);
                     addTags(con, now);
                     addTopics(con, now);
+                    updateComments();
                 } catch (SQLException ex) {
                     Logger.getLogger(Cuckoo.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                txtCommnt.setText("");
             }
-            txtCommnt.setText("");
-            jScrollPane1.setVisible(false);
+            scrollPane.getViewport().setView(comments);
         } else {
-            jScrollPane1.setVisible(true);
+            commenting = true;
+            comment.setText("Comment");
+            scrollPane.getViewport().setView(txtCommnt);
         }
         this.revalidate();
     }//GEN-LAST:event_commentActionPerformed
@@ -180,11 +180,16 @@ public class PostScreen extends JPanel {
         JOptionPane.showMessageDialog(this, image, "Image", JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_btImageActionPerformed
 
+    private void txtPostComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_txtPostComponentResized
+        txtPost.setText("<html><div WIDTH=" + txtPost.getWidth() + ">" + post.getText() + "</html>");
+    }//GEN-LAST:event_txtPostComponentResized
+
     private void addTags(Connection con, Timestamp now) throws SQLException {
         Pattern regex = Pattern.compile("@\\w{4,32}");
         Matcher matcher = regex.matcher(txtCommnt.getText());
-
+        boolean notify;
         while (matcher.find()) {
+            notify = false;
             String tagUser = matcher.group().substring(1);
             String st = String.format("SELECT * FROM userprofile where login = '%s'", tagUser);
             PreparedStatement stmt = con.prepareStatement(st);
@@ -194,9 +199,19 @@ public class PostScreen extends JPanel {
                         UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate(), tagUser);
                 stmt = con.prepareStatement(st);
                 stmt.executeUpdate();
-                st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s', '%s', '%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
-                stmt = con.prepareStatement(st);
-                stmt.executeUpdate();
+                if(!post.getAuthor().isPrivate()) { // Public profile, no further action needed
+                    notify = true;
+                } else { // Private profile, must check is tagged user follows author
+                    st = String.format("SELECT * FROM userrel where tgtuser = '%s' and srcuser = '%s' and status = 2;", post.getAuthor().getUsername(), tagUser);
+                    stmt = con.prepareStatement(st);
+                    ResultSet rs2 = stmt.executeQuery();
+                    notify = rs2.next();
+                }
+                if(notify) {
+                    st = String.format("INSERT INTO notifications(target, src, ndate, code, cauthor, cdate, cpauthor, cpdate) values('%s','%s','%s', 1, '%s', '%s', '%s', '%s');", tagUser, UserProfile.CURRENT_USER.getUsername(), now, UserProfile.CURRENT_USER.getUsername(), now, post.getAuthor().getUsername(), post.getDate());
+                    stmt = con.prepareStatement(st);
+                    stmt.executeUpdate();
+                }
             }
 
         }
@@ -225,27 +240,33 @@ public class PostScreen extends JPanel {
     private void updateComments() {
         try {
             Connection con = DBConnection.getConnection();
-            String st = String.format("SELECT * from commnt WHERE pauthor = '%s' and pdate = '%s'", post.getAuthor().getUsername(), post.getDate());
+            String st = String.format("SELECT * from commnt WHERE pauthor = '%s' and pdate = '%s' order by datestamp asc", post.getAuthor().getUsername(), post.getDate());
             PreparedStatement stmt = con.prepareStatement(st);
             ResultSet result = stmt.executeQuery();
-            Container cont = new Container();
-            cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
+            comments = new Container();
+            comments.setLayout(new BoxLayout(comments, BoxLayout.Y_AXIS));
             while (result.next()) {
-                st = String.format("SELECT * from userprofile left join userrel on userprofile.login = userrel.tgtuser and srcuser = '%s' and tgtuser = '%s' where userprofile.login = '%s';", result.getString("author"), UserProfile.CURRENT_USER.getUsername(), result.getString("author"));
+                st = String.format("select * from userrel where srcuser = '%s' and tgtuser = '%s' and status = 3 union select * from userrel where srcuser = '%s' and tgtuser = '%s' and status = 3;", result.getString("author"), UserProfile.CURRENT_USER.getUsername(), UserProfile.CURRENT_USER.getUsername(), result.getString("author"));
                 stmt = con.prepareStatement(st);
                 ResultSet result2 = stmt.executeQuery();
-                result2.next();
-                if (result2.getInt("status") != 3) {
-                    UserProfile author = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
-                    Comment comment = new Comment(author, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
-                    cont.add(new CommentPanel(comment, home, self));
+                boolean show = !result2.next();
+                if (show) {
+                    st = String.format("select * from userprofile where login = '%s';", result.getString("author"));
+                    stmt = con.prepareStatement(st);
+                    result2 = stmt.executeQuery();
+                    result2.next();
+                    UserProfile athr = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
+                    Comment cmmt = new Comment(athr, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
+                    comments.add(new CommentPanel(cmmt, home, self));
                 } else {
                     continue;
                 }
             }
-            cont.revalidate();
-            commnts.getViewport().setView(cont);
-
+            stmt.close();
+            result.close();
+            
+            comments.revalidate();
+            scrollPane.getViewport().setView(comments);
         } catch (SQLException ex) {
             Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -255,9 +276,9 @@ public class PostScreen extends JPanel {
     private javax.swing.JLabel author;
     private javax.swing.JButton btImage;
     private javax.swing.JButton comment;
-    private javax.swing.JScrollPane commnts;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel contentPanel;
+    private javax.swing.JPanel optionsPanel;
+    private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTextArea txtCommnt;
     private javax.swing.JLabel txtPost;
     // End of variables declaration//GEN-END:variables

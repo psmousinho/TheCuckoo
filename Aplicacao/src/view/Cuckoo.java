@@ -60,7 +60,7 @@ public class Cuckoo extends JPanel {
         });
 
         author.setForeground(Constants.ORANGE);
-        author.setText("@" + this.post.getAuthor().getUsername());
+        author.setText("@" + this.post.getAuthor().getUsername() + " at " + post.getDate());
         author.setToolTipText("\"Go to Profile\"");
         author.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
