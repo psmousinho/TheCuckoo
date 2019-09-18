@@ -18,6 +18,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import util.Constants;
 import util.DBConnection;
 
 public class PostScreen extends JPanel {
@@ -52,7 +53,10 @@ public class PostScreen extends JPanel {
         commnts = new javax.swing.JScrollPane();
         btImage = new javax.swing.JButton();
 
-        author.setText("@" + this.post.getAuthor().getUsername());
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        author.setForeground(Constants.ORANGE);
+        author.setText("@" + post.getAuthor().getUsername() + " at " + post.getDate());
         author.setToolTipText("\"Go to Profile\"");
         author.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -60,6 +64,8 @@ public class PostScreen extends JPanel {
             }
         });
 
+        comment.setBackground(new java.awt.Color(255, 255, 255));
+        comment.setForeground(Constants.ORANGE);
         comment.setText("comment");
         comment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,6 +73,7 @@ public class PostScreen extends JPanel {
             }
         });
 
+        txtPost.setForeground(Constants.ORANGE);
         txtPost.setText(this.post.getText());
 
         jScrollPane1.setVisible(false);
@@ -75,6 +82,8 @@ public class PostScreen extends JPanel {
         txtCommnt.setRows(5);
         jScrollPane1.setViewportView(txtCommnt);
 
+        btImage.setBackground(new java.awt.Color(255, 255, 255));
+        btImage.setForeground(Constants.ORANGE);
         btImage.setText("View Image");
         btImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -222,14 +231,14 @@ public class PostScreen extends JPanel {
             Container cont = new Container();
             cont.setLayout(new BoxLayout(cont, BoxLayout.Y_AXIS));
             while (result.next()) {
-                st = String.format("SELECT * from userprofile left join userrel on userprofile.login = userrel.tgtuser and srcuser = '%s' where userprofile.login = '%s'", UserProfile.CURRENT_USER.getUsername(), result.getString("author"));
+                st = String.format("SELECT * from userprofile left join userrel on userprofile.login = userrel.tgtuser and srcuser = '%s' and tgtuser = '%s' where userprofile.login = '%s';", result.getString("author"), UserProfile.CURRENT_USER.getUsername(), result.getString("author"));
                 stmt = con.prepareStatement(st);
                 ResultSet result2 = stmt.executeQuery();
                 result2.next();
                 if (result2.getInt("status") != 3) {
                     UserProfile author = new UserProfile(result2.getString("realname"), result2.getString("login"), result2.getString("bio"), result2.getBoolean("visibility"), result2.getInt("nfollowers"), result2.getInt("nfollowing"), result2.getString(("lasttime")));
                     Comment comment = new Comment(author, result.getString("pauthor"), result.getString("pdate"), result.getString("datestamp"), result.getString("ctext"));
-                    cont.add(new CommentPanel(comment, home));
+                    cont.add(new CommentPanel(comment, home, self));
                 } else {
                     continue;
                 }

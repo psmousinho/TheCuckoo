@@ -37,7 +37,7 @@ public class Home extends JPanel {
         this.notifications = new NotificationsScreen(this.user, this);
         this.timeline = new TimeLineScreen(this.user, this);
         this.search = new SearchScreen(this.user, this);
-        this.newPost = new NewPost();
+        this.newPost = new NewPost(this);
         this.temporary = new JPanel();
         
         contentPanel.add(profile, "profile");
@@ -330,6 +330,14 @@ public class Home extends JPanel {
         state = HomeState.NOTHING;
     }
 
+    public void updateCuckoos() {
+        profile.updateCuckoos();
+    }
+    
+    public void updateNotifications() {
+        notifications.getNotifications();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btNotifications;
     private javax.swing.JButton btProfile;

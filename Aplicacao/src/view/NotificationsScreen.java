@@ -160,7 +160,7 @@ public class NotificationsScreen extends JPanel {
         }
     }
     
-    private void getNotifications() {
+    public void getNotifications() {
         try {
             Connection con = DBConnection.getConnection();
             PreparedStatement stmt = con.prepareStatement("select * from notifications inner join userprofile on userprofile.login = notifications.pauthor where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and code = 0 union select * from notifications inner join userprofile on userprofile.login = notifications.cpauthor where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and code = 1 union select * from notifications inner join userprofile on userprofile.login = notifications.src where target = '" + UserProfile.CURRENT_USER.getUsername() + "' and (code = 2 or code = 3 or code = 4) order by ndate desc;");

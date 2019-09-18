@@ -55,7 +55,7 @@ public class ProfilePanel extends JPanel {
 
         bottomPanel.add(myCuckoos, "cuckoos");
         if (belong) {
-            newPost = new NewPost();
+            newPost = new NewPost(home);
             bottomPanel.add(newPost, "newpost");
         }
 
@@ -65,6 +65,7 @@ public class ProfilePanel extends JPanel {
         if (!belong) {
             checkRelation();
         } else {
+            btCuckoos.setText("New Cuckoo");
             updateCuckoos();
         }
     }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import entity.UserProfile;
@@ -24,15 +19,19 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import util.DBConnection;
 import util.Constants;
 
-public class NewPost extends javax.swing.JPanel {
+public class NewPost extends JPanel {
 
     private File file;
-
-    public NewPost() {
+    private Home home;
+    
+    public NewPost(Home home) {
+        this.home = home;
+        
         initComponents();
     }
 
@@ -148,7 +147,8 @@ public class NewPost extends javax.swing.JPanel {
             } catch (SQLException ex) {
                 Logger.getLogger(TimeLineScreen.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
+            home.updateCuckoos();
             CardLayout cl = (CardLayout) this.getParent().getLayout();
             cl.show(this.getParent(), "cuckoos");
         } else {

@@ -15,15 +15,15 @@ public class CommentPanel extends JPanel {
     private Home home;
     private boolean self;
     
-    public CommentPanel(Comment comment, Home home) {
+    public CommentPanel(Comment comment, Home home, boolean self) {
         this.comment = comment;
         this.home = home;
-        this.self = UserProfile.CURRENT_USER.getUsername().equals(comment.getAuthor().getUsername());
-        initComponents();
-
-        if (self) {
-            btDelete.setVisible(true);
+        if (!self) {
+            this.self = comment.getAuthor().getUsername().equals(UserProfile.CURRENT_USER.getUsername());
+        } else {
+            this.self = true;
         }
+        initComponents();
     }
 
     @SuppressWarnings("unchecked")
@@ -45,7 +45,7 @@ public class CommentPanel extends JPanel {
         });
 
         btDelete.setText("X");
-        btDelete.setVisible(false);
+        btDelete.setVisible(self);
         btDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btDeleteActionPerformed(evt);
@@ -93,12 +93,13 @@ public class CommentPanel extends JPanel {
             deleteTags(con);
             deleteTopics(con);
 
-            String st = String.format("delete from commnt where author = '%s' and pauthor = '%s' and pdate = '%s'",
-                    comment.getAuthor().getUsername(), comment.getPostAuthor(), comment.getPostDate());
+            String st = String.format("delete from commnt where author = '%s' and pauthor = '%s' and pdate = '%s' and datestamp = '%s'",
+                    comment.getAuthor().getUsername(), comment.getPostAuthor(), comment.getPostDate(), comment.getDate());
             Statement stmt = con.createStatement();
             stmt.executeUpdate(st);
 
             stmt.close();
+            setVisible(false);
             this.getParent().getParent().revalidate();
         } catch (SQLException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
